@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Barter</string>
+    <string name="facebook_app_id">346113355888499</string>
+    <string name="fb_login_protocol_scheme">fb346113355888499</string>
+    <string name="facebook_application_id" translatable="false">346113355888499</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb346113355888499</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="user_greeting">Welcome %1$s!</string>
+</resources>
