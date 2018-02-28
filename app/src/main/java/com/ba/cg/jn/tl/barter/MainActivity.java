@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment dashBoardFrag = new DashboardFragment();
 
-        fragmentTransaction.add(R.id.fragment_container, dashBoardFrag);
+        fragmentTransaction.replace(R.id.fragment_container, dashBoardFrag);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
@@ -109,5 +110,16 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
     @Override
     public void callbackDeleteAccount() {
         deleteAccount();
+    }
+
+    @Override
+    public void startAddTransactionFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment addTransactionFrag = new AddTransactionFormFragment();
+
+        fragmentTransaction.replace(R.id.fragment_container, addTransactionFrag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }

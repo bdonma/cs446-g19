@@ -2,6 +2,7 @@ package com.ba.cg.jn.tl.barter;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,14 @@ public class DashboardFragment extends Fragment {
                 mCallback.callbackDeleteAccount();
             }
         });
+
+        FloatingActionButton fab = v.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mCallback.startAddTransactionFragment();
+            }
+        });
         return v;
     }
 
@@ -67,5 +76,7 @@ public class DashboardFragment extends Fragment {
         void callbackSignOut();
 
         void callbackDeleteAccount();
+
+        void startAddTransactionFragment();
     }
 }
