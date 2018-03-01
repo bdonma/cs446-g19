@@ -108,12 +108,6 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
-
-    @Override
     public void callbackDeleteAccount() {
         deleteAccount();
     }

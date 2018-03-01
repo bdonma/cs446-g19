@@ -87,7 +87,9 @@ public class DashboardFragment extends Fragment {
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(mAdapter);
 
-        prepareTransactionData();
+        if (transactionList.size() < 2) {
+            prepareTransactionData();
+        }
 
         return v;
     }
