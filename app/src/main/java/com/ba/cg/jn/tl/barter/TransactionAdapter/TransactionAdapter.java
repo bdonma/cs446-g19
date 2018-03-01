@@ -32,6 +32,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
         @Override
         public void onClick(View v) {
+            transactionList.remove(getAdapterPosition());
+            notifyDataSetChanged();
             Log.d("swag", "tapped");
         }
     }
