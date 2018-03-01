@@ -5,17 +5,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.ba.cg.jn.tl.barter.TransactionAdapter.Transaction;
+import com.ba.cg.jn.tl.barter.TransactionAdapter.TransactionAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DashboardFragment extends Fragment {
 
     private OnDashboardActionSelected mCallback;
+
+    // RecyclerView
+    private List<Transaction> transactionList = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private TransactionAdapter mAdapter;
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -62,7 +76,32 @@ public class DashboardFragment extends Fragment {
                 mCallback.startAddTransactionFragment();
             }
         });
+
+        // RecyclerView
+        recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
+
+        mAdapter = new TransactionAdapter(transactionList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(mAdapter);
+
+        if (transactionList.size() < 2) {
+            prepareTransactionData();
+        }
+
         return v;
+    }
+
+    private void prepareTransactionData() {
+        Transaction transaction = new Transaction("Brandon Ma", "Feb 08, 2018", "$50.00", true);
+        transactionList.add(transaction);
+
+        Transaction transaction2 = new Transaction("Tiffany Lui", "today", "$20.00", false);
+        transactionList.add(transaction2);
+
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
