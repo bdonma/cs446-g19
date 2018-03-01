@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="transaction_types">
+        <item>Borrowed</item>
+        <item>Loaned</item>
+    </string-array>
+</resources>
