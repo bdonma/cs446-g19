@@ -128,5 +128,4 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-
 }
