@@ -61,9 +61,9 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         holder.value.setText(transaction.getValue());
 
         if (transaction.getDoIOwe()) {
-            holder.container.setBackgroundColor(Color.parseColor("#81C784"));
-        } else {
             holder.container.setBackgroundColor(Color.parseColor("#E57373"));
+        } else {
+            holder.container.setBackgroundColor(Color.parseColor("#81C784"));
         }
     }
 

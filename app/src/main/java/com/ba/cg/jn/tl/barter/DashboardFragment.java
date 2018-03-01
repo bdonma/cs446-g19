@@ -49,6 +49,7 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mCallback.callbackSignOut();
+                getActivity().onBackPressed();
             }
         });
 
@@ -66,6 +67,7 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mCallback.callbackDeleteAccount();
+                getActivity().onBackPressed();
             }
         });
 
@@ -89,16 +91,20 @@ public class DashboardFragment extends Fragment {
 
         if (transactionList.size() < 2) {
             prepareTransactionData();
+        } else {
+            Transaction transaction = new Transaction("Caroline George", "March 01, 2018", "$4.00", false);
+            transactionList.add(transaction);
+            mAdapter.notifyDataSetChanged();
         }
 
         return v;
     }
 
     private void prepareTransactionData() {
-        Transaction transaction = new Transaction("Brandon Ma", "Feb 08, 2018", "$50.00", true);
+        Transaction transaction = new Transaction("Brandon Ma", "Feb 08, 2018", "-$50.00", true);
         transactionList.add(transaction);
 
-        Transaction transaction2 = new Transaction("Tiffany Lui", "today", "$20.00", false);
+        Transaction transaction2 = new Transaction("Tiffany Lui", "Feb 21, 2018", "$20.00", false);
         transactionList.add(transaction2);
 
         mAdapter.notifyDataSetChanged();
