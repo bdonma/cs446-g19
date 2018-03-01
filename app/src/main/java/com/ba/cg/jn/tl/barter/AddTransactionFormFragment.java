@@ -1,6 +1,7 @@
 package com.ba.cg.jn.tl.barter;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -19,11 +20,9 @@ import android.widget.Spinner;
  */
 public class AddTransactionFormFragment extends Fragment {
 
-
     public AddTransactionFormFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,8 +65,8 @@ public class AddTransactionFormFragment extends Fragment {
                 String transactionName = transactionNameEditText.getText().toString();
                 String people = peopleEditText.getText().toString();
                 String transactionType = transactionTypeSpinner.getSelectedItem().toString();
-                Double cashValue = Double.parseDouble(cashValueEditText.getText().toString());
-                Double unitValue = Double.parseDouble(unitValueEditText.getText().toString());
+                Double cashValue = Double.parseDouble(cashValueEditText.getText().toString().isEmpty() ? "0" : cashValueEditText.getText().toString());
+                Double unitValue = Double.parseDouble(unitValueEditText.getText().toString().isEmpty() ? "0" : unitValueEditText.getText().toString());
                 String notes = transactionNotesEditText.getText().toString();
 
                 createTransaction(transactionName, people, transactionType, cashValue,
@@ -81,9 +80,7 @@ public class AddTransactionFormFragment extends Fragment {
     public void createTransaction(String transactionName, String people, String transactionType,
                                   Double cashValue, Double unitValue, String notes) {
         // TODO: add values to firebase
-        FragmentManager fragmentManager = this.getActivity().getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        fragmentManager.popBackStack();
+        getActivity().getSupportFragmentManager().popBackStack();
     }
 }
