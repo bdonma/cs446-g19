@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements DashboardFragment.OnDashboardActionSelected, AddTransactionFormFragment.AddTransactionFormListener {
+public class MainActivity extends AppCompatActivity implements DashboardFragment.OnDashboardActionSelected {
     private static final int RC_SIGN_IN = 123;
 
     @Override
@@ -108,6 +108,12 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+
+    @Override
     public void callbackDeleteAccount() {
         deleteAccount();
     }
@@ -121,10 +127,5 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
         fragmentTransaction.replace(R.id.fragment_container, addTransactionFrag);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
-    }
-
-    @Override
-    public void backToDashboard() {
-        startDashboardFrag();
     }
 }

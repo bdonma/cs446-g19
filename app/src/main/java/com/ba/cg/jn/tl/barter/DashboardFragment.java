@@ -1,6 +1,7 @@
 package com.ba.cg.jn.tl.barter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,15 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mCallback.callbackSignOut();
+            }
+        });
+
+        Button onboarding = v.findViewById(R.id.onboarding);
+        onboarding.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent onBoardingIntent = new Intent(getContext(), OnboardingActivity.class);
+                startActivity(onBoardingIntent);
             }
         });
 
