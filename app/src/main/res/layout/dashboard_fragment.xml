@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     tools:context="com.ba.cg.jn.tl.barter.DashboardFragment">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/user_greeting"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <TextView
         android:id="@+id/user_greeting"
         android:layout_width="wrap_content"
@@ -20,7 +29,7 @@
         android:layout_height="wrap_content"
         android:text="Sign out"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_greeting" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button
         android:id="@+id/delete_account"
@@ -28,7 +37,7 @@
         android:layout_height="wrap_content"
         android:text="Delete account"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_greeting" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button
         android:id="@+id/onboarding"
@@ -37,7 +46,7 @@
         android:text="Onboarding"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/user_greeting" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
