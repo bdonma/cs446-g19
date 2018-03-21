@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import com.facebook.FacebookSdk;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AddTransactionFormFragment extends Fragment {
+
+
+    EditText eSearchFriends;
+    Button addFriendsButton;
+    RecyclerView eResultList;
 
     public AddTransactionFormFragment() {
         // Required empty public constructor
@@ -33,13 +40,25 @@ public class AddTransactionFormFragment extends Fragment {
         final EditText transactionNameEditText = v.findViewById(R.id.transactionNameEditText);
         final EditText peopleEditText = v.findViewById(R.id.peopleEditText);
 
-        Button addFriendsButton = v.findViewById(R.id.addFriendsButton);
+
+        eSearchFriends = v.findViewById(R.id.SearchFriendseditText);
+        addFriendsButton = v.findViewById(R.id.addFriendsButton);
+
+        eResultList = v.findViewById(R.id.resultsFriendsSearch);
         addFriendsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // TODO: get friends list from firebase
+
+                //query Firebase to see users that match user's friendlist
+
+                //if user is Facebook user
+
+
             }
         });
+
+        //Facebook friend search
 
         final Spinner transactionTypeSpinner = (Spinner) v.findViewById(R.id.transactionTypeSpinner);
         ArrayAdapter<CharSequence> transactionTypeAdapter = ArrayAdapter.createFromResource(this.getActivity(),
