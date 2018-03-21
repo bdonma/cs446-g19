@@ -33,8 +33,14 @@ public class DashboardPresenter {
 
         Query query = getDatabaseReference().child("transactions");
         query.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Transaction transaction = snapshot.getValue(Transaction.class);
+                    transaction.setTargetUser();
+                }
+
                 Log.d("DEBUG", "getUserTransactios");
             }
 
@@ -42,6 +48,7 @@ public class DashboardPresenter {
             public void onCancelled(DatabaseError databaseError) {
 
             }
+
         });
 
     }
