@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.facebook.FacebookSdk;
 import com.facebook.AccessToken;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.login.widget.LoginButton;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -42,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
                 for (UserInfo iuser: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
                     if (iuser.getProviderId().equals("facebook.com")) {
                         System.out.println("User is signed in with Facebook");
+                        //FacebookSdk.sdkInitialize(getApplicationContext());
+                        //btnFacebookLogin = v.findViewById(R.id.SearchFriendseditText);
+                       // startFacebookPermissionsFrag();
+
                     }
                 }
                 startDashboardFrag();
@@ -76,11 +81,21 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
         fragmentTransaction.commit();
     }
 
+    private void startFacebookPermissionsFrag() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment facebookPermissionsFrag = new FacebookPermissionsFragment();
+
+        fragmentTransaction.replace(R.id.fragment_container, facebookPermissionsFrag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
     private void signInUi() {
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                 new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build());
+                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).setPermissions(Arrays.asList("user_friends")).build());
 
         startActivityForResult(
                 AuthUI.getInstance()
