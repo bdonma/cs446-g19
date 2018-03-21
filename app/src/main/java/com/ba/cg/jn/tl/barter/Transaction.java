@@ -12,17 +12,19 @@ public class Transaction {
     private float cashValue;
     private float barterValue;
     private String barterUnit;
+    private boolean isBorrowed;
     private boolean isActive;
     private boolean isCompleted;
     private String notes;
 
-    public Transaction(String name, String creatorId, ArrayList<String> targetUserIds, float cashValue, float barterValue, String barterUnit, boolean isActive, boolean isCompleted, String notes) {
+    public Transaction(String name, String creatorId, ArrayList<String> targetUserIds, float cashValue, float barterValue, String barterUnit, boolean isBorrowed, boolean isActive, boolean isCompleted, String notes) {
         this.name = name;
         this.creatorId = creatorId;
         this.targetUserIds = targetUserIds;
         this.cashValue = cashValue;
         this.barterValue = barterValue;
         this.barterUnit = barterUnit;
+        this.isBorrowed = isBorrowed;
         this.isActive = isActive;
         this.isCompleted = isCompleted;
         this.notes = notes;
@@ -78,6 +80,10 @@ public class Transaction {
 
     public String getBarterUnit(){
         return barterUnit;
+    }
+
+    public boolean getIsBorrowed(){
+        return isBorrowed;
     }
 
     public boolean getIsActive(){
