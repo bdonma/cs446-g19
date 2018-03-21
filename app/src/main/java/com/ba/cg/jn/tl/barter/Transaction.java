@@ -17,6 +17,8 @@ public class Transaction {
     private boolean isCompleted;
     private String notes;
 
+    // TODO: add date created field
+
     public Transaction(String name, String creatorId, ArrayList<String> targetUserIds, float cashValue, float barterValue, String barterUnit, boolean isBorrowed, boolean isActive, boolean isCompleted, String notes) {
         this.name = name;
         this.creatorId = creatorId;

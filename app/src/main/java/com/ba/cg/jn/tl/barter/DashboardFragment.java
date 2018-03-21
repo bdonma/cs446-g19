@@ -90,6 +90,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             @Override
             public void onItemClick(View view, int position) {
                 // Handle item clicks here.
+
             }
         }));
 
@@ -100,7 +101,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter = new DashboardPresenter(this);
-        mPresenter.getUserTransactions();
+        mPresenter.startUserTransactions();
     } // onViewCreated
 
     public void showListOfTransactions(List<Transaction> transactions) {
@@ -114,6 +115,11 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         mRecyclerView.setAdapter(mAdapter);
     } // resetAdapter
 
+    /**
+     * TransactionAdapter used to handle interactions with DashboardFragments RecyclerView
+     *
+     * @author JasonNgo
+     */
     private class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
 
         List<Transaction> mTransactions;

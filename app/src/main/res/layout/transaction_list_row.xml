@@ -25,9 +25,9 @@
         android:layout_marginStart="10dp" />
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/name"
         android:paddingLeft="12dp"
-        tools:text="Fake text"
+        tools:text="Name of the Transaction"
         android:layout_toRightOf="@id/picture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,10 +43,10 @@
         android:layout_toRightOf="@id/picture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title" />
+        android:layout_below="@id/name" />
 
     <TextView
-        android:id="@+id/value"
+        android:id="@+id/cashValue"
         tools:text="$50.00"
         android:paddingRight="8dp"
         android:layout_centerInParent="true"
@@ -54,5 +54,15 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:textColor="@color/value" />
+
+    <TextView
+        android:id="@+id/barterValue"
+        tools:text="Barter Unit"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@id/cashValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/value"
+    />
 
 </RelativeLayout>
