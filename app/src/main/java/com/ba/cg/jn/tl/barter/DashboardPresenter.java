@@ -44,19 +44,20 @@ public class DashboardPresenter {
 
                 // Parse through transactions to match user
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Transaction transaction = snapshot.getValue(Transaction.class);
+                    // TODO: test when model is complete
+//                    Transaction transaction = snapshot.getValue(Transaction.class);
 
-                    if (transaction.getCreatorId() == FirebaseUtilities.getUser().getEmail()) {
-                        transactions.add(transaction);
-                        continue;
-                    } // if
+//                    if (transaction.getCreatorId() == FirebaseUtilities.getUser().getEmail()) {
+//                        transactions.add(transaction);
+//                        continue;
+//                    } // if
 
-                    for (String targetId : transaction.getTargetUserIds()) {
-                        if (targetId == FirebaseUtilities.getUser().getEmail()) {
-                            transactions.add(transaction);
-                            break;
-                        } // if
-                    } // for
+//                    for (String targetId : transaction.getTargetUserIds()) {
+//                        if (targetId == FirebaseUtilities.getUser().getEmail()) {
+//                            transactions.add(transaction);
+//                            break;
+//                        } // if
+//                    } // for
 
                     Log.d("DEBUG", "added transaction");
                 } // for
