@@ -28,30 +28,51 @@ public class DashboardPresenter {
 
     }
 
+    /**
+     * Called by DashboardFragment to fetch the list of transactions user is involved in
+     */
     public void getUserTransactions() {
-        // This is where I want to query for the list of transactions
 
-        Query query = getDatabaseReference().child("transactions");
+        // Order transactions by timestamps
+        Query query = getDatabaseReference().child("transactions").orderByKey();
         query.addValueEventListener(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
+                ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+
+                // Parse through transactions to match user
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Transaction transaction = snapshot.getValue(Transaction.class);
-                    transaction.setTargetUser();
-                }
 
-                Log.d("DEBUG", "getUserTransactios");
-            }
+                    if (transaction.getCreatorId() == FirebaseUtilities.getUser().getEmail()) {
+                        transactions.add(transaction);
+                        continue;
+                    } // if
+
+                    for (String targetId : transaction.getTargetUserIds()) {
+                        if (targetId == FirebaseUtilities.getUser().getEmail()) {
+                            transactions.add(transaction);
+                            break;
+                        } // if
+                    } // for
+
+                    Log.d("DEBUG", "added transaction");
+                } // for
+
+                mView.showListOfTransactions(transactions);
+
+            } // onDataChange
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
-            }
+                Log.w("DEBUG", "getUserTransactions:onCancelled", databaseError.toException());
+            } // onCancelled
 
         });
 
-    }
+    } // getUserTransactions
 
     public void searchForUser(String userID) {
 

@@ -17,9 +17,6 @@ import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ba.cg.jn.tl.barter.Transaction;
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +42,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         View v = inflater.inflate(R.layout.dashboard_fragment, container, false);
 
         TextView userGreeting = v.findViewById(R.id.user_greeting);
-        userGreeting.setText(getString(R.string.user_greeting, FirebaseAuth.getInstance().getCurrentUser().getDisplayName()));
+        userGreeting.setText(getString(R.string.user_greeting, FirebaseUtilities.getUser().getDisplayName()));
 
         Button signOut = v.findViewById(R.id.sign_out);
         signOut.setOnClickListener(new View.OnClickListener() {
@@ -89,25 +86,33 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
+        mRecyclerView.addOnItemTouchListener(new DashboardItemClickListener(getContext(), new DashboardItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                // Handle item clicks here.
+            }
+        }));
+
         return v;
-    }
+    } // onCreateView
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter = new DashboardPresenter(this);
         mPresenter.getUserTransactions();
-    }
+    } // onViewCreated
 
     public void showListOfTransactions(List<Transaction> transactions) {
+        resetAdapter();
         mAdapter.mTransactions.addAll(transactions);
         mRecyclerView.swapAdapter(mAdapter, true);
-    }
+    } // showListOfTransactions
 
     public void resetAdapter() {
         mAdapter = new TransactionAdapter(new ArrayList<Transaction>());
         mRecyclerView.setAdapter(mAdapter);
-    }
+    } // resetAdapter
 
     private class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
 
@@ -137,7 +142,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             return mTransactions.size();
         } // getItemCount
 
-        public class TransactionViewHolder extends RecyclerView.ViewHolder {
+        public class TransactionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
             public TextView title, dateCreated, value;
             RelativeLayout container;
@@ -150,6 +155,11 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
 
 
             } // TransactionViewHolder constructor
+
+            @Override
+            public void onClick(View v) {
+
+            }
 
         } // TransactionViewHolder class
 
