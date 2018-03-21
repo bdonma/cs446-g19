@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                 new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).setPermissions(Arrays.asList("user_friends")).build());
+                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).setPermissions(Arrays.asList("user_friends", "public_profile")).build());
 
         startActivityForResult(
                 AuthUI.getInstance()
