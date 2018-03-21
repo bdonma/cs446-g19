@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.FacebookSdk;
 import com.facebook.AccessToken;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.firebase.ui.auth.AuthUI;
@@ -19,6 +20,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,6 +38,12 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                for (UserInfo iuser: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
+                    if (iuser.getProviderId().equals("facebook.com")) {
+                        System.out.println("User is signed in with Facebook");
+                    }
+                }
                 startDashboardFrag();
                 // ...
             } else {
