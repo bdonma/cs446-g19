@@ -13,19 +13,37 @@ import com.google.firebase.database.Query;
 public class FirebaseUtilities {
 
     // Constants;
-    private static final String transactions = "transactions";
-    private static final String creatorID = "creatorId";
+    private static final String _usersKey = "users";
+    private static final String _transactionsKey = "transactions";
 
-    public static FirebaseDatabase getDatabase() {
-        return FirebaseDatabase.getInstance();
-    }
+    // Transaction fields
+    private static final String _barterUnitKey = "barterUnit";
+    private static final String _barterValueKey = "barterValue";
+    private static final String _cashValueKey = "cashValue";
+    private static final String _creatorIdKey = "creatorId";
+    private static final String _isActiveKey = "isActive";
+    private static final String _isBorrowedKey = "isBorrowed";
+    private static final String _isCompletedKey = "isCompleted";
+    private static final String _nameKey = "name";
+    private static final String _notesKey = "notes";
+    private static final String _targetUserIds = "targetUserIds";
 
-    public static DatabaseReference getDatabaseReference() {
-        return getDatabase().getReference();
-    }
+    public static FirebaseDatabase getDatabase() { return FirebaseDatabase.getInstance(); }
+
+    public static DatabaseReference getDatabaseReference() { return getDatabase().getReference(); }
 
     public static FirebaseAuth getAuth() { return FirebaseAuth.getInstance(); }
 
     public static FirebaseUser getUser() { return getAuth().getCurrentUser(); }
 
-}
+    /**
+     * Fetches the list of transactions for user with uid
+     *
+     * @param uid - UID of user whose transactions we want to pull
+     * @return returns a Firebase Query object
+     */
+    public static Query getListOfUserTransactionsWithUID(String uid) {
+        return getDatabaseReference().child(_usersKey).child(uid).child(_transactionsKey);
+    }
+
+} // FirebaseUtilities

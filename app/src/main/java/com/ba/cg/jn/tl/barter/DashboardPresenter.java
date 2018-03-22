@@ -27,35 +27,40 @@ public class DashboardPresenter {
         this.mView = view;
     }
 
-    public void getUserCredentials() {
-
-    }
-
     /**
-     * Start initial currentUser query. Add valueEventListener to track whenever changes are made
-     * to the account and respond accordingly.
+     * Start userQuery to add ChildEventListener to track whenever changes are made
+     * to the currentUsers transactions and respond accordingly.
      */
     public void startUserTransactions() {
-        Query userQuery = getDatabaseReference().child("users").child("email").equalTo(FirebaseUtilities.getUser().getEmail());
-        userQuery.addValueEventListener(new ValueEventListener() {
+        Query userQuery = FirebaseUtilities.getListOfUserTransactionsWithUID(FirebaseUtilities.getUser().getUid());
+
+        userQuery.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<String> transactionIDs = new ArrayList<String>();
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Log.d("FIREBASE", "startUserTransactions:onChildAdded: Something was added to transactions");
+            }
 
-                // TODO: Create a list containing transactionID's currentUser is involved in
-                for (DataSnapshot userSnapspot : dataSnapshot.getChildren()) {
-                    transactionIDs = userSnapspot.child("transactions").getValue();
-                }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d("FIREBASE", "startUserTransactions:onChildChanged: Something was changed in transactions");
+            }
 
-               getTransactions(transactionIDs);
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                Log.d("FIREBASE", "startUserTransactions:onChildRemoved: Something was removed from transactions");
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                Log.d("FIREBASE", "startUserTransactions:onChildMoved: Something was moved in transactions");
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.d("FIREBASE", "startUserTransactions:onCancelled");
             }
         });
-    }
+    } // startUserTransactions
 
     private void getTransactions(List<String> transactionIDs) {
         ArrayList<Transaction> transactionArrayList = new ArrayList<>();
@@ -75,7 +80,7 @@ public class DashboardPresenter {
                         Log.d("DEBUG", "added transaction");
                     } // for
 
-                    transactionArrayList = transactionResults;
+//                    transactionArrayList = transactionResults;
 
                 } // onDataChange
 
@@ -86,7 +91,6 @@ public class DashboardPresenter {
 
             });
         } // for
-
     }
 
     public void searchForUser(String userID) {
