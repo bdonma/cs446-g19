@@ -11,9 +11,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.AccessToken;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -39,12 +44,11 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUtilities.addUser();
-                for (UserInfo iuser: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
+                for (UserInfo iuser : FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
                     if (iuser.getProviderId().equals("facebook.com")) {
                         System.out.println("User is signed in with Facebook");
                         //btnFacebookLogin = v.findViewById(R.id.SearchFriendseditText);
-                       // startFacebookPermissionsFrag();
-
+                        // startFacebookPermissionsFrag();
                     }
                 }
                 startDashboardFrag();
@@ -90,15 +94,16 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
     }
 
     private void signInUi() {
-        List<AuthUI.IdpConfig> providers = Arrays.asList(
-                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).setPermissions(Arrays.asList("user_friends", "public_profile")).build());
+        AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.GoogleBuilder().build();
+        AuthUI.IdpConfig emailIdp = new AuthUI.IdpConfig.EmailBuilder().build();
+        AuthUI.IdpConfig facebookIdp = new AuthUI.IdpConfig.FacebookBuilder()
+                .setPermissions(Arrays.asList("user_friends", "public_profile"))
+                .build();
 
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
+                        .setAvailableProviders(Arrays.asList(facebookIdp, googleIdp, emailIdp))
                         .build()
                 , RC_SIGN_IN);
     }
