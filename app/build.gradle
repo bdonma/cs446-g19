@@ -26,17 +26,17 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    compile 'com.google.firebase:firebase-core:12.0.0'
-    compile 'com.google.firebase:firebase-auth:12.0.0'
+    compile 'com.google.firebase:firebase-core:11.8.0'
+    compile 'com.google.firebase:firebase-auth:11.8.0'
     implementation 'com.firebaseui:firebase-ui-auth:3.2.1'
     implementation 'com.facebook.android:facebook-android-sdk:4.30.0'
-    compile 'com.google.firebase:firebase-database:12.0.0'
-    compile 'com.google.firebase:firebase-storage:12.0.0'
-    compile 'com.google.firebase:firebase-messaging:12.0.0'
+    compile 'com.google.firebase:firebase-database:11.8.0'
+    compile 'com.google.firebase:firebase-storage:11.8.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0' // RecyclerView
     compile('com.crashlytics.sdk.android:crashlytics:2.9.0@aar') {
         transitive = true
     }
     implementation 'com.facebook.fresco:fresco:1.8.1'
 }
+
 apply plugin: 'com.google.gms.google-services'

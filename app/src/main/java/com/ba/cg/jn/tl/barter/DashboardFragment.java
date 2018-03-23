@@ -89,16 +89,6 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
-<<<<<<< HEAD
-=======
-        mRecyclerView.addOnItemTouchListener(new DashboardItemClickListener(getContext(), new DashboardItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                // Handle item clicks here.
-
-            }
-        }));
->>>>>>> e2f89f871391fb0bec1fabfe01219de9aaf7d22b
         return v;
     } // onCreateView
 
