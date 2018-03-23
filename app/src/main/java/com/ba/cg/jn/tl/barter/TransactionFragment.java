@@ -45,19 +45,19 @@ public class TransactionFragment extends Fragment {
             }
         });
 
-        if(transaction.getIsBorrowed()){
-            amountBorrowedLoanedHeader.setText("Amount Borrowed:");
-        } else{
-            amountBorrowedLoanedHeader.setText("Amount Loaned:");
-        }
-
-        if(transaction.getBarterUnit() != null){
-
-        }
-
-        if(transaction.getNotes() != null){
-
-        }
+//        if(transaction.getIsBorrowed()){
+//            amountBorrowedLoanedHeader.setText("Amount Borrowed:");
+//        } else{
+//            amountBorrowedLoanedHeader.setText("Amount Loaned:");
+//        }
+//
+//        if(transaction.getBarterUnit() != null){
+//
+//        }
+//
+//        if(transaction.getNotes() != null){
+//
+//        }
 
         return v;
     }
@@ -65,6 +65,6 @@ public class TransactionFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        transactionPresenter = new TransactionPresenter(this);
+//        transactionPresenter = new TransactionPresenter(this);
     }
 }

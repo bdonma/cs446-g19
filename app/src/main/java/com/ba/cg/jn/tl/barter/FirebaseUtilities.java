@@ -17,24 +17,36 @@ public class FirebaseUtilities {
     private static final String _transactionsKey = "transactions";
 
     // Transaction fields
-    private static final String _barterUnitKey  = "barterUnit";
+    private static final String _barterUnitKey = "barterUnit";
     private static final String _barterValueKey = "barterValue";
-    private static final String _cashValueKey   = "cashValue";
-    private static final String _creatorIdKey   = "creatorId";
-    private static final String _isActiveKey    = "isActive";
-    private static final String _isBorrowedKey  = "isBorrowed";
+    private static final String _cashValueKey = "cashValue";
+    private static final String _creatorIdKey = "creatorId";
+    private static final String _isActiveKey = "isActive";
+    private static final String _isBorrowedKey = "isBorrowed";
     private static final String _isCompletedKey = "isCompleted";
-    private static final String _nameKey        = "name";
-    private static final String _notesKey       = "notes";
-    private static final String _targetUserIds  = "targetUserIds";
+    private static final String _nameKey = "name";
+    private static final String _notesKey = "notes";
+    private static final String _targetUserIds = "targetUserIds";
 
-    public static FirebaseDatabase getDatabase() { return FirebaseDatabase.getInstance(); }
+    public static FirebaseDatabase getDatabase() {
+        return FirebaseDatabase.getInstance();
+    }
 
-    public static DatabaseReference getDatabaseReference() { return getDatabase().getReference(); }
+    public static DatabaseReference getDatabaseReference() {
+        return getDatabase().getReference();
+    }
 
-    public static FirebaseAuth getAuth() { return FirebaseAuth.getInstance(); }
+    public static FirebaseAuth getAuth() {
+        return FirebaseAuth.getInstance();
+    }
 
-    public static FirebaseUser getUser() { return getAuth().getCurrentUser(); }
+    public static FirebaseUser getUser() {
+        return getAuth().getCurrentUser();
+    }
+
+    public static void addUser() {
+        getDatabaseReference().child(_usersKey).child(getUser().getUid()).child(_nameKey).setValue(getUser().getDisplayName());
+    }
 
     /**
      * Fetches the list of transactions for user with uid
@@ -48,6 +60,7 @@ public class FirebaseUtilities {
 
     /**
      * Fetches the transaction with the specified uid
+     *
      * @param uid - UID of the transaction
      * @return returns a Firebase Query object
      */

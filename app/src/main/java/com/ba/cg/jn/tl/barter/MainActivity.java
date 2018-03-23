@@ -38,12 +38,10 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
 
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
+                FirebaseUtilities.addUser();
                 for (UserInfo iuser: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
                     if (iuser.getProviderId().equals("facebook.com")) {
                         System.out.println("User is signed in with Facebook");
-                        //FacebookSdk.sdkInitialize(getApplicationContext());
                         //btnFacebookLogin = v.findViewById(R.id.SearchFriendseditText);
                        // startFacebookPermissionsFrag();
 
