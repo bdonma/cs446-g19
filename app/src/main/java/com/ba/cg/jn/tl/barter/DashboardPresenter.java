@@ -24,9 +24,7 @@ import static com.ba.cg.jn.tl.barter.FirebaseUtilities.getDatabaseReference;
 public class DashboardPresenter {
 
     private DashboardViewInterface mView;
-
-    private Map<String, Integer> transactionKeys = new HashMap<String, Integer>();
-    private List<Transaction> transactions = new ArrayList<Transaction>();
+    private Map<String, Transaction> transactionMap = new HashMap<String, Transaction>();
 
     public DashboardPresenter(DashboardViewInterface view) {
         this.mView = view;
@@ -56,14 +54,10 @@ public class DashboardPresenter {
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot != null) {
                                 Transaction transaction = dataSnapshot.getValue(Transaction.class);
-                                transactions.add(transaction);
+                                transactionMap.put(transactionID, transaction);
 
-                                int transactionIndex = transactions.indexOf(transaction);
-                                transactionKeys.put(transactionID, transactionIndex);
-
-                                mView.showListOfTransactions(transactions);
-                            } else {
-                                Log.d("DEBUG", "onDataChange returned a null snapshot");
+                                List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
+                                mView.showListOfTransactions(transactionsToAdd);
                             } // if
                         } // onDataChange
 
@@ -93,12 +87,11 @@ public class DashboardPresenter {
                                 Transaction transaction = dataSnapshot.getValue(Transaction.class);
 
                                 // Get transaction with specified transactionID
-                                if (transactionKeys.containsKey(transactionID)) {
-                                    int transactionIndex = transactionKeys.get(transactionID);
+                                if (transactionMap.containsKey(transactionID)) {
+                                    transactionMap.put(transactionID, transaction);
 
-                                    transactions.set(transactionIndex, transaction);
-
-                                    mView.showListOfTransactions(transactions);
+                                    List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
+                                    mView.showListOfTransactions(transactionsToAdd);
                                 } // if
                             } // if
                         } // onDataChange
@@ -126,15 +119,11 @@ public class DashboardPresenter {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             if (dataSnapshot != null) {
-                                if (transactionKeys.containsKey(transactionID)) {
-                                    int transactionIndex = transactionKeys.get(transactionID);
+                                if (transactionMap.containsKey(transactionID)) {
+                                    transactionMap.remove(transactionID);
 
-                                    // TODO: After removing trasnaction, change other keys
-
-                                    transactions.remove(transactionIndex);
-                                    transactionKeys.remove(transactionIndex);
-
-                                    mView.showListOfTransactions(transactions);
+                                    List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
+                                    mView.showListOfTransactions(transactionsToAdd);
                                 } // if
                             } // if
                         } // onDataChange
