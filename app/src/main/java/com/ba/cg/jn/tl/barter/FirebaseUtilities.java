@@ -17,16 +17,16 @@ public class FirebaseUtilities {
     private static final String _transactionsKey = "transactions";
 
     // Transaction fields
-    private static final String _barterUnitKey = "barterUnit";
+    private static final String _barterUnitKey  = "barterUnit";
     private static final String _barterValueKey = "barterValue";
-    private static final String _cashValueKey = "cashValue";
-    private static final String _creatorIdKey = "creatorId";
-    private static final String _isActiveKey = "isActive";
-    private static final String _isBorrowedKey = "isBorrowed";
+    private static final String _cashValueKey   = "cashValue";
+    private static final String _creatorIdKey   = "creatorId";
+    private static final String _isActiveKey    = "isActive";
+    private static final String _isBorrowedKey  = "isBorrowed";
     private static final String _isCompletedKey = "isCompleted";
-    private static final String _nameKey = "name";
-    private static final String _notesKey = "notes";
-    private static final String _targetUserIds = "targetUserIds";
+    private static final String _nameKey        = "name";
+    private static final String _notesKey       = "notes";
+    private static final String _targetUserIds  = "targetUserIds";
 
     public static FirebaseDatabase getDatabase() { return FirebaseDatabase.getInstance(); }
 
@@ -44,6 +44,15 @@ public class FirebaseUtilities {
      */
     public static Query getListOfUserTransactionsWithUID(String uid) {
         return getDatabaseReference().child(_usersKey).child(uid).child(_transactionsKey);
+    }
+
+    /**
+     * Fetches the transaction with the specified uid
+     * @param uid - UID of the transaction
+     * @return returns a Firebase Query object
+     */
+    public static Query getTransactionForUID(String uid) {
+        return getDatabaseReference().child(_transactionsKey).child(uid);
     }
 
 } // FirebaseUtilities

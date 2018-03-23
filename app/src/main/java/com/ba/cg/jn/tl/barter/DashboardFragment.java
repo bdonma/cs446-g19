@@ -107,7 +107,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
     public void showListOfTransactions(List<Transaction> transactions) {
         resetAdapter();
         mAdapter.mTransactions.addAll(transactions);
-        mRecyclerView.swapAdapter(mAdapter, true);
+        mRecyclerView.swapAdapter(mAdapter, false);
     } // showListOfTransactions
 
     public void resetAdapter() {
