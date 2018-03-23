@@ -129,6 +129,8 @@ public class DashboardPresenter {
                                 if (transactionKeys.containsKey(transactionID)) {
                                     int transactionIndex = transactionKeys.get(transactionID);
 
+                                    // TODO: After removing trasnaction, change other keys
+
                                     transactions.remove(transactionIndex);
                                     transactionKeys.remove(transactionIndex);
 
