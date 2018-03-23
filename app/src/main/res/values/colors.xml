@@ -5,4 +5,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="value">#000000</color>
     <color name="title">#222222</color>
+    <color name="inActiveTransaction">#000000</color>
+    <color name="activeTransaction">#222222</color>
 </resources>

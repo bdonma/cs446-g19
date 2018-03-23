@@ -31,6 +31,53 @@ public class DashboardPresenter {
     }
 
     /**
+     * Initially called by DashboardPresenter during startup. Searches database for existing
+     * transactions that the current user is a part of. Adds the transactions to a list that
+     * is added as an entry to the record identified by the currentUser uid
+     */
+    public void getInitialListOfTransaction() {
+        Query transactionListQuery = FirebaseUtilities.getDatabaseReference().child("transactions");
+        transactionListQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot != null) {
+
+                    List<String> transactionIDs = new ArrayList<String>();
+
+                    for (DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
+                        Transaction currentTransaction = transactionSnapshot.getValue(Transaction.class);
+
+                        if (currentTransaction.getCreatorId() == FirebaseUtilities.getUser().getUid()) {
+                            transactionIDs.add(transactionSnapshot.getKey());
+                            continue;
+                        } // if
+
+                        for (String targetID : currentTransaction.getTargetUserIds()) {
+                            if (targetID == FirebaseUtilities.getUser().getUid()) {
+                                transactionIDs.add(dataSnapshot.getKey());
+                                break;
+                            } // if
+                        } // for
+                    } // for
+
+                } // if
+
+                // TODO: Create the list of transactions. Add list of transactions to currentUser entry in db.
+
+            } // addListenerForSingleValueEvent
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            } // onCancelled
+
+        }); // addListenerForSingleValuEvent
+
+    } // getInitialListOfTransaction
+
+    /**
      * Start userQuery to add ChildEventListener to track whenever changes are made
      * to the currentUsers transactions and respond accordingly.
      */

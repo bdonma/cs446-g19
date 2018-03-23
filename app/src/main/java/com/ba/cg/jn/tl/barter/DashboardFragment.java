@@ -4,17 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -86,14 +87,6 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
-        mRecyclerView.addOnItemTouchListener(new DashboardItemClickListener(getContext(), new DashboardItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                // Handle item clicks here.
-
-            }
-        }));
-
         return v;
     } // onCreateView
 
@@ -101,7 +94,24 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter = new DashboardPresenter(this);
-        mPresenter.startUserTransactions();
+
+        Transaction transaction1 = new Transaction();
+        transaction1.setName("First transaction");
+        transaction1.setCashValue((float) 4.20);
+
+        Transaction transaction2 = new Transaction();
+        transaction2.setName("Second transaction");
+        transaction2.setCashValue((float) 1.99);
+
+        List<Transaction> transactions = new ArrayList<Transaction>();
+        transactions.add(transaction1);
+        transactions.add(transaction2);
+
+        showListOfTransactions(transactions);
+
+        // TODO: Uncomment these
+//        mPresenter.getInitialListOfTransaction();
+//        mPresenter.startUserTransactions();
     } // onViewCreated
 
     public void showListOfTransactions(List<Transaction> transactions) {
@@ -139,9 +149,31 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         @Override
         public void onBindViewHolder(TransactionViewHolder holder, int position) {
             Transaction transaction = mTransactions.get(position);
-//            holder.title.setText(transaction.getTitle());
-//            holder.dateCreated.setText(transaction.getDateCreated());
-//            holder.value.setText(transaction.getValue());
+            holder.name.setText(transaction.getName());
+//            holder.dateCreated.setText(transaction.get);
+
+            holder.cashValue.setText("$ " + Float.toString(transaction.getCashValue()));
+//            holder.barterValue.setText(Float.toString(transaction.getBarterValue()));
+
+            if (transaction.getIsActive()) {
+                if (transaction.getCreatorId() == FirebaseUtilities.getUser().getUid()) {
+                    // Current user is the one who created this transaction
+
+                } else {
+                    // Current user is one of the users who owes the creator of this transaction
+
+                }
+            } else {
+                // the transaction is not active yet (acknowledged by all parties)
+
+            }
+
+            if (position % 2 == 0) {
+                holder.container.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
+            } else {
+                holder.container.setBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
+            }
+
         } // onBindViewHolder
 
         public int getItemCount() {
@@ -150,22 +182,29 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
 
         public class TransactionViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-            public TextView title, dateCreated, value;
-            RelativeLayout container;
+            public TextView name, dateCreated;
+            public TextView cashValue, barterValue;
+            ConstraintLayout container;
 
             public TransactionViewHolder(View transactionView) {
                 super(transactionView);
+                transactionView.setOnClickListener(this);
                 container = transactionView.findViewById(R.id.transaction_list_row_container);
 
                 // TODO: Set the viewholder values
-
+                name = (TextView) transactionView.findViewById(R.id.name);
+//                dateCreated = (TextView) transactionView.findViewById(R.id.dateCreated);
+                cashValue = (TextView) transactionView.findViewById(R.id.cashValue);
+//                barterValue = (TextView) transactionView.findViewById(R.id.barterValue);
 
             } // TransactionViewHolder constructor
 
             @Override
             public void onClick(View v) {
+                int position = getAdapterPosition();
 
-            }
+                Log.d("SWAG", "Position: " + Integer.toString(position));
+            } // onClick
 
         } // TransactionViewHolder class
 

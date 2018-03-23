@@ -1,6 +1,8 @@
 package com.ba.cg.jn.tl.barter;
 
 import java.util.ArrayList;
+import java.util.Map;
+
 /**
  * Created by tiffanylui on 2018-02-28.
  */
@@ -17,7 +19,13 @@ public class Transaction {
     private boolean isCompleted;
     private String notes;
 
+    private Map<String, Boolean> acceptedIds;
+
     // TODO: add date created field
+
+    public Transaction() {
+        // Empty constructor required to convert Firebase object into data object.
+    }
 
     public Transaction(String name, String creatorId, ArrayList<String> targetUserIds, float cashValue, float barterValue, String barterUnit, boolean isBorrowed, boolean isActive, boolean isCompleted, String notes) {
         this.name = name;
