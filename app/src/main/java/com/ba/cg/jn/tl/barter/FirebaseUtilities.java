@@ -1,5 +1,8 @@
 package com.ba.cg.jn.tl.barter;
 
+import android.util.Log;
+
+import com.facebook.AccessToken;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -27,6 +30,9 @@ public class FirebaseUtilities {
     private static final String _nameKey = "name";
     private static final String _notesKey = "notes";
     private static final String _targetUserIds = "targetUserIds";
+    private static final String _fbAccessToken = "facebookAccessToken";
+    private static final String _fbUserId = "facebookUserId";
+
 
     public static FirebaseDatabase getDatabase() {
         return FirebaseDatabase.getInstance();
@@ -45,7 +51,10 @@ public class FirebaseUtilities {
     }
 
     public static void addUser() {
-        getDatabaseReference().child(_usersKey).child(getUser().getUid()).child(_nameKey).setValue(getUser().getDisplayName());
+        DatabaseReference s = getDatabaseReference().child(_usersKey).child(getUser().getUid());
+        s.child(_nameKey).setValue(getUser().getDisplayName());
+        s.child(_fbAccessToken).setValue(FacebookUtils.getAccessToken());
+        s.child(_fbUserId).setValue(FacebookUtils.getUserId());
     }
 
     /**
