@@ -13,6 +13,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -42,6 +45,41 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.dashboard_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    // TODO: TIFF LOOK @ THIS. Is this the correct way to like dismiss things
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.onboarding_menu_button:
+                Intent onBoardingIntent = new Intent(getContext(), OnboardingActivity.class);
+                startActivity(onBoardingIntent);
+                return true;
+            case R.id.delete_account_menu_button:
+                mCallback.callbackDeleteAccount();
+                getActivity().onBackPressed();
+                return true;
+            case R.id.sign_out_menu_button:
+                mCallback.callbackSignOut();
+                getActivity().onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -49,33 +87,6 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
 
         TextView userGreeting = v.findViewById(R.id.user_greeting);
         userGreeting.setText(getString(R.string.user_greeting, FirebaseUtilities.getUser().getDisplayName()));
-
-        Button signOut = v.findViewById(R.id.sign_out);
-        signOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCallback.callbackSignOut();
-                getActivity().onBackPressed();
-            }
-        });
-
-        Button onboarding = v.findViewById(R.id.onboarding);
-        onboarding.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent onBoardingIntent = new Intent(getContext(), OnboardingActivity.class);
-                startActivity(onBoardingIntent);
-            }
-        });
-
-        Button deleteAccount = v.findViewById(R.id.delete_account);
-        deleteAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mCallback.callbackDeleteAccount();
-                getActivity().onBackPressed();
-            }
-        });
 
         FloatingActionButton fab = v.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

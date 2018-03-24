@@ -1,6 +1,7 @@
 package com.ba.cg.jn.tl.barter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,10 @@ public class Transaction {
         // Empty constructor required to convert Firebase object into data object.
     }
 
-    public Transaction(String name, String creatorId, Map<String, Boolean> targetUserIds, float cashValue, float barterValue, String barterUnit, boolean isBorrowed, boolean isActive, boolean isCompleted, String notes) {
+    public Transaction(String name, String creatorId, Map<String, Boolean> targetUserIds,
+                       float cashValue, float barterValue, String barterUnit,
+                       boolean isBorrowed, boolean isActive, boolean isCompleted, String notes,
+                       Map<String, Boolean> acceptedIds) {
         this.name = name;
         this.creatorId = creatorId;
         this.targetUserIds = targetUserIds;
@@ -39,6 +43,7 @@ public class Transaction {
         this.isActive = isActive;
         this.isCompleted = isCompleted;
         this.notes = notes;
+        this.acceptedIds = acceptedIds;
     }
 
     public String getName() {
@@ -81,6 +86,10 @@ public class Transaction {
         return this.notes;
     }
 
+    public Map<String, Boolean> getAcceptedIds() {
+        return this.acceptedIds;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -121,4 +130,7 @@ public class Transaction {
         this.notes = notes;
     }
 
+    public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
+        this.acceptedIds = acceptedIds;
+    }
 } // Transaction
