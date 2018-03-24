@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,7 @@ import java.util.List;
 
 public class DashboardFragment extends Fragment implements DashboardViewInterface {
 
+    private android.support.v7.app.ActionBar bar;
     private OnDashboardActionSelected mCallback;
 
     // Presenter
@@ -84,6 +86,8 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         TextView userGreeting = v.findViewById(R.id.current_user_text);
         userGreeting.setText(FirebaseUtilities.getUser().getDisplayName());
 
+        bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        bar.setTitle("Dashboard");
         FloatingActionButton fab = v.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
