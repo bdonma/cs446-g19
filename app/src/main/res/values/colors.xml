@@ -7,4 +7,11 @@
     <color name="title">#222222</color>
     <color name="inActiveTransaction">#000000</color>
     <color name="activeTransaction">#222222</color>
+    <color name="themeMainColor">#47445e</color>
+    <color name="themeAccentColorlight">#4E937A</color>
+    <color name="themeAccentColordark">#4E937A</color>
+    <color name="themeTextColor">#100C17</color>
+    <color name="themeBackgroundColor">#FFFAFA</color>
+    <color name="softlightgreyColor">#47445e</color>
+    <color name="softdarkgreyColor">#E3E8DE</color>
 </resources>
