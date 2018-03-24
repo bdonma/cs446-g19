@@ -20,10 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.facebook.AccessToken;
 import com.google.firebase.database.DatabaseReference;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -92,7 +90,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                mCallback.startAddTransactionFragment();
+                mCallback.startAddTransactionFragment();
 
                 Transaction newTransaction = new Transaction();
                 newTransaction.setName("Transaction3");
