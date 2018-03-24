@@ -57,7 +57,7 @@ public class DashboardPresenter {
                         for (Map.Entry<String, Boolean> entry : currentTransaction.getTargetUserIds().entrySet()) {
                             if (entry.getKey().equals(FirebaseUtilities.getUser().getUid())) {
                                 transactionIDs.put(transactionSnapshot.getKey(), true);
-                            }
+                            } // if
                         } // for
                     } // for
 
@@ -92,7 +92,7 @@ public class DashboardPresenter {
 
                     // Get transaction with specified transactionID
                     Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionID);
-                    transactionQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    transactionQuery.addValueEventListener(new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -101,6 +101,7 @@ public class DashboardPresenter {
                                 transactionMap.put(transactionID, transaction);
 
                                 List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
+                                calculateAmountsForTransaction();
                                 mView.showListOfTransactions(transactionsToAdd);
                             } // if
                         } // onDataChange
@@ -123,7 +124,7 @@ public class DashboardPresenter {
                     final String transactionID = dataSnapshot.getKey();
 
                     Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionID);
-                    transactionQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    transactionQuery.addValueEventListener(new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -135,6 +136,7 @@ public class DashboardPresenter {
                                     transactionMap.put(transactionID, transaction);
 
                                     List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
+                                    calculateAmountsForTransaction();
                                     mView.showListOfTransactions(transactionsToAdd);
                                 } // if
                             } // if
@@ -158,7 +160,7 @@ public class DashboardPresenter {
                     final String transactionID = dataSnapshot.getKey();
 
                     Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionID);
-                    transactionQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    transactionQuery.addValueEventListener(new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -167,6 +169,7 @@ public class DashboardPresenter {
                                     transactionMap.remove(transactionID);
 
                                     List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
+                                    calculateAmountsForTransaction();
                                     mView.showListOfTransactions(transactionsToAdd);
                                 } // if
                             } // if
@@ -195,5 +198,30 @@ public class DashboardPresenter {
         }); // addChildEventListener
 
     } // startUserTransactions
+
+    public void calculateAmountsForTransaction() {
+        float amountIOwe = 0, amountIAmDue = 0;
+
+        for (Map.Entry<String, Transaction> entry : transactionMap.entrySet()) {
+            Transaction currentTransaction = entry.getValue();
+
+            // The current user is the creator of the transaction
+            if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
+                if (currentTransaction.getIsBorrowed()) {
+                    amountIAmDue += currentTransaction.getCashValue();
+                } else {
+                    amountIOwe += currentTransaction.getCashValue();
+                }
+            } else {
+                if (currentTransaction.getIsBorrowed()) {
+                    amountIOwe += currentTransaction.getCashValue();
+                } else {
+                    amountIAmDue += currentTransaction.getCashValue();
+                }
+            }
+        }
+
+        mView.showAmountsOfCurrentUser(amountIOwe, amountIAmDue);
+    }
 
 } // DashboardPresenter

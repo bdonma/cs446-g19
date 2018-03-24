@@ -8,4 +8,5 @@ import java.util.List;
 
 interface DashboardViewInterface {
     void showListOfTransactions(List<Transaction> transactions);
+    void showAmountsOfCurrentUser(float amountIOwed, float amountIAmDue);
 }
