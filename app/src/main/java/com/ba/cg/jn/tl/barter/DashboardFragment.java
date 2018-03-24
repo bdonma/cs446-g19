@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,17 +19,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import com.facebook.AccessToken;
-import com.google.firebase.database.DatabaseReference;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DashboardFragment extends Fragment implements DashboardViewInterface {
 
+    private android.support.v7.app.ActionBar bar;
     private OnDashboardActionSelected mCallback;
 
     // Presenter
@@ -86,6 +84,8 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         TextView userGreeting = v.findViewById(R.id.user_greeting);
         userGreeting.setText(getString(R.string.user_greeting, FirebaseUtilities.getUser().getDisplayName()));
 
+        bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        bar.setTitle("Dashboard");
         FloatingActionButton fab = v.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
