@@ -22,6 +22,7 @@ public class AddTransactionFormFragment extends Fragment {
     FloatingActionButton addFriendsButton;
     RecyclerView eResultList;
     private AddTransactionFormPresenter presenter;
+    private android.support.v7.app.ActionBar bar;
 
     public AddTransactionFormFragment() {
         // Required empty public constructor
@@ -32,7 +33,7 @@ public class AddTransactionFormFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add_transaction_form, container, false);
-        android.support.v7.app.ActionBar bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
 //        final EditText transactionNameEditText = v.findViewById(R.id.transactionNameEditText);
 //        final EditText peopleEditText = v.findViewById(R.id.peopleEditText);
@@ -80,7 +81,7 @@ public class AddTransactionFormFragment extends Fragment {
         createTransactionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                bar.setTitle("Dashboard");
             }
         });
 
