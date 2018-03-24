@@ -32,6 +32,7 @@ public class FirebaseUtilities {
     private static final String _targetUserIds = "targetUserIds";
     private static final String _fbAccessToken = "facebookAccessToken";
     private static final String _fbUserId = "facebookUserId";
+    private static final String _emailKey = "email";
 
 
     public static FirebaseDatabase getDatabase() {
@@ -52,6 +53,7 @@ public class FirebaseUtilities {
 
     public static void addUser() {
         DatabaseReference s = getDatabaseReference().child(_usersKey).child(getUser().getUid());
+        s.child(_emailKey).setValue(getUser().getEmail());
         s.child(_nameKey).setValue(getUser().getDisplayName());
         s.child(_fbAccessToken).setValue(FacebookUtils.getAccessToken().getToken());
         s.child(_fbUserId).setValue(FacebookUtils.getUserId());

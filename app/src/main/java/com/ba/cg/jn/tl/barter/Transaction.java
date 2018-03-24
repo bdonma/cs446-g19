@@ -11,7 +11,7 @@ import java.util.Map;
 public class Transaction {
     private String name;
     private String creatorId;
-    private ArrayList<String> targetUserIds;
+    private Map<String, Boolean> targetUserIds;
     private float cashValue;
     private float barterValue;
     private String barterUnit;
@@ -28,7 +28,7 @@ public class Transaction {
         // Empty constructor required to convert Firebase object into data object.
     }
 
-    public Transaction(String name, String creatorId, ArrayList<String> targetUserIds, float cashValue, float barterValue, String barterUnit, boolean isBorrowed, boolean isActive, boolean isCompleted, String notes) {
+    public Transaction(String name, String creatorId, Map<String, Boolean> targetUserIds, float cashValue, float barterValue, String barterUnit, boolean isBorrowed, boolean isActive, boolean isCompleted, String notes) {
         this.name = name;
         this.creatorId = creatorId;
         this.targetUserIds = targetUserIds;
@@ -49,7 +49,7 @@ public class Transaction {
         return this.creatorId;
     }
 
-    public List<String> getTargetUserIds() {
+    public Map<String, Boolean> getTargetUserIds() {
         return this.targetUserIds;
     }
 
@@ -89,8 +89,8 @@ public class Transaction {
         this.creatorId = creatorId;
     }
 
-    public void setTargetUserIds(List<String> targetUserIds) {
-        this.targetUserIds = (ArrayList<String>) targetUserIds;
+    public void setTargetUserIds(Map<String, Boolean> targetUserIds) {
+        this.targetUserIds = targetUserIds;
     }
 
     public void setCashValue(float cashValue) {

@@ -19,9 +19,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DashboardFragment extends Fragment implements DashboardViewInterface {
 
@@ -80,23 +83,29 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             public void onClick(View view) {
 //                mCallback.startAddTransactionFragment();
 
-//                Transaction newTransaction = new Transaction();
-//                newTransaction.setName("Transaction3");
-//                newTransaction.setCreatorId(FirebaseUtilities.getUser().getUid());
-//
-//                List<String> names = new ArrayList<String>();
-//                names.add("brandonma@me.com");
-//                newTransaction.setTargetUserIds(names);
-//
-//                newTransaction.setCashValue((float) 100);
-//                newTransaction.setBarterValue(50);
-//                newTransaction.setBarterUnit("Dinner");
-//                newTransaction.setIsBorrowed(true);
-//                newTransaction.setIsActive(false);
-//                newTransaction.setIsCompleted(false);
-//                newTransaction.setNotes("Damn you bougee fam");
-//
-//                FirebaseUtilities.getDatabaseReference().child("transactions").push().setValue(newTransaction);
+                Transaction newTransaction = new Transaction();
+                newTransaction.setName("Transaction3");
+                newTransaction.setCreatorId("Ghwuwu82btUVbN4j5ADO6mX11mu1");
+
+                Map<String, Boolean> targetIds = new HashMap<String, Boolean>();
+
+                targetIds.put(FirebaseUtilities.getUser().getUid(), true);
+                newTransaction.setTargetUserIds(targetIds);
+
+                newTransaction.setCashValue((float) 20);
+                newTransaction.setBarterValue(20);
+                newTransaction.setBarterUnit("Dinner");
+                newTransaction.setIsBorrowed(false);
+                newTransaction.setIsActive(false);
+                newTransaction.setIsCompleted(false);
+                newTransaction.setNotes("Birthday party dinner");
+
+                DatabaseReference ref = FirebaseUtilities.getDatabaseReference().child("transactions").push();
+                String key = ref.getKey();
+
+                FirebaseUtilities.getDatabaseReference().child("transactions").child(key).setValue(newTransaction);
+//                FirebaseUtilities.getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid()).child("transactions");
+
             }
         });
 

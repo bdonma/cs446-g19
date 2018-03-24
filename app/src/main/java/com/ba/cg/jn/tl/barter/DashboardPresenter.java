@@ -44,21 +44,20 @@ public class DashboardPresenter {
 
                 if (dataSnapshot != null) {
 
-                    List<String> transactionIDs = new ArrayList<String>();
+                    Map<String, Boolean> transactionIDs = new HashMap<String, Boolean>();
 
                     for (DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
                         Transaction currentTransaction = transactionSnapshot.getValue(Transaction.class);
 
                         if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
-                            transactionIDs.add(transactionSnapshot.getKey());
+                            transactionIDs.put(transactionSnapshot.getKey(), true);
                             continue;
                         } // if
 
-                        for (String targetID : currentTransaction.getTargetUserIds()) {
-                            if (targetID.equals(FirebaseUtilities.getUser().getUid())) {
-                                transactionIDs.add(dataSnapshot.getKey());
-                                break;
-                            } // if
+                        for (Map.Entry<String, Boolean> entry : currentTransaction.getTargetUserIds().entrySet()) {
+                            if (entry.getKey().equals(FirebaseUtilities.getUser().getUid())) {
+                                transactionIDs.put(transactionSnapshot.getKey(), true);
+                            }
                         } // for
                     } // for
 
@@ -89,7 +88,7 @@ public class DashboardPresenter {
 
                 if (dataSnapshot != null) {
                     // Get the UID of the newly added transaction
-                    final String transactionID = dataSnapshot.getValue(String.class);
+                    final String transactionID = dataSnapshot.getKey();
 
                     // Get transaction with specified transactionID
                     Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionID);
@@ -121,7 +120,7 @@ public class DashboardPresenter {
 
                 if (dataSnapshot != null) {
                     // Get the UID of the newly changed transaction
-                    final String transactionID = dataSnapshot.getValue(String.class);
+                    final String transactionID = dataSnapshot.getKey();
 
                     Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionID);
                     transactionQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -156,7 +155,7 @@ public class DashboardPresenter {
 
                 if (dataSnapshot != null) {
                     // Get the UID of the newly removed transaction
-                    final String transactionID = dataSnapshot.getValue(String.class);
+                    final String transactionID = dataSnapshot.getKey();
 
                     Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionID);
                     transactionQuery.addListenerForSingleValueEvent(new ValueEventListener() {
