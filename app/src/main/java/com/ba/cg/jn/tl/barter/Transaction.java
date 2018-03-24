@@ -1,6 +1,7 @@
 package com.ba.cg.jn.tl.barter;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,71 +41,84 @@ public class Transaction {
         this.notes = notes;
     }
 
-    public void setName(String name){
+    public String getName() {
+        return this.name;
+    }
+
+    public String getCreatorId() {
+        return this.creatorId;
+    }
+
+    public List<String> getTargetUserIds() {
+        return this.targetUserIds;
+    }
+
+    public float getCashValue() {
+        return this.cashValue;
+    }
+
+    public float getBarterValue() {
+        return this.barterValue;
+    }
+
+    public String getBarterUnit() {
+        return this.barterUnit;
+    }
+
+    public boolean getIsBorrowed() {
+        return this.isBorrowed;
+    }
+
+    public boolean getIsActive() {
+        return this.isActive;
+    }
+
+    public boolean getIsCompleted() {
+        return this.isCompleted;
+    }
+
+    public String getNotes() {
+        return this.notes;
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setCashValue(float cashValue){
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public void setTargetUserIds(List<String> targetUserIds) {
+        this.targetUserIds = (ArrayList<String>) targetUserIds;
+    }
+
+    public void setCashValue(float cashValue) {
         this.cashValue = cashValue;
     }
 
-    public void setBarterValue(float barterValue){
+    public void setBarterValue(float barterValue) {
         this.barterValue = barterValue;
     }
 
-    public void setBarterUnit(String barterUnit){
+    public void setBarterUnit(String barterUnit) {
         this.barterUnit = barterUnit;
     }
 
-    public void setIsActive(boolean isActive){
+    public void setIsBorrowed(boolean isBorrowed) {
+        this.isBorrowed = isBorrowed;
+    }
+
+    public void setIsActive(boolean isActive) {
         this.isActive = isActive;
     }
 
-    public void setIsCompleted(boolean isCompleted){
+    public void setIsCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
     }
 
-    public void setNotes(String notes){
+    public void setNotes(String notes) {
         this.notes = notes;
     }
 
-    public String getName(){
-        return name;
-    }
-
-    public String getCreatorId(){
-        return creatorId;
-    }
-
-    public ArrayList<String> getTargetUserIds(){
-        return targetUserIds;
-    }
-
-    public float getCashValue(){
-        return cashValue;
-    }
-
-    public float getBarterValue(){
-        return barterValue;
-    }
-
-    public String getBarterUnit(){
-        return barterUnit;
-    }
-
-    public boolean getIsBorrowed(){
-        return isBorrowed;
-    }
-
-    public boolean getIsActive(){
-        return isActive;
-    }
-
-    public boolean getIsCompleted(){
-        return isCompleted;
-    }
-
-    public String getNotes(){
-        return notes;
-    }
-}
+} // Transaction

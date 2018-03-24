@@ -49,23 +49,21 @@ public class DashboardPresenter {
                     for (DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
                         Transaction currentTransaction = transactionSnapshot.getValue(Transaction.class);
 
-                        if (currentTransaction.getCreatorId() == FirebaseUtilities.getUser().getUid()) {
+                        if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
                             transactionIDs.add(transactionSnapshot.getKey());
                             continue;
                         } // if
 
                         for (String targetID : currentTransaction.getTargetUserIds()) {
-                            if (targetID == FirebaseUtilities.getUser().getUid()) {
+                            if (targetID.equals(FirebaseUtilities.getUser().getUid())) {
                                 transactionIDs.add(dataSnapshot.getKey());
                                 break;
                             } // if
                         } // for
                     } // for
 
+                    FirebaseUtilities.getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid()).child("transactions").setValue(transactionIDs);
                 } // if
-
-                // TODO: Create the list of transactions. Add list of transactions to currentUser entry in db.
-
             } // addListenerForSingleValueEvent
 
             @Override
@@ -73,7 +71,7 @@ public class DashboardPresenter {
 
             } // onCancelled
 
-        }); // addListenerForSingleValuEvent
+        }); // addListenerForSingleValueEvent
 
     } // getInitialListOfTransaction
 

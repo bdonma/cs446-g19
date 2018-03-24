@@ -78,7 +78,25 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCallback.startAddTransactionFragment();
+//                mCallback.startAddTransactionFragment();
+
+//                Transaction newTransaction = new Transaction();
+//                newTransaction.setName("Transaction3");
+//                newTransaction.setCreatorId(FirebaseUtilities.getUser().getUid());
+//
+//                List<String> names = new ArrayList<String>();
+//                names.add("brandonma@me.com");
+//                newTransaction.setTargetUserIds(names);
+//
+//                newTransaction.setCashValue((float) 100);
+//                newTransaction.setBarterValue(50);
+//                newTransaction.setBarterUnit("Dinner");
+//                newTransaction.setIsBorrowed(true);
+//                newTransaction.setIsActive(false);
+//                newTransaction.setIsCompleted(false);
+//                newTransaction.setNotes("Damn you bougee fam");
+//
+//                FirebaseUtilities.getDatabaseReference().child("transactions").push().setValue(newTransaction);
             }
         });
 
@@ -96,24 +114,8 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter = new DashboardPresenter(this);
-
-        Transaction transaction1 = new Transaction();
-        transaction1.setName("First transaction");
-        transaction1.setCashValue((float) 4.20);
-
-        Transaction transaction2 = new Transaction();
-        transaction2.setName("Second transaction");
-        transaction2.setCashValue((float) 1.99);
-
-        List<Transaction> transactions = new ArrayList<Transaction>();
-        transactions.add(transaction1);
-        transactions.add(transaction2);
-
-        showListOfTransactions(transactions);
-
-        // TODO: Uncomment these
-//        mPresenter.getInitialListOfTransaction();
-//        mPresenter.startUserTransactions();
+        mPresenter.getInitialListOfTransaction();
+        mPresenter.startUserTransactions();
     } // onViewCreated
 
     public void showListOfTransactions(List<Transaction> transactions) {
@@ -152,10 +154,10 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         public void onBindViewHolder(TransactionViewHolder holder, int position) {
             Transaction transaction = mTransactions.get(position);
             holder.name.setText(transaction.getName());
-//            holder.dateCreated.setText(transaction.get);
+//            holder.dateCreated.setText("March 23, 2018");
 
             holder.cashValue.setText("$ " + Float.toString(transaction.getCashValue()));
-//            holder.barterValue.setText(Float.toString(transaction.getBarterValue()));
+            holder.barterValue.setText("Barter Value: " + Float.toString(transaction.getBarterValue()));
 
             if (transaction.getIsActive()) {
                 if (transaction.getCreatorId() == FirebaseUtilities.getUser().getUid()) {
@@ -197,14 +199,13 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
                 name = (TextView) transactionView.findViewById(R.id.name);
 //                dateCreated = (TextView) transactionView.findViewById(R.id.dateCreated);
                 cashValue = (TextView) transactionView.findViewById(R.id.cashValue);
-//                barterValue = (TextView) transactionView.findViewById(R.id.barterValue);
+                barterValue = (TextView) transactionView.findViewById(R.id.barterValue);
 
             } // TransactionViewHolder constructor
 
             @Override
             public void onClick(View v) {
                 int position = getAdapterPosition();
-
                 Log.d("SWAG", "Position: " + Integer.toString(position));
             } // onClick
 
