@@ -53,7 +53,7 @@ public class FirebaseUtilities {
     public static void addUser() {
         DatabaseReference s = getDatabaseReference().child(_usersKey).child(getUser().getUid());
         s.child(_nameKey).setValue(getUser().getDisplayName());
-        s.child(_fbAccessToken).setValue(FacebookUtils.getAccessToken());
+        s.child(_fbAccessToken).setValue(FacebookUtils.getAccessToken().getToken());
         s.child(_fbUserId).setValue(FacebookUtils.getUserId());
     }
 

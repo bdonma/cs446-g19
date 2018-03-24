@@ -20,6 +20,7 @@ public class FacebookUtils {
         return AccessToken.getCurrentAccessToken();
     }
 
+
     public static String getUserId() {
         return AccessToken.getCurrentAccessToken().getUserId();
     }
