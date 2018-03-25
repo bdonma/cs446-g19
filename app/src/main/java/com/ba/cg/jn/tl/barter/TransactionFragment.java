@@ -50,8 +50,8 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
             }
         });
 
-        View approvalView = v.findViewById(R.id.approvalGreyView);
-        approvalView.setBackgroundColor(20);
+//        View approvalView = v.findViewById(R.id.approvalGreyView);
+//        approvalView.setBackgroundColor(20);
 
 //        if(transaction.getIsBorrowed()){
 //            amountBorrowedLoanedHeader.setText("Amount Borrowed:");

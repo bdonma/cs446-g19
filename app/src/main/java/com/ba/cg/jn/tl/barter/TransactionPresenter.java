@@ -27,7 +27,6 @@ public class TransactionPresenter {
     }
 
 
-
     // ------------------------------------------------------
 
     public void getTransactionInformation() {
@@ -63,11 +62,10 @@ public class TransactionPresenter {
         });
     }
 
-
-
     public void saveTransaction() {
         // TODO: update record in Firebase
     }
+
 
     public void checkForApproval() {
 

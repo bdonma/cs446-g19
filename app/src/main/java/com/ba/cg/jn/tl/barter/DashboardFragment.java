@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,17 +19,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import com.facebook.AccessToken;
-import com.google.firebase.database.DatabaseReference;
+
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DashboardFragment extends Fragment implements DashboardViewInterface {
 
+    private android.support.v7.app.ActionBar bar;
     private OnDashboardActionSelected mCallback;
 
     // Presenter
@@ -82,9 +82,11 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.dashboard_fragment, container, false);
 
-        TextView userGreeting = v.findViewById(R.id.user_greeting);
-        userGreeting.setText(getString(R.string.user_greeting, FirebaseUtilities.getUser().getDisplayName()));
+        TextView userGreeting = v.findViewById(R.id.current_user_text);
+        userGreeting.setText(FirebaseUtilities.getUser().getDisplayName());
 
+        bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        bar.setTitle("Dashboard");
         FloatingActionButton fab = v.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +125,19 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         mRecyclerView.setAdapter(mAdapter);
     } // resetAdapter
 
+    public void showAmountsOfCurrentUser(float amountIOwed, float amountIAmDue) {
+        DecimalFormat df = new DecimalFormat("##.##");
+        df.setRoundingMode(RoundingMode.DOWN);
+
+        TextView amountIOweTV = getView().findViewById(R.id.amountOwedTextValue);
+        String owedText = "-$" + df.format(amountIOwed);
+        amountIOweTV.setText(owedText);
+
+        String amountIAmDueText = "$" + df.format(amountIAmDue);
+        TextView amountIAmDueTV = getView().findViewById(R.id.amountDueTextValue);
+        amountIAmDueTV.setText(amountIAmDueText);
+    }
+
     /**
      * TransactionAdapter used to handle interactions with DashboardFragments RecyclerView
      *
@@ -144,6 +159,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             return new TransactionViewHolder(itemView);
         } // onCreateViewHolder
 
+        // TODO: Complete the UI changes for transactions
         @Override
         public void onBindViewHolder(TransactionViewHolder holder, int position) {
             Transaction transaction = mTransactions.get(position);
@@ -153,25 +169,11 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             holder.cashValue.setText("$ " + Float.toString(transaction.getCashValue()));
             holder.barterValue.setText("Barter Value: " + Float.toString(transaction.getBarterValue()));
 
-
             // TODO: Fade transaction if it's not accepted yet
             if (transaction.getIsActive()) {
-                if (transaction.getCreatorId() == FirebaseUtilities.getUser().getUid()) {
-                    // Current user is the one who created this transaction
-
-                } else {
-                    // Current user is one of the users who owes the creator of this transaction
-
-                }
+                // transaction is active
             } else {
                 // the transaction is not active yet (acknowledged by all parties)
-
-            }
-
-            if (position % 2 == 0) {
-                holder.container.setBackgroundColor(getResources().getColor(R.color.cardview_light_background));
-            } else {
-                holder.container.setBackgroundColor(getResources().getColor(R.color.cardview_dark_background));
             }
 
         } // onBindViewHolder
@@ -194,7 +196,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
                 // TODO: Set the viewholder values
                 name = (TextView) transactionView.findViewById(R.id.name);
 //                dateCreated = (TextView) transactionView.findViewById(R.id.dateCreated);
-                cashValue = (TextView) transactionView.findViewById(R.id.cashValue);
+                cashValue = (TextView) transactionView.findViewById(R.id.cashValueEditText);
                 barterValue = (TextView) transactionView.findViewById(R.id.barterValue);
 
             } // TransactionViewHolder constructor

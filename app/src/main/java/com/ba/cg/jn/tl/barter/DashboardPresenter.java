@@ -58,7 +58,7 @@ public class DashboardPresenter {
                         for (Map.Entry<String, Boolean> entry : currentTransaction.getTargetUserIds().entrySet()) {
                             if (entry.getKey().equals(FirebaseUtilities.getUser().getUid())) {
                                 transactionIDs.put(transactionSnapshot.getKey(), true);
-                            }
+                            } // if
                         } // for
 
                     } // for
@@ -95,7 +95,7 @@ public class DashboardPresenter {
 
                     // Get transaction with specified transactionID
                     Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionID);
-                    transactionQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    transactionQuery.addValueEventListener(new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -127,7 +127,7 @@ public class DashboardPresenter {
                     final String transactionID = dataSnapshot.getKey();
 
                     Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionID);
-                    transactionQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    transactionQuery.addValueEventListener(new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -163,7 +163,7 @@ public class DashboardPresenter {
                     final String transactionID = dataSnapshot.getKey();
 
                     Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionID);
-                    transactionQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    transactionQuery.addValueEventListener(new ValueEventListener() {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -228,7 +228,7 @@ public class DashboardPresenter {
             }
         }
 
-//        mView.showAmountsOfCurrentUser(amountIOwe, amountIAmDue);
+        mView.showAmountsOfCurrentUser(amountIOwe, amountIAmDue);
     }
 
     /**
@@ -263,4 +263,8 @@ public class DashboardPresenter {
     }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 } // DashboardPresenter

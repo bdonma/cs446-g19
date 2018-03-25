@@ -1,8 +1,6 @@
 package com.ba.cg.jn.tl.barter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -17,21 +15,19 @@ public class Transaction {
     private boolean isActive;
     private boolean isBorrowed;
     private boolean isCompleted;
-<<<<<<< Updated upstream
-    private String notes;
 
-    private Map<String, Boolean> acceptedIds;
-=======
 //    private boolean isRecurring;
 //    private int recurringDays;
     private String name;
     private String notes;
 //    private Date creationDate;
->>>>>>> Stashed changes
+
+//    private boolean isRecurring;
+//    private int recurringDays;
+//    private Date creationDate;
 
 //    private Map<String, Boolean> acceptedIds;
     private Map<String, Boolean> targetUserIds;
-    // TODO: add date created field
 
     public Transaction() {
         // Empty constructor required to convert Firebase object into data object.
@@ -40,7 +36,7 @@ public class Transaction {
     public Transaction(String name, String creatorId, Map<String, Boolean> targetUserIds,
                        float cashValue, float barterValue, String barterUnit,
                        boolean isBorrowed, boolean isActive, boolean isCompleted, String notes,
-                       Map<String, Boolean> acceptedIds) {
+                       Map<String, Boolean> acceptedIds, Date creationDate) {
         this.name = name;
         this.creatorId = creatorId;
         this.targetUserIds = targetUserIds;
@@ -51,12 +47,8 @@ public class Transaction {
         this.isActive = isActive;
         this.isCompleted = isCompleted;
         this.notes = notes;
-<<<<<<< Updated upstream
-        this.acceptedIds = acceptedIds;
-=======
 //        this.acceptedIds = acceptedIds;
 //        this.creationDate = creationDate;
->>>>>>> Stashed changes
     }
 
     public String getName() {
@@ -143,11 +135,11 @@ public class Transaction {
         this.notes = notes;
     }
 
-<<<<<<< Updated upstream
-    public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
-        this.acceptedIds = acceptedIds;
-    }
-=======
+//
+//    public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
+//        this.acceptedIds = acceptedIds;
+//    }
+
 //    public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
 //        this.acceptedIds = acceptedIds;
 //    }
@@ -155,5 +147,5 @@ public class Transaction {
 //    public Date getCreationDate(){
 //        return creationDate;
 //    }
->>>>>>> Stashed changes
+
 } // Transaction

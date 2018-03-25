@@ -38,7 +38,7 @@
         tools:text="March 01, 2018" />
 
     <TextView
-        android:id="@+id/cashValue"
+        android:id="@+id/cashValueEditText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@id/cashValue"
+        android:layout_alignTop="@id/cashValueEditText"
         android:textColor="@color/value"
         tools:text="Barter Unit" />
 
