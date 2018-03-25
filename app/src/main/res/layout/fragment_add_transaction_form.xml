@@ -137,6 +137,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="$"
+            android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cashHeader" />
 
@@ -155,6 +156,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Quantity"
+            android:inputType="textPersonName"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/barterUnitEditText"
             app:layout_constraintTop_toBottomOf="@id/barterHeading" />
@@ -164,6 +166,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Units"
+            android:inputType="textPersonName"
             app:layout_constraintLeft_toRightOf="@id/barterValueEditText"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/barterHeading" />

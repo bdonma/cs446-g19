@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import io.realm.RealmResults;
@@ -43,16 +44,26 @@ public class AddTransactionFormFragment extends Fragment {
         bar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
         RealmResults<FacebookFriend> results = FacebookUtils.getRealmFacebookResults();
-        List<String> friends = new ArrayList<>();
+        HashMap<String, String> facebookFriendsMap = new HashMap<>();
+        List<String> adapterFriends = new ArrayList<>();
         for (int i = 0; i < results.size(); i++) {
-            friends.add(results.get(i).getName());
+            FacebookFriend friend = results.get(i);
+            facebookFriendsMap.put(friend.getName(), friend.getFbId());
+            adapterFriends.add(results.get(i).getName());
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, friends);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, adapterFriends);
 
         final AutoCompleteTextView transactionNameEditText = v.findViewById(R.id.peopleEditText);
         transactionNameEditText.setThreshold(1);
         transactionNameEditText.setAdapter(adapter);
+
+        // What will return
+        if (facebookFriendsMap.containsKey(transactionNameEditText.getText().toString())) {
+            String fbId = facebookFriendsMap.get(transactionNameEditText.getText().toString());
+        } else {
+            String email = transactionNameEditText.getText().toString();
+        }
 //        EditText peopleEditText = v.findViewById(R.id.peopleEditText);
 
 //        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#47445e")));
