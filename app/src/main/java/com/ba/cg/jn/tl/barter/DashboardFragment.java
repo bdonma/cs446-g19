@@ -202,7 +202,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
                 // TODO: Set the viewholder values
                 name = (TextView) transactionView.findViewById(R.id.name);
 //                dateCreated = (TextView) transactionView.findViewById(R.id.dateCreated);
-                cashValue = (TextView) transactionView.findViewById(R.id.cashValue);
+                cashValue = (TextView) transactionView.findViewById(R.id.cashValueEditText);
                 barterValue = (TextView) transactionView.findViewById(R.id.barterValue);
 
             } // TransactionViewHolder constructor

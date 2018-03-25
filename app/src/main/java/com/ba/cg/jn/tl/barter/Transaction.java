@@ -1,8 +1,6 @@
 package com.ba.cg.jn.tl.barter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -19,7 +17,10 @@ public class Transaction {
     private boolean isBorrowed;
     private boolean isActive;
     private boolean isCompleted;
+    private boolean isRecurring;
+    private int recurringDays;
     private String notes;
+    private Date creationDate;
 
     private Map<String, Boolean> acceptedIds;
 
@@ -32,7 +33,7 @@ public class Transaction {
     public Transaction(String name, String creatorId, Map<String, Boolean> targetUserIds,
                        float cashValue, float barterValue, String barterUnit,
                        boolean isBorrowed, boolean isActive, boolean isCompleted, String notes,
-                       Map<String, Boolean> acceptedIds) {
+                       Map<String, Boolean> acceptedIds, Date creationDate) {
         this.name = name;
         this.creatorId = creatorId;
         this.targetUserIds = targetUserIds;
@@ -44,6 +45,7 @@ public class Transaction {
         this.isCompleted = isCompleted;
         this.notes = notes;
         this.acceptedIds = acceptedIds;
+        this.creationDate = creationDate;
     }
 
     public String getName() {
@@ -132,5 +134,9 @@ public class Transaction {
 
     public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
         this.acceptedIds = acceptedIds;
+    }
+
+    public Date getCreationDate(){
+        return creationDate;
     }
 } // Transaction

@@ -81,7 +81,8 @@ public class AddTransactionFormFragment extends Fragment {
         createTransactionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bar.setTitle("Dashboard");
+                presenter.createTransaction();
+                getActivity().getSupportFragmentManager().popBackStack();
             }
         });
 
@@ -91,13 +92,6 @@ public class AddTransactionFormFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        presenter = new AddTransactionFormPresenter(this);
-    }
-
-    public void createTransaction(String transactionName, String people, String transactionType,
-                                  Double cashValue, Double unitValue, String notes) {
-        // TODO: add values to firebase
-
-        getActivity().getSupportFragmentManager().popBackStack();
+        presenter = new AddTransactionFormPresenter(view);
     }
 }
