@@ -41,28 +41,27 @@ public class DashboardPresenter {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if (dataSnapshot != null) {
-
-                    Map<String, Boolean> transactionIDs = new HashMap<String, Boolean>();
-
-                    for (DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
-                        Transaction currentTransaction = transactionSnapshot.getValue(Transaction.class);
-
-                        if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
-                            transactionIDs.put(transactionSnapshot.getKey(), true);
-                            continue;
-                        } // if
-
-                        for (Map.Entry<String, Boolean> entry : currentTransaction.getTargetUserIds().entrySet()) {
-                            if (entry.getKey().equals(FirebaseUtilities.getUser().getUid())) {
-                                transactionIDs.put(transactionSnapshot.getKey(), true);
-                            } // if
-                        } // for
-                    } // for
-
-                    FirebaseUtilities.getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid()).child("transactions").setValue(transactionIDs);
-                } // if
+//                if (dataSnapshot != null) {
+//
+//                    Map<String, Boolean> transactionIDs = new HashMap<String, Boolean>();
+//
+//                    for (DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
+//                        Transaction currentTransaction = transactionSnapshot.getValue(Transaction.class);
+//
+//                        if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
+//                            transactionIDs.put(transactionSnapshot.getKey(), true);
+//                            continue;
+//                        } // if
+//
+//                        for (Map.Entry<String, Boolean> entry : currentTransaction.getTargetUserIds().entrySet()) {
+//                            if (entry.getKey().equals(FirebaseUtilities.getUser().getUid())) {
+//                                transactionIDs.put(transactionSnapshot.getKey(), true);
+//                            } // if
+//                        } // for
+//                    } // for
+//
+//                    FirebaseUtilities.getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid()).child("transactions").setValue(transactionIDs);
+//                } // if
             } // addListenerForSingleValueEvent
 
             @Override

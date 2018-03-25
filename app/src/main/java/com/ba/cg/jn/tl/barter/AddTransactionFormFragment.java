@@ -10,8 +10,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.RealmResults;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,10 +40,20 @@ public class AddTransactionFormFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add_transaction_form, container, false);
-        bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        bar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
-//        final EditText transactionNameEditText = v.findViewById(R.id.transactionNameEditText);
-//        final EditText peopleEditText = v.findViewById(R.id.peopleEditText);
+        RealmResults<FacebookFriend> results = FacebookUtils.getRealmFacebookResults();
+        List<String> friends = new ArrayList<>();
+        for (int i = 0; i < results.size(); i++) {
+            friends.add(results.get(i).getName());
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, friends);
+
+        final AutoCompleteTextView transactionNameEditText = v.findViewById(R.id.peopleEditText);
+        transactionNameEditText.setThreshold(1);
+        transactionNameEditText.setAdapter(adapter);
+//        EditText peopleEditText = v.findViewById(R.id.peopleEditText);
 
 //        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#47445e")));
         bar.setTitle("Create a new transaction");
@@ -50,11 +67,8 @@ public class AddTransactionFormFragment extends Fragment {
             public void onClick(View view) {
                 // TODO: get friends list from firebase
                 //query Firebase to see users that match user's friendlist
-                FacebookUtils.getTaggableFriends();
-
+//                FacebookUtils.getTaggableFriends();
                 //if user is Facebook user
-
-
             }
         });
 

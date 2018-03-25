@@ -8,18 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.AccessToken;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,7 +20,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 
 import java.util.Arrays;
-import java.util.List;
+
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 public class MainActivity extends AppCompatActivity implements DashboardFragment.OnDashboardActionSelected {
     private static final int RC_SIGN_IN = 123;
@@ -44,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUtilities.addUser();
+                FacebookUtils.getFriendOnApp();
+// This will automatically trigger the migration if needed
                 for (UserInfo iuser : FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
                     if (iuser.getProviderId().equals("facebook.com")) {
                         System.out.println("User is signed in with Facebook");
@@ -61,8 +56,20 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Realm.getDefaultInstance().close();
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Realm.init(this);
+
+        final RealmConfiguration configuration = new RealmConfiguration.Builder().name("sample.realm").schemaVersion(2).migration(new RealmMigration()).build();
+        Realm.setDefaultConfiguration(configuration);
+        Realm.getInstance(configuration);
+
         setContentView(R.layout.activity_main);
         Fresco.initialize(this);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
