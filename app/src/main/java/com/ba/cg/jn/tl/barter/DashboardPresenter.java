@@ -100,6 +100,7 @@ public class DashboardPresenter {
                                 Transaction transaction = dataSnapshot.getValue(Transaction.class);
                                 transactionMap.put(transactionID, transaction);
 
+
                                 List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
                                 calculateAmountsForTransaction();
                                 mView.showListOfTransactions(transactionsToAdd);
@@ -223,5 +224,8 @@ public class DashboardPresenter {
 
         mView.showAmountsOfCurrentUser(amountIOwe, amountIAmDue);
     }
+
+
+
 
 } // DashboardPresenter

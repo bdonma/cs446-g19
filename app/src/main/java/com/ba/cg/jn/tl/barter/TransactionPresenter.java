@@ -23,4 +23,8 @@ public class TransactionPresenter {
         // TODO: update record in Firebase
     }
 
+
+    public void checkForApproval() {
+
+    }
 }
