@@ -55,7 +55,6 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    // TODO: TIFF LOOK @ THIS. Is this the correct way to like dismiss things
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -74,8 +73,8 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
+        } // switch
+    } // onOptionsItemSelected
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -110,6 +109,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         mPresenter = new DashboardPresenter(this);
         mPresenter.getInitialListOfTransaction();
         mPresenter.startUserTransactions();
+        mPresenter.calculateAndShowAmountsForTransaction();
     } // onViewCreated
 
     public void showListOfTransactions(List<Transaction> transactions) {
@@ -153,6 +153,8 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             holder.cashValue.setText("$ " + Float.toString(transaction.getCashValue()));
             holder.barterValue.setText("Barter Value: " + Float.toString(transaction.getBarterValue()));
 
+
+            // TODO: Fade transaction if it's not accepted yet
             if (transaction.getIsActive()) {
                 if (transaction.getCreatorId() == FirebaseUtilities.getUser().getUid()) {
                     // Current user is the one who created this transaction

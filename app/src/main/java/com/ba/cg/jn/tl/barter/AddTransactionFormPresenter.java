@@ -1,5 +1,6 @@
 package com.ba.cg.jn.tl.barter;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -17,18 +18,22 @@ public class AddTransactionFormPresenter {
     public void createTransaction(){
         EditText transactionNameEditText = v.findViewById(R.id.transactionNameEditText);
         EditText peopleEditText = v.findViewById(R.id.peopleEditText);
-//        EditText cashValueEditText = v.findViewById(R.id.cashValueEditText);
-//        EditText unitValueEditText = v.findViewById(R.id.unitValueEditText);
-//        Spinner transactionTypeSpinner = (Spinner) v.findViewById(R.id.transactionTypeSpinner);
         EditText transactionNotesEditText = v.findViewById(R.id.transactionNotesEditText);
-//        Spinner unitSpinner = (Spinner) v.findViewById(R.id.unitSpinner);
+        EditText cashValueEditText = v.findViewById(R.id.cashValueEditText);
+        EditText barterValueEditText = v.findViewById(R.id.barterValueEditText);
+        EditText barterUnitEditText = v.findViewById(R.id.barterUnitEditText);
         String transactionName = transactionNameEditText.getText().toString();
         String people = peopleEditText.getText().toString();
-//        String transactionType = transactionTypeSpinner.getSelectedItem().toString();
-//        Double cashValue = Double.parseDouble(cashValueEditText.getText().toString().isEmpty() ? "0" : cashValueEditText.getText().toString());
-//        Double unitValue = Double.parseDouble(unitValueEditText.getText().toString().isEmpty() ? "0" : unitValueEditText.getText().toString());
+        String cashValue = cashValueEditText.getText().toString();
+        String barterValue = barterValueEditText.getText().toString();
+        String barterUnit = barterUnitEditText.getText().toString();
         String notes = transactionNotesEditText.getText().toString();
 
-        Transaction transaction = new Transaction();
+        Log.d("transaction name", transactionName);
+        Log.d("people", people);
+        Log.d("cash value", cashValue);
+        Log.d("barter value", barterValue);
+        Log.d("barter unit", barterUnit);
+        Log.d("notes", notes);
     }
 }

@@ -10,19 +10,27 @@ import java.util.Map;
  */
 
 public class Transaction {
-    private String name;
-    private String creatorId;
-    private Map<String, Boolean> targetUserIds;
-    private float cashValue;
-    private float barterValue;
     private String barterUnit;
-    private boolean isBorrowed;
+    private float barterValue;
+    private float cashValue;
+    private String creatorId;
     private boolean isActive;
+    private boolean isBorrowed;
     private boolean isCompleted;
+<<<<<<< Updated upstream
     private String notes;
 
     private Map<String, Boolean> acceptedIds;
+=======
+//    private boolean isRecurring;
+//    private int recurringDays;
+    private String name;
+    private String notes;
+//    private Date creationDate;
+>>>>>>> Stashed changes
 
+//    private Map<String, Boolean> acceptedIds;
+    private Map<String, Boolean> targetUserIds;
     // TODO: add date created field
 
     public Transaction() {
@@ -43,7 +51,12 @@ public class Transaction {
         this.isActive = isActive;
         this.isCompleted = isCompleted;
         this.notes = notes;
+<<<<<<< Updated upstream
         this.acceptedIds = acceptedIds;
+=======
+//        this.acceptedIds = acceptedIds;
+//        this.creationDate = creationDate;
+>>>>>>> Stashed changes
     }
 
     public String getName() {
@@ -86,9 +99,9 @@ public class Transaction {
         return this.notes;
     }
 
-    public Map<String, Boolean> getAcceptedIds() {
-        return this.acceptedIds;
-    }
+//    public Map<String, Boolean> getAcceptedIds() {
+//        return this.acceptedIds;
+//    }
 
     public void setName(String name) {
         this.name = name;
@@ -130,7 +143,17 @@ public class Transaction {
         this.notes = notes;
     }
 
+<<<<<<< Updated upstream
     public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
         this.acceptedIds = acceptedIds;
     }
+=======
+//    public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
+//        this.acceptedIds = acceptedIds;
+//    }
+
+//    public Date getCreationDate(){
+//        return creationDate;
+//    }
+>>>>>>> Stashed changes
 } // Transaction
