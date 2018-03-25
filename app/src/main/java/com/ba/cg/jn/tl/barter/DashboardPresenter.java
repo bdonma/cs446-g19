@@ -36,7 +36,7 @@ public class DashboardPresenter {
      * is added as an entry to the record identified by the currentUser uid
      */
     public void getInitialListOfTransaction() {
-        Query transactionListQuery = FirebaseUtilities.getDatabaseReference().child("transactions");
+        Query transactionListQuery = FirebaseUtilities.getAllTransactions();
         transactionListQuery.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
@@ -47,6 +47,7 @@ public class DashboardPresenter {
                     Map<String, Boolean> transactionIDs = new HashMap<String, Boolean>();
 
                     for (DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
+
                         Transaction currentTransaction = transactionSnapshot.getValue(Transaction.class);
 
                         if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
@@ -59,15 +60,16 @@ public class DashboardPresenter {
                                 transactionIDs.put(transactionSnapshot.getKey(), true);
                             } // if
                         } // for
+
                     } // for
 
-                    FirebaseUtilities.getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid()).child("transactions").setValue(transactionIDs);
+                    FirebaseUtilities.setListOfUserTransactionsWithUID(FirebaseUtilities.getUser().getUid(), transactionIDs);
                 } // if
             } // addListenerForSingleValueEvent
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Log.d("DEBUG", "getInitialListOfTransaction:onCancelled Error");
             } // onCancelled
 
         }); // addListenerForSingleValueEvent
@@ -79,6 +81,7 @@ public class DashboardPresenter {
      * to the currentUsers transactions and respond accordingly.
      */
     public void startUserTransactions() {
+
         Query userQuery = FirebaseUtilities.getListOfUserTransactionsWithUID(FirebaseUtilities.getUser().getUid());
         userQuery.addChildEventListener(new ChildEventListener() {
 
@@ -100,9 +103,8 @@ public class DashboardPresenter {
                                 Transaction transaction = dataSnapshot.getValue(Transaction.class);
                                 transactionMap.put(transactionID, transaction);
 
-
                                 List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
-                                calculateAmountsForTransaction();
+                                calculateAndShowAmountsForTransaction();
                                 mView.showListOfTransactions(transactionsToAdd);
                             } // if
                         } // onDataChange
@@ -137,7 +139,7 @@ public class DashboardPresenter {
                                     transactionMap.put(transactionID, transaction);
 
                                     List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
-                                    calculateAmountsForTransaction();
+                                    calculateAndShowAmountsForTransaction();
                                     mView.showListOfTransactions(transactionsToAdd);
                                 } // if
                             } // if
@@ -170,7 +172,7 @@ public class DashboardPresenter {
                                     transactionMap.remove(transactionID);
 
                                     List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
-                                    calculateAmountsForTransaction();
+                                    calculateAndShowAmountsForTransaction();
                                     mView.showListOfTransactions(transactionsToAdd);
                                 } // if
                             } // if
@@ -200,7 +202,11 @@ public class DashboardPresenter {
 
     } // startUserTransactions
 
-    public void calculateAmountsForTransaction() {
+    /**
+     * Calculates the amount the current user is owed/due and updates those values.
+     */
+    public void calculateAndShowAmountsForTransaction() {
+
         float amountIOwe = 0, amountIAmDue = 0;
 
         for (Map.Entry<String, Transaction> entry : transactionMap.entrySet()) {
@@ -225,6 +231,36 @@ public class DashboardPresenter {
         mView.showAmountsOfCurrentUser(amountIOwe, amountIAmDue);
     }
 
+    /**
+     * Function to be called when the approval button is showing on the view transaction fragment
+     * page
+     * @param currentTransaction
+     */
+    public void sendConfirmationForTransaction(Transaction currentTransaction) {
+
+        if (currentTransaction != null) {
+
+//            Map<String, Boolean> acceptedIds = currentTransaction.getAcceptedIds();
+//
+//            if (acceptedIds.containsKey(FirebaseUtilities.getUser().getUid())) {
+//
+//                acceptedIds.put(FirebaseUtilities.getUser().getUid(), true);
+//                currentTransaction.setAcceptedIds(acceptedIds);
+//
+//                Boolean result = true;
+//                for (Map.Entry<String, Boolean> entry : currentTransaction.getAcceptedIds().entrySet()) {
+//                    result = result && entry.getValue();
+//                    if (!result) { break; }
+//                }
+//
+//                currentTransaction.setIsActive(result);
+//
+//                // TODO: Change this to the proper key
+//                FirebaseUtilities.getDatabaseReference().child("transactions").child("transaction_key").setValue(currentTransaction);
+//
+//            }
+        }
+    }
 
 
 
