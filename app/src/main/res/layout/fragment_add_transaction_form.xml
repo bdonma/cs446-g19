@@ -229,6 +229,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/barterHeading" />
 
+        <EditText
+            android:id="@+id/barterUnitEditText"
+            android:layout_width="131dp"
+            android:layout_height="51dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:ems="10"
+            android:hint="Units"
+            android:inputType="textPersonName"
+            app:layout_constraintBottom_toBottomOf="@+id/barterValueEditText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/barterValueEditText"
+            app:layout_constraintTop_toTopOf="@+id/barterValueEditText" />
+
         <RadioGroup
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
