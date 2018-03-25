@@ -55,7 +55,6 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    // TODO: TIFF LOOK @ THIS. Is this the correct way to like dismiss things
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -86,7 +85,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         TextView userGreeting = v.findViewById(R.id.current_user_text);
         userGreeting.setText(FirebaseUtilities.getUser().getDisplayName());
 
-        bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        bar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         bar.setTitle("Dashboard");
         FloatingActionButton fab = v.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -211,6 +210,9 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 Log.d("SWAG", "Position: " + Integer.toString(position));
+                // TODO @jason when we get the transaction id it should look like the second mCallback line that's commented out
+                mCallback.callbackStartTransactionDetailsFragment(mTransactions.get(getAdapterPosition()));
+//                mCallback.callbackStartTransactionDetailsFragment(mTransactions.get(getAdapterPosition()).getTransactionId());
             } // onClick
 
         } // TransactionViewHolder class
@@ -240,5 +242,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         void callbackDeleteAccount();
 
         void startAddTransactionFragment();
+
+        void callbackStartTransactionDetailsFragment(Transaction transaction);
     }
 }

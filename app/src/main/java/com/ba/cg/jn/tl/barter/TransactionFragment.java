@@ -15,6 +15,7 @@ import android.widget.TextView;
  * A simple {@link Fragment} subclass.
  */
 public class TransactionFragment extends Fragment {
+    public static final String ARGS_TRANSACTION_ID = "transaction_id";
     private TransactionPresenter transactionPresenter;
 
     public TransactionFragment() {
@@ -27,6 +28,11 @@ public class TransactionFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_add_transaction_form, container, false);
+
+        Bundle args = getArguments();
+        String transactionId = args.getString(ARGS_TRANSACTION_ID, null);
+
+
         ConstraintLayout layout = (ConstraintLayout) v.findViewById(R.id.transactionLayout);
         TextView amountBorrowedLoanedHeader = v.findViewById(R.id.amountBorrowedLoanedHeader);
         Transaction transaction;
@@ -37,7 +43,7 @@ public class TransactionFragment extends Fragment {
             public void onClick(View view) {
                 transactionPresenter.toggleEditMode();
 
-                if(transactionPresenter.getEditModeOn()){
+                if (transactionPresenter.getEditModeOn()) {
                     editTransactionsButton.setText("Edit Transaction");
                 } else {
                     editTransactionsButton.setText("Save");

@@ -151,4 +151,20 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
+    @Override
+    public void callbackStartTransactionDetailsFragment(Transaction transaction) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment addTransactionFrag = new TransactionFragment();
+
+        Bundle args = new Bundle();
+        // TODO jason should be transaction whatever the parameter value is
+//        args.putString(TransactionFragment.ARGS_TRANSACTION_ID, transaction.toString());
+        addTransactionFrag.setArguments(args);
+
+        fragmentTransaction.replace(R.id.fragment_container, addTransactionFrag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 }
