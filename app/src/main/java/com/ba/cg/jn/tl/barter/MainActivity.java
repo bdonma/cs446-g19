@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
         AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.GoogleBuilder().build();
         AuthUI.IdpConfig emailIdp = new AuthUI.IdpConfig.EmailBuilder().build();
         AuthUI.IdpConfig facebookIdp = new AuthUI.IdpConfig.FacebookBuilder()
-                .setPermissions(Arrays.asList("user_friends", "public_profile"))
+                .setPermissions(Arrays.asList("user_friends", "public_profile", "email"))
                 .build();
 
         startActivityForResult(
