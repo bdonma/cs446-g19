@@ -165,17 +165,26 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         @Override
         public void onBindViewHolder(TransactionViewHolder holder, int position) {
             Transaction transaction = mTransactions.get(position);
-            holder.name.setText(transaction.getName());
-            holder.dateCreated.setText(transaction.getDate());
 
-            holder.cashValue.setText("$ " + Float.toString(transaction.getCashValue()));
-            holder.barterValue.setText("Barter Value: " + Float.toString(transaction.getBarterValue()));
+            if (transaction != null) {
+                holder.name.setText(transaction.getName());
+                holder.dateCreated.setText(transaction.getDate());
 
-            // TODO: Fade transaction if it's not accepted yet
-            if (transaction.getIsActive()) {
-                // transaction is active
-            } else {
-                // the transaction is not active yet (acknowledged by all parties)
+                DecimalFormat df = new DecimalFormat("##.00");
+                df.setRoundingMode(RoundingMode.DOWN);
+                String cashValueText = "$ " + df.format(transaction.getCashValue());
+                holder.cashValue.setText(cashValueText);
+
+                DecimalFormat barterDF = new DecimalFormat("##.##");
+                String barterValueText = barterDF.format(transaction.getBarterValue());
+                holder.barterValue.setText(barterValueText + " " + transaction.getBarterUnit());
+
+                // TODO: Fade transaction if it's not accepted yet
+                if (transaction.getIsActive()) {
+                    // transaction is active
+                } else {
+                    // the transaction is not active yet (acknowledged by all parties)
+                }
             }
 
         } // onBindViewHolder
