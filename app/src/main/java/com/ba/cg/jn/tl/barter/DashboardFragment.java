@@ -205,9 +205,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 Log.d("SWAG", "Position: " + Integer.toString(position));
-                // TODO @jason when we get the transaction id it should look like the second mCallback line that's commented out
                 mCallback.callbackStartTransactionDetailsFragment(mTransactions.get(getAdapterPosition()));
-//                mCallback.callbackStartTransactionDetailsFragment(mTransactions.get(getAdapterPosition()).getTransactionId());
             } // onClick
 
         } // TransactionViewHolder class

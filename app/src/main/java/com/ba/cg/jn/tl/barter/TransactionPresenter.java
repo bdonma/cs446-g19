@@ -19,22 +19,22 @@ public class TransactionPresenter {
         transaction = new Transaction();
     }
 
-    public void toggleEditMode(){
+    public void toggleEditMode() {
         editModeOn = !editModeOn;
     }
 
-    public boolean getEditModeOn(){
+    public boolean getEditModeOn() {
         return editModeOn;
     }
 
 
     // ------------------------------------------------------
 
-    public void getTransactionInformation() {
+    public void getTransactionInformation(String transactionId) {
 
         // When the view is first created query for transaction information
         // TODO: Change to the correct id
-        Query transactionQuery = FirebaseUtilities.getTransactionForUID("transaction_uid");
+        Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionId);
         transactionQuery.addValueEventListener(new ValueEventListener() {
 
             @Override
@@ -69,6 +69,7 @@ public class TransactionPresenter {
     /**
      * Function to be called when the approval button is showing on the view transaction fragment
      * page
+     *
      * @param currentTransaction
      */
     public void sendConfirmationForTransaction(Transaction currentTransaction) {
