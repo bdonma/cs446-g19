@@ -109,9 +109,9 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter = new DashboardPresenter(this);
-//        mPresenter.getInitialListOfTransaction();
-//        mPresenter.startUserTransactions();
-//        mPresenter.calculateAndShowAmountsForTransaction();
+        mPresenter.getInitialListOfTransaction();
+        mPresenter.startUserTransactions();
+        mPresenter.calculateAndShowAmountsForTransaction();
     } // onViewCreated
 
     public void showListOfTransactions(List<Transaction> transactions) {
