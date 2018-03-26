@@ -92,30 +92,6 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             @Override
             public void onClick(View view) {
                 mCallback.startAddTransactionFragment();
-
-//                Transaction newTransaction = new Transaction();
-//                newTransaction.setName("Transaction3");
-//                newTransaction.setCreatorId("Ghwuwu82btUVbN4j5ADO6mX11mu1");
-//
-//                Map<String, Boolean> targetIds = new HashMap<String, Boolean>();
-//
-//                targetIds.put(FirebaseUtilities.getUser().getUid(), true);
-//                newTransaction.setTargetUserIds(targetIds);
-//
-//                newTransaction.setCashValue((float) 20);
-//                newTransaction.setBarterValue(20);
-//                newTransaction.setBarterUnit("Dinner");
-//                newTransaction.setIsBorrowed(false);
-//                newTransaction.setIsActive(false);
-//                newTransaction.setIsCompleted(false);
-//                newTransaction.setNotes("Birthday party dinner");
-//
-//                DatabaseReference ref = FirebaseUtilities.getDatabaseReference().child("transactions").push();
-//                String key = ref.getKey();
-//
-//                FirebaseUtilities.getDatabaseReference().child("transactions").child(key).setValue(newTransaction);
-//                FirebaseUtilities.getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid()).child("transactions");
-
             }
         });
 
