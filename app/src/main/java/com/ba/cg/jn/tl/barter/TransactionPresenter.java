@@ -2,6 +2,7 @@ package com.ba.cg.jn.tl.barter;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -14,6 +15,12 @@ public class TransactionPresenter {
     private TransactionViewInterface mView;
     private boolean editModeOn;
     private Transaction transaction;
+
+    public enum ButtonState {
+        APPROVAL, EDITING, INFORMATION
+    }
+
+    private ButtonState mButtonState = ButtonState.INFORMATION;
 
     public TransactionPresenter(TransactionViewInterface view) {
         this.mView = view;
@@ -29,13 +36,16 @@ public class TransactionPresenter {
         return editModeOn;
     }
 
+    public ButtonState getButtonState() {
+        return this.mButtonState;
+    }
 
-    // ------------------------------------------------------
+    public void setButtonState(ButtonState state) {
+        this.mButtonState = state;
+    }
 
-    public void getTransactionInformation(String transactionId) {
+    public void getTransactionInformation(final String transactionId) {
 
-        // When the view is first created query for transaction information
-        // TODO: Change to the correct id
         Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionId);
         transactionQuery.addValueEventListener(new ValueEventListener() {
 
@@ -45,13 +55,19 @@ public class TransactionPresenter {
                 if (dataSnapshot.getValue() != null) {
 
                     transaction = dataSnapshot.getValue(Transaction.class);
-
                     mView.showTransactionInformation();
 
                     if (transaction.getIsActive()) {
+                        mButtonState = ButtonState.INFORMATION;
                         mView.showInformationScreen();
                     } else {
-                        mView.showApprovalScreen();
+                        mButtonState = ButtonState.APPROVAL;
+
+                        if (transaction.getAcceptedIds().get(FirebaseUtilities.getUser().getUid()) == true) {
+                            mView.showApprovalScreenWithEditTransactionDisabled();
+                        } else {
+                            mView.showApprovalScreen();
+                        }
                     } // if
 
                 } // if
@@ -66,7 +82,6 @@ public class TransactionPresenter {
         }); // addValueEventListener
 
     } // getTransactionInformation
-
 
     /**
      * Function to be called when the approval button is showing on the view transaction fragment page
@@ -91,14 +106,44 @@ public class TransactionPresenter {
 
                 transaction.setIsActive(result);
                 FirebaseUtilities.modifyTransaction(transaction);
-            }
-        }
-    }
+
+            } // if
+
+        } // if
+
+    } // sendConfirmationForTransaction
+
+    /**
+     * TODO: Parse the transaction fields for new values
+     * Function to be called when the current user modifies the transaction
+     */
+    public void sendRequestForModification() {
+
+        if (transaction != null) {
+
+            Map<String, Boolean> acceptedIds = transaction.getAcceptedIds();
+
+            // Set the other transaction user accepted values to false
+            for (String key : transaction.getAcceptedIds().keySet()) {
+                acceptedIds.put(key, false);
+            } // for
+
+            acceptedIds.put(FirebaseUtilities.getUser().getUid(), true);
+            transaction.setIsActive(false);
+
+            FirebaseUtilities.modifyTransaction(transaction);
+        } // if
+
+    } // sendRequestForModification
+
 
     public boolean canCompleteTransaction() {
         return transaction.getIsCompleted();
-    }
+    } // conCompleteTransaction
 
+    /**
+     * Function to be called when the current user completes the transaction
+     */
     public void completeTransaction() {
 
         // Remove the transaction from the list of transactions
@@ -111,14 +156,11 @@ public class TransactionPresenter {
         for (String key : transaction.getTargetUserIds().keySet()) {
             FirebaseUtilities.removeTransactionFromUserList(key, transaction.getTransactionId());
         }
-    }
+
+    } // completeTransaction
 
     public void saveTransaction() {
         // TODO: update record in Firebase
     }
 
-
-    public void checkForApproval() {
-
-    }
-}
+} // TransactionPresenter

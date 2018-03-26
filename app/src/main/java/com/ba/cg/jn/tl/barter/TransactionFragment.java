@@ -39,22 +39,31 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
 
         Bundle args = getArguments();
         mTransactionId = args.getString(ARGS_TRANSACTION_ID, null);
-
         Log.d("TRANSACTION_FRAG", mTransactionId);
 
         ConstraintLayout layout = (ConstraintLayout) v.findViewById(R.id.transactionLayout);
         TextView amountBorrowedLoanedHeader = v.findViewById(R.id.amountBorrowedLoanedHeader);
 
-        final Button editTransactionsButton = v.findViewById(R.id.editTransactionButton);
-        editTransactionsButton.setOnClickListener(new View.OnClickListener() {
+        final Button interactiveButton = v.findViewById(R.id.editTransactionButton);
+        interactiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                transactionPresenter.toggleEditMode();
-
-                if (transactionPresenter.getEditModeOn()) {
-                    editTransactionsButton.setText("Edit Transaction");
-                } else {
-                    editTransactionsButton.setText("Save");
+            public void onClick(View v) {
+                if (transactionPresenter != null) {
+                    switch (transactionPresenter.getButtonState()) {
+                        case INFORMATION:
+                            // Change to editing mode
+                            transactionPresenter.setButtonState(TransactionPresenter.ButtonState.EDITING);
+                            showInformationScreen();
+                            break;
+                        case EDITING:
+                            transactionPresenter.sendRequestForModification();
+                            break;
+                        case APPROVAL:
+                            transactionPresenter.sendConfirmationForTransaction();
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
         });
@@ -74,18 +83,9 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
 
         });
 
-        Button approveButton = v.findViewById(R.id.approvalOrSendButton);
-        approveButton.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-
-                // TODO: Logic to check save/approve state
-                transactionPresenter.sendConfirmationForTransaction();
-
-            }
-
-        });
+        View approvalView = v.findViewById(R.id.approvalGreyView);
+        v.setBackgroundColor(Color.parseColor("#EEEEEE"));
 
 //        if(transaction.getIsBorrowed()){
 //            amountBorrowedLoanedHeader.setText("Amount Borrowed:");
@@ -108,7 +108,6 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         transactionPresenter = new TransactionPresenter(this);
-
         transactionPresenter.getTransactionInformation(mTransactionId);
     }
 
@@ -119,23 +118,73 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
     // TODO: Write the code to show approval screen
     public void showApprovalScreen() {
         if (getView() != null) {
+            View approvalView = getView().findViewById(R.id.approvalGreyView);
+            approvalView.setBackgroundColor(Color.parseColor("#000000"));
+            approvalView.setAlpha(1);
 
-            View v = getView().findViewById(R.id.approvalGreyView);
+            Button interactiveButton = getView().findViewById(R.id.editTransactionButton);
+            interactiveButton.setBackgroundColor(Color.parseColor("#66BB6A"));
+            interactiveButton.setText("Approve");
+            interactiveButton.setEnabled(true);
 
-            v.setBackgroundColor(Color.parseColor("#000000"));
+            Button completeTransactionButton = getView().findViewById(R.id.complete_transaction_button);
+            completeTransactionButton.setBackgroundColor(Color.parseColor("#E0E0E0"));
+            completeTransactionButton.setEnabled(false);
+        }
+    }
 
+    public void showApprovalScreenWithEditTransactionDisabled() {
+        if (getView() != null) {
+            View approvalView = getView().findViewById(R.id.approvalGreyView);
+            approvalView.setBackgroundColor(Color.parseColor("#000000"));
+            approvalView.setAlpha(1);
 
+            Button interactiveButton = getView().findViewById(R.id.editTransactionButton);
+            interactiveButton.setBackgroundColor(Color.parseColor("#E0E0E0"));
+            interactiveButton.setText("Pending Approval");
+            interactiveButton.setEnabled(false);
+
+            Button completeTransactionButton = getView().findViewById(R.id.complete_transaction_button);
+            completeTransactionButton.setBackgroundColor(Color.parseColor("#E0E0E0"));
+            completeTransactionButton.setEnabled(false);
         }
     }
 
     public void showInformationScreen() {
         if (getView() != null) {
 
-            View v = getView().findViewById(R.id.approvalGreyView);
+            View informationView = getView().findViewById(R.id.approvalGreyView);
+            informationView.setBackgroundColor(Color.parseColor("#EEEEEE"));
+            informationView.setAlpha(0);
 
-            v.setBackgroundColor(Color.parseColor("#ffffff"));
+            Button interactiveButton = getView().findViewById(R.id.editTransactionButton);
+            interactiveButton.setEnabled(true);
 
+            if (transactionPresenter.getButtonState() == TransactionPresenter.ButtonState.INFORMATION) {
+                interactiveButton.setBackgroundColor(Color.parseColor("#66BB6A"));
+                interactiveButton.setText("Edit Transaction");
+            } else {
+                interactiveButton.setBackgroundColor(Color.parseColor("#29B6F6"));
+                interactiveButton.setText("Save Transaction");
+            }
 
+            Button completeTransactionButton = getView().findViewById(R.id.complete_transaction_button);
+            if (transactionPresenter.canCompleteTransaction()) {
+                completeTransactionButton.setBackgroundColor(Color.parseColor("#F44336"));
+                completeTransactionButton.setEnabled(true);
+            } else {
+                completeTransactionButton.setBackgroundColor(Color.parseColor("#E0E0E0"));
+                completeTransactionButton.setEnabled(false);
+            }
         }
+    }
+
+    // TODO: write these
+    public void enableTransactionCompleteButton() {
+
+    }
+
+    public void disableTransactionCompleteButton() {
+
     }
 }
