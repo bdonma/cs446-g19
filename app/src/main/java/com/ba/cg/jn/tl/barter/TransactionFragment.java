@@ -35,7 +35,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v = inflater.inflate(R.layout.fragment_add_transaction_form, container, false);
+        View v = inflater.inflate(R.layout.fragment_transaction, container, false);
 
         Bundle args = getArguments();
         mTransactionId = args.getString(ARGS_TRANSACTION_ID, null);
@@ -46,19 +46,23 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         TextView amountBorrowedLoanedHeader = v.findViewById(R.id.amountBorrowedLoanedHeader);
         Transaction transaction;
 
-//        final Button editTransactionsButton = v.findViewById(R.id.editTransactionButton);
-//        editTransactionsButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                transactionPresenter.toggleEditMode();
-//
-//                if (transactionPresenter.getEditModeOn()) {
-//                    editTransactionsButton.setText("Edit Transaction");
-//                } else {
-//                    editTransactionsButton.setText("Save");
-//                }
-//            }
-//        });
+        final Button editTransactionsButton = v.findViewById(R.id.editTransactionButton);
+        editTransactionsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                transactionPresenter.completeTransaction();
+
+                transactionPresenter.toggleEditMode();
+
+                if (transactionPresenter.getEditModeOn()) {
+                    editTransactionsButton.setText("Edit Transaction");
+                } else {
+                    editTransactionsButton.setText("Save");
+                }
+            }
+        });
 
 //        View approvalView = v.findViewById(R.id.approvalGreyView);
 //        approvalView.setBackgroundColor(20);

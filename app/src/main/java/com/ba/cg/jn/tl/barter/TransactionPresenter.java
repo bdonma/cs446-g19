@@ -42,13 +42,13 @@ public class TransactionPresenter {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot != null) {
+                if (dataSnapshot.getValue() != null) {
 
-                    Transaction currentTransaction = dataSnapshot.getValue(Transaction.class);
+                    transaction = dataSnapshot.getValue(Transaction.class);
 
                     mView.showTransactionInformation();
 
-                    if (currentTransaction.getIsActive()) {
+                    if (transaction.getIsActive()) {
                         mView.showInformationScreen();
                     } else {
                         mView.showApprovalScreen();
@@ -69,34 +69,29 @@ public class TransactionPresenter {
 
 
     /**
-     * Function to be called when the approval button is showing on the view transaction fragment
-     * page
+     * Function to be called when the approval button is showing on the view transaction fragment page
      *
-     * @param currentTransaction
      */
-    public void sendConfirmationForTransaction(Transaction currentTransaction) {
+    public void sendConfirmationForTransaction() {
 
-        if (currentTransaction != null) {
+        if (transaction != null) {
 
-//            Map<String, Boolean> acceptedIds = currentTransaction.getAcceptedIds();
-//
-//            if (acceptedIds.containsKey(FirebaseUtilities.getUser().getUid())) {
-//
-//                acceptedIds.put(FirebaseUtilities.getUser().getUid(), true);
-//                currentTransaction.setAcceptedIds(acceptedIds);
-//
-//                Boolean result = true;
-//                for (Map.Entry<String, Boolean> entry : currentTransaction.getAcceptedIds().entrySet()) {
-//                    result = result && entry.getValue();
-//                    if (!result) { break; }
-//                }
-//
-//                currentTransaction.setIsActive(result);
-//
-//                // TODO: Change this to the proper key
-//                FirebaseUtilities.getDatabaseReference().child("transactions").child("transaction_key").setValue(currentTransaction);
-//
-//            }
+            Map<String, Boolean> acceptedIds = transaction.getAcceptedIds();
+
+            if (acceptedIds.containsKey(FirebaseUtilities.getUser().getUid())) {
+
+                acceptedIds.put(FirebaseUtilities.getUser().getUid(), true);
+                transaction.setAcceptedIds(acceptedIds);
+
+                Boolean result = true;
+                for (Map.Entry<String, Boolean> entry : transaction.getAcceptedIds().entrySet()) {
+                    result = result && entry.getValue();
+                    if (!result) { break; }
+                }
+
+                transaction.setIsActive(result);
+                FirebaseUtilities.modifyTransaction(transaction);
+            }
         }
     }
 
