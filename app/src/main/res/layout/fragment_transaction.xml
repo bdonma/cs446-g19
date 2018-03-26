@@ -7,16 +7,22 @@
 
     <View
         android:id="@+id/approvalGreyView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 
     <Button
         android:id="@+id/approvalOrSendButton"
         style="@style/FirebaseUI.Button"
-        android:layout_width="wrap_content"
+        android:layout_width="88dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="64dp"
         android:text="Approve"
-        tools:layout_editor_absoluteX="245dp"
-        tools:layout_editor_absoluteY="291dp" />
+        app:layout_constraintBottom_toTopOf="@+id/complete_transaction_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/approvalGreyView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/editTransactionButton" />
 
 
     <TextView
@@ -60,7 +66,25 @@
         style="@style/FirebaseUI.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="32dp"
         android:text="Edit Transaction"
-        tools:layout_editor_absoluteX="39dp"
-        tools:layout_editor_absoluteY="291dp" />
+        app:layout_constraintBottom_toTopOf="@+id/complete_transaction_button"
+        app:layout_constraintEnd_toStartOf="@+id/approvalOrSendButton"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/approvalGreyView"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/complete_transaction_button"
+        style="@style/FirebaseUI.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Complete Transaction"
+        app:layout_constraintBottom_toBottomOf="@+id/approvalGreyView"
+        app:layout_constraintEnd_toStartOf="@+id/approvalGreyView"
+        app:layout_constraintStart_toEndOf="@+id/approvalGreyView" />
+
+
 </android.support.constraint.ConstraintLayout>

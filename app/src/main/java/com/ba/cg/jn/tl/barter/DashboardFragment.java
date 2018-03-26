@@ -153,13 +153,15 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         DecimalFormat df = new DecimalFormat("##.##");
         df.setRoundingMode(RoundingMode.DOWN);
 
-        TextView amountIOweTV = getView().findViewById(R.id.amountOwedTextValue);
-        String owedText = "-$" + df.format(amountIOwed);
-        amountIOweTV.setText(owedText);
+        if (getView() != null) {
+            TextView amountIOweTV = getView().findViewById(R.id.amountOwedTextValue);
+            String owedText = "-$" + df.format(amountIOwed);
+            amountIOweTV.setText(owedText);
 
-        String amountIAmDueText = "$" + df.format(amountIAmDue);
-        TextView amountIAmDueTV = getView().findViewById(R.id.amountDueTextValue);
-        amountIAmDueTV.setText(amountIAmDueText);
+            String amountIAmDueText = "$" + df.format(amountIAmDue);
+            TextView amountIAmDueTV = getView().findViewById(R.id.amountDueTextValue);
+            amountIAmDueTV.setText(amountIAmDueText);
+        }
     }
 
     /**

@@ -47,23 +47,28 @@ public class DashboardPresenter {
 
                     for (DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
 
-                        Transaction currentTransaction = transactionSnapshot.getValue(Transaction.class);
+                        if (transactionSnapshot.getValue() != null) {
 
-                        if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
-                            transactionIDs.put(transactionSnapshot.getKey(), true);
-                            continue;
-                        } // if
+                            Transaction currentTransaction = transactionSnapshot.getValue(Transaction.class);
 
-                        for (Map.Entry<String, Boolean> entry : currentTransaction.getTargetUserIds().entrySet()) {
-                            if (entry.getKey().equals(FirebaseUtilities.getUser().getUid())) {
-                                transactionIDs.put(transactionSnapshot.getKey(), true);
-                            } // if
-                        } // for
+                                if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
+                                    transactionIDs.put(transactionSnapshot.getKey(), true);
+                                    continue;
+                                } // if
+
+                                for (Map.Entry<String, Boolean> entry : currentTransaction.getTargetUserIds().entrySet()) {
+                                    if (entry.getKey().equals(FirebaseUtilities.getUser().getUid())) {
+                                        transactionIDs.put(transactionSnapshot.getKey(), true);
+                                    } // if
+                                } // for
+
+                        }
 
                     } // for
 
                     FirebaseUtilities.setListOfUserTransactionsWithUID(FirebaseUtilities.getUser().getUid(), transactionIDs);
                 } // if
+
             } // addListenerForSingleValueEvent
 
             @Override
@@ -88,7 +93,7 @@ public class DashboardPresenter {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d("FIREBASE", "startUserTransactions:onChildAdded: Something was added to transactions");
 
-                if (dataSnapshot != null) {
+                if (dataSnapshot.getValue() != null) {
                     // Get the UID of the newly added transaction
                     final String transactionID = dataSnapshot.getKey();
 
@@ -98,7 +103,7 @@ public class DashboardPresenter {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot != null) {
+                            if (dataSnapshot.getValue() != null) {
                                 Transaction transaction = dataSnapshot.getValue(Transaction.class);
                                 transactionMap.put(transactionID, transaction);
 
@@ -121,7 +126,7 @@ public class DashboardPresenter {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Log.d("FIREBASE", "startUserTransactions:onChildChanged: Something was changed in transactions");
 
-                if (dataSnapshot != null) {
+                if (dataSnapshot.getValue() != null) {
                     // Get the UID of the newly changed transaction
                     final String transactionID = dataSnapshot.getKey();
 
@@ -130,7 +135,7 @@ public class DashboardPresenter {
 
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot != null) {
+                            if (dataSnapshot.getValue() != null) {
                                 Transaction transaction = dataSnapshot.getValue(Transaction.class);
 
                                 // Get transaction with specified transactionID
@@ -157,32 +162,18 @@ public class DashboardPresenter {
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d("FIREBASE", "startUserTransactions:onChildRemoved: Something was removed from transactions");
 
-                if (dataSnapshot != null) {
+                if (dataSnapshot.getKey() != null) {
                     // Get the UID of the newly removed transaction
                     final String transactionID = dataSnapshot.getKey();
 
-                    Query transactionQuery = FirebaseUtilities.getTransactionForUID(transactionID);
-                    transactionQuery.addValueEventListener(new ValueEventListener() {
+                    if (transactionMap.containsKey(transactionID)) {
+                        transactionMap.remove(transactionID);
+                    }
 
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if (dataSnapshot != null) {
-                                if (transactionMap.containsKey(transactionID)) {
-                                    transactionMap.remove(transactionID);
+                    List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
+                    calculateAndShowAmountsForTransaction();
+                    mView.showListOfTransactions(transactionsToAdd);
 
-                                    List<Transaction> transactionsToAdd = new ArrayList<Transaction>(transactionMap.values());
-                                    calculateAndShowAmountsForTransaction();
-                                    mView.showListOfTransactions(transactionsToAdd);
-                                } // if
-                            } // if
-                        } // onDataChange
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        } // onCancelled
-
-                    }); // addListenerForSingleEvent
                 } // if
             } // onChildRemoved
 

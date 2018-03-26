@@ -68,7 +68,7 @@ public class FirebaseUtilities {
     public static void addTransaction(Transaction transaction) {
         DatabaseReference transactionRefPush = getDatabaseReference().child(_transactionsKey).push();
         final DatabaseReference usersRef = getDatabaseReference().child(_usersKey);
-        Query testQuery = FirebaseUtilities.getDatabaseReference().child(_usersKey).orderByChild(_emailKey).equalTo(transaction.getCreatorId());
+        Query testQuery;
         final String transactionKey = transactionRefPush.getKey();
         final DatabaseReference transactionRef = getDatabaseReference().child(_transactionsKey).child(transactionKey);
 
@@ -99,24 +99,7 @@ public class FirebaseUtilities {
             transactionRef.child(_isBorrowedKey).setValue(false);
         }
 
-        testQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot userInfo : dataSnapshot.getChildren()) {
-                    String test = userInfo.getKey();
-                    transactionRef.child(_creatorIdKey).setValue(test);
-                    usersRef.child(test).child(_transactionsKey).child(transactionKey).setValue(true);
-                    Log.d("TEST", test);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        transactionRef.child(_creatorIdKey).setValue(FirebaseUtilities.getUser().getUid());
 
         Log.d("targetUserIds", transaction.getTargetUserIds().toString());
         for (String key : transaction.getTargetUserIds().keySet()) {
@@ -131,6 +114,8 @@ public class FirebaseUtilities {
                         String targetUID = userInfo.getKey();
                         transactionRef.child(_targetUserIds).child(targetUID).setValue(true);
                         transactionRef.child(_acceptedIdsKey).child(targetUID).setValue(false);
+
+                        usersRef.child(FirebaseUtilities.getUser().getUid()).child(_transactionsKey).child(transactionKey).setValue(true);
                         usersRef.child(targetUID).child(_transactionsKey).child(transactionKey).setValue(true);
                         Log.d("TEST", targetUID);
                     }
@@ -153,6 +138,18 @@ public class FirebaseUtilities {
         }
     }
 
+
+    public static void removeTransactionWithUID(String uid) {
+        getDatabaseReference().child(_transactionsKey).child(uid).removeValue();
+    }
+
+    public static void removeTransactionFromUserList(String userID, String transactionID) {
+        getDatabaseReference().child(_usersKey).child(userID).child(_transactionsKey).child(transactionID).removeValue();
+    }
+
+    public static void changeTransactionApproval(String userID, String transactionID, Boolean result) {
+        getDatabaseReference().child(_transactionsKey).child(transactionID).child(_acceptedIdsKey).child(userID).setValue(result);
+    }
 
 
     /**
@@ -182,6 +179,10 @@ public class FirebaseUtilities {
      */
     public static Query getTransactionForUID(String uid) {
         return getDatabaseReference().child(_transactionsKey).child(uid);
+    }
+
+    public static void modifyTransaction(Transaction transaction) {
+        getDatabaseReference().child(_transactionsKey).child(transaction.getTransactionId()).setValue(transaction);
     }
 
     /**
