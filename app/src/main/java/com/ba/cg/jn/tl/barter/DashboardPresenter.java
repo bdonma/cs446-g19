@@ -62,12 +62,14 @@ public class DashboardPresenter {
                                         transactionIDs.put(transactionSnapshot.getKey(), true);
                                     } // if
                                 } // for
+
                         }
 
                     } // for
 
                     FirebaseUtilities.setListOfUserTransactionsWithUID(FirebaseUtilities.getUser().getUid(), transactionIDs);
                 } // if
+
             } // addListenerForSingleValueEvent
 
             @Override

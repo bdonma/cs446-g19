@@ -95,6 +95,10 @@ public class TransactionPresenter {
         }
     }
 
+    public boolean canCompleteTransaction() {
+        return transaction.getIsCompleted();
+    }
+
     public void completeTransaction() {
 
         // Remove the transaction from the list of transactions
