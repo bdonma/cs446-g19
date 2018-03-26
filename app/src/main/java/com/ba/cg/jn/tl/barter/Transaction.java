@@ -1,6 +1,5 @@
 package com.ba.cg.jn.tl.barter;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -8,6 +7,7 @@ import java.util.Map;
  */
 
 public class Transaction {
+//    private String transactionId;
     private String name;
     private String creatorId;
     private Map<String, Boolean> targetUserIds;
@@ -17,10 +17,10 @@ public class Transaction {
     private boolean isBorrowed;
     private boolean isActive;
     private boolean isCompleted;
-    private boolean isRecurring;
-    private int recurringDays;
+//    private boolean isRecurring;
+//    private int recurringDays;
     private String notes;
-    private Date creationDate;
+//    private Date creationDate;
 
     private Map<String, Boolean> acceptedIds;
 
@@ -31,9 +31,9 @@ public class Transaction {
     }
 
     public Transaction(String name, String creatorId, Map<String, Boolean> targetUserIds,
-                       float cashValue, float barterValue, String barterUnit,
-                       boolean isBorrowed, boolean isActive, boolean isCompleted, String notes,
-                       Map<String, Boolean> acceptedIds, Date creationDate) {
+                        float cashValue, float barterValue, String barterUnit,
+                        boolean isBorrowed, boolean isActive, boolean isCompleted, String notes,
+                        Map<String, Boolean> acceptedIds/*, Date creationDate */) {
         this.name = name;
         this.creatorId = creatorId;
         this.targetUserIds = targetUserIds;
@@ -45,8 +45,12 @@ public class Transaction {
         this.isCompleted = isCompleted;
         this.notes = notes;
         this.acceptedIds = acceptedIds;
-        this.creationDate = creationDate;
+//        this.creationDate = creationDate;
     }
+
+//    public void setTransactionId(String transactionId){
+//        this.transactionId = transactionId;
+//    }
 
     public String getName() {
         return this.name;
@@ -136,7 +140,7 @@ public class Transaction {
         this.acceptedIds = acceptedIds;
     }
 
-    public Date getCreationDate(){
-        return creationDate;
-    }
+//    public Date getCreationDate(){
+//        return creationDate;
+//    }
 } // Transaction

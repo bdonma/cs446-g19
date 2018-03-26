@@ -12,6 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+
+import java.util.Date;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +36,7 @@ public class AddTransactionFormFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_add_transaction_form, container, false);
+        final View v = inflater.inflate(R.layout.fragment_add_transaction_form, container, false);
         bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
 //        final EditText transactionNameEditText = v.findViewById(R.id.transactionNameEditText);
@@ -81,7 +85,52 @@ public class AddTransactionFormFragment extends Fragment {
         createTransactionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.createTransaction();
+                EditText transactionNameEditText = v.findViewById(R.id.transactionNameEditText);
+                EditText peopleEditText = v.findViewById(R.id.peopleEditText);
+                EditText transactionNotesEditText = v.findViewById(R.id.transactionNotesEditText);
+                EditText cashValueEditText = v.findViewById(R.id.cashValueEditText);
+                EditText barterValueEditText = v.findViewById(R.id.barterValueEditText);
+                EditText barterUnitEditText = v.findViewById(R.id.barterUnitEditText);
+                RadioGroup borrowedLoaned = v.findViewById(R.id.borrowedLoanedRadioGroup);
+                int borrowedLoanedSlection = borrowedLoaned.getCheckedRadioButtonId();
+                String transactionName = transactionNameEditText.getText().toString();
+                String people = peopleEditText.getText().toString();
+                String cashValue = cashValueEditText.getText().toString();
+                String barterValue = barterValueEditText.getText().toString();
+                String barterUnit = barterUnitEditText.getText().toString();
+                String notes = transactionNotesEditText.getText().toString();
+                boolean isBorrowed;
+                float cashValueFloat;
+                float barterValueFloat;
+                HashMap<String, Boolean> targetUserIds = new HashMap<String, Boolean>();
+                HashMap<String, Boolean> acceptUserIds = new HashMap<String, Boolean>();
+                Date creationDate = new Date();
+
+                if(borrowedLoanedSlection == R.id.borrowedRadioButton){
+                    isBorrowed = true;
+                } else if(borrowedLoanedSlection == R.id.loanedRadioButton){
+                    isBorrowed = false;
+                } else{
+                    isBorrowed = false;
+                }
+
+                try{
+                    barterValueFloat = barterValue.length() == 0 ? -1 : Float.parseFloat(barterValue);
+                } catch(Exception e){
+                    barterValueFloat = -1;
+                }
+
+                try{
+                    cashValueFloat = Float.parseFloat(cashValue);
+                } catch(Exception e){
+                    cashValueFloat = -1;
+                }
+
+                targetUserIds.put(people, true);
+                acceptUserIds.put(people, false);
+
+                presenter.createTransaction(transactionName, targetUserIds, cashValueFloat, barterValueFloat,
+                        barterUnit, isBorrowed, notes, acceptUserIds, creationDate);
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });
