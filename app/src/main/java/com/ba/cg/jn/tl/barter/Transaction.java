@@ -1,6 +1,5 @@
 package com.ba.cg.jn.tl.barter;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -8,6 +7,11 @@ import java.util.Map;
  */
 
 public class Transaction {
+    private String name;
+    private String creatorId;
+    private Map<String, Boolean> targetUserIds;
+    private float cashValue;
+    private float barterValue;
     private String barterUnit;
     private float barterValue;
     private float cashValue;
@@ -15,17 +19,11 @@ public class Transaction {
     private boolean isActive;
     private boolean isBorrowed;
     private boolean isCompleted;
-
 //    private boolean isRecurring;
 //    private int recurringDays;
     private String name;
     private String notes;
 //    private Date creationDate;
-
-//    private boolean isRecurring;
-//    private int recurringDays;
-//    private Date creationDate;
-
 //    private Map<String, Boolean> acceptedIds;
     private Map<String, Boolean> targetUserIds;
 
@@ -34,9 +32,9 @@ public class Transaction {
     }
 
     public Transaction(String name, String creatorId, Map<String, Boolean> targetUserIds,
-                       float cashValue, float barterValue, String barterUnit,
-                       boolean isBorrowed, boolean isActive, boolean isCompleted, String notes,
-                       Map<String, Boolean> acceptedIds, Date creationDate) {
+                        float cashValue, float barterValue, String barterUnit,
+                        boolean isBorrowed, boolean isActive, boolean isCompleted, String notes,
+                        Map<String, Boolean> acceptedIds/*, Date creationDate */) {
         this.name = name;
         this.creatorId = creatorId;
         this.targetUserIds = targetUserIds;
@@ -50,6 +48,10 @@ public class Transaction {
 //        this.acceptedIds = acceptedIds;
 //        this.creationDate = creationDate;
     }
+
+//    public void setTransactionId(String transactionId){
+//        this.transactionId = transactionId;
+//    }
 
     public String getName() {
         return this.name;
@@ -147,5 +149,4 @@ public class Transaction {
 //    public Date getCreationDate(){
 //        return creationDate;
 //    }
-
 } // Transaction

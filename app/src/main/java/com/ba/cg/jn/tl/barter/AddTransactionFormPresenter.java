@@ -2,7 +2,9 @@ package com.ba.cg.jn.tl.barter;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
+
+import java.util.Map;
+import java.util.Date;
 
 /**
  * Created by brandonma on 2018-03-23.
@@ -15,25 +17,21 @@ public class AddTransactionFormPresenter {
         this.v = v;
     }
 
-    public void createTransaction(){
-        EditText transactionNameEditText = v.findViewById(R.id.transactionNameEditText);
-        EditText peopleEditText = v.findViewById(R.id.peopleEditText);
-        EditText transactionNotesEditText = v.findViewById(R.id.transactionNotesEditText);
-        EditText cashValueEditText = v.findViewById(R.id.cashValueEditText);
-        EditText barterValueEditText = v.findViewById(R.id.barterValueEditText);
-        EditText barterUnitEditText = v.findViewById(R.id.barterUnitEditText);
-        String transactionName = transactionNameEditText.getText().toString();
-        String people = peopleEditText.getText().toString();
-        String cashValue = cashValueEditText.getText().toString();
-        String barterValue = barterValueEditText.getText().toString();
-        String barterUnit = barterUnitEditText.getText().toString();
-        String notes = transactionNotesEditText.getText().toString();
+    public void createTransaction(String transactionName, Map<String, Boolean> targetUserIds,
+                                  float cashValue, float barterValue, String barterUnit, boolean isBorrowed,
+                                  String notes, Map<String, Boolean> acceptedIds, Date creationDate){
+
 
         Log.d("transaction name", transactionName);
-        Log.d("people", people);
-        Log.d("cash value", cashValue);
-        Log.d("barter value", barterValue);
+        Log.d("people", targetUserIds.toString());
+        Log.d("cash value", Float.toString(cashValue));
+        Log.d("barter value", Float.toString(barterValue));
         Log.d("barter unit", barterUnit);
+        Log.d("is borrowed", Boolean.toString(isBorrowed));
         Log.d("notes", notes);
+        Transaction transaction = new Transaction(transactionName, FirebaseUtilities.getUser().getEmail(),
+                targetUserIds, cashValue, barterValue, barterUnit, isBorrowed, false, false,
+                notes, acceptedIds /* , creationDate */);
+        FirebaseUtilities.addTransaction(transaction);
     }
 }
