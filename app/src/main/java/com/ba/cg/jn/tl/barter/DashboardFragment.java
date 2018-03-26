@@ -164,7 +164,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         public void onBindViewHolder(TransactionViewHolder holder, int position) {
             Transaction transaction = mTransactions.get(position);
             holder.name.setText(transaction.getName());
-//            holder.dateCreated.setText("March 23, 2018");
+            holder.dateCreated.setText(transaction.getDate());
 
             holder.cashValue.setText("$ " + Float.toString(transaction.getCashValue()));
             holder.barterValue.setText("Barter Value: " + Float.toString(transaction.getBarterValue()));
@@ -195,7 +195,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
 
                 // TODO: Set the viewholder values
                 name = (TextView) transactionView.findViewById(R.id.name);
-//                dateCreated = (TextView) transactionView.findViewById(R.id.dateCreated);
+                dateCreated = (TextView) transactionView.findViewById(R.id.dateCreated);
                 cashValue = (TextView) transactionView.findViewById(R.id.cashValueEditText);
                 barterValue = (TextView) transactionView.findViewById(R.id.barterValue);
 
