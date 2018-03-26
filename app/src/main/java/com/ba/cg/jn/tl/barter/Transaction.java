@@ -7,24 +7,25 @@ import java.util.Map;
  */
 
 public class Transaction {
-//    private String transactionId;
     private String name;
     private String creatorId;
     private Map<String, Boolean> targetUserIds;
     private float cashValue;
     private float barterValue;
     private String barterUnit;
-    private boolean isBorrowed;
+    private float barterValue;
+    private float cashValue;
+    private String creatorId;
     private boolean isActive;
+    private boolean isBorrowed;
     private boolean isCompleted;
 //    private boolean isRecurring;
 //    private int recurringDays;
+    private String name;
     private String notes;
 //    private Date creationDate;
-
-    private Map<String, Boolean> acceptedIds;
-
-    // TODO: add date created field
+//    private Map<String, Boolean> acceptedIds;
+    private Map<String, Boolean> targetUserIds;
 
     public Transaction() {
         // Empty constructor required to convert Firebase object into data object.
@@ -44,7 +45,7 @@ public class Transaction {
         this.isActive = isActive;
         this.isCompleted = isCompleted;
         this.notes = notes;
-        this.acceptedIds = acceptedIds;
+//        this.acceptedIds = acceptedIds;
 //        this.creationDate = creationDate;
     }
 
@@ -92,9 +93,9 @@ public class Transaction {
         return this.notes;
     }
 
-    public Map<String, Boolean> getAcceptedIds() {
-        return this.acceptedIds;
-    }
+//    public Map<String, Boolean> getAcceptedIds() {
+//        return this.acceptedIds;
+//    }
 
     public void setName(String name) {
         this.name = name;
@@ -136,9 +137,14 @@ public class Transaction {
         this.notes = notes;
     }
 
-    public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
-        this.acceptedIds = acceptedIds;
-    }
+//
+//    public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
+//        this.acceptedIds = acceptedIds;
+//    }
+
+//    public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
+//        this.acceptedIds = acceptedIds;
+//    }
 
 //    public Date getCreationDate(){
 //        return creationDate;

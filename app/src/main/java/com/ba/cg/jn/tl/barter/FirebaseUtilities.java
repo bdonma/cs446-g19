@@ -11,6 +11,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Map;
+
 /**
  * Created by JasonNgo on 2018-03-20.
  */
@@ -155,6 +157,15 @@ public class FirebaseUtilities {
     }
 
     /**
+     * Sets the list of transactions associated with a user id to the value transactions
+     * @param uid - uid of the user who's list of transactions will be updated
+     * @param transactions - list of transactions
+     */
+    public static void setListOfUserTransactionsWithUID(String uid, Map<String, Boolean> transactions) {
+        getDatabaseReference().child(_usersKey).child(uid).child(_transactionsKey).setValue(transactions);
+    }
+
+    /**
      * Fetches the transaction with the specified uid
      *
      * @param uid - UID of the transaction
@@ -162,6 +173,14 @@ public class FirebaseUtilities {
      */
     public static Query getTransactionForUID(String uid) {
         return getDatabaseReference().child(_transactionsKey).child(uid);
+    }
+
+    /**
+     * Fetches a list of all transactions currently stored
+     * @return returns a Firebase Query object
+     */
+    public static Query getAllTransactions() {
+        return getDatabaseReference().child(_transactionsKey);
     }
 
 } // FirebaseUtilities
