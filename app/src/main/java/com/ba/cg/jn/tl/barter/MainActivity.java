@@ -8,18 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.AccessToken;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,7 +20,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements DashboardFragment.OnDashboardActionSelected {
     private static final int RC_SIGN_IN = 123;
@@ -97,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
         AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.GoogleBuilder().build();
         AuthUI.IdpConfig emailIdp = new AuthUI.IdpConfig.EmailBuilder().build();
         AuthUI.IdpConfig facebookIdp = new AuthUI.IdpConfig.FacebookBuilder()
-                .setPermissions(Arrays.asList("user_friends", "public_profile"))
+                .setPermissions(Arrays.asList("user_friends", "public_profile", "email"))
                 .build();
 
         startActivityForResult(
@@ -146,6 +136,21 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment addTransactionFrag = new AddTransactionFormFragment();
+
+        fragmentTransaction.replace(R.id.fragment_container, addTransactionFrag);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void callbackStartTransactionDetailsFragment(Transaction transaction) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment addTransactionFrag = new TransactionFragment();
+
+        Bundle args = new Bundle();
+        args.putString(TransactionFragment.ARGS_TRANSACTION_ID, transaction.getTransactionId());
+        addTransactionFrag.setArguments(args);
 
         fragmentTransaction.replace(R.id.fragment_container, addTransactionFrag);
         fragmentTransaction.addToBackStack(null);
