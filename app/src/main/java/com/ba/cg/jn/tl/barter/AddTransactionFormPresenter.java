@@ -1,26 +1,37 @@
 package com.ba.cg.jn.tl.barter;
 
 import android.util.Log;
-import android.view.View;
+
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Date;
+
+import io.realm.RealmResults;
 
 /**
  * Created by brandonma on 2018-03-23.
  */
 
 public class AddTransactionFormPresenter {
-    private View v;
+    private AddTransactionViewInterface mView;
+    private HashMap<String, String> mFacebookFriendsMap = new HashMap<>();
 
-    public AddTransactionFormPresenter(View v){
-        this.v = v;
+    public AddTransactionFormPresenter(AddTransactionViewInterface v) {
+        this.mView = v;
     }
 
     public void createTransaction(String transactionName, Map<String, Boolean> targetUserIds,
                                   float cashValue, float barterValue, String barterUnit, boolean isBorrowed,
-                                  String notes, Map<String, Boolean> acceptedIds){
+                                  String notes, Map<String, Boolean> acceptedIds) {
 
 
         Log.d("transaction name", transactionName);
@@ -41,5 +52,49 @@ public class AddTransactionFormPresenter {
                 notes, acceptedIds);
 
         FirebaseUtilities.addTransaction(transaction);
+    }
+
+    public void startGettingFacebookFriends() {
+        RealmResults<FacebookFriend> results = FacebookUtils.getRealmFacebookResults();
+        List<String> adapterFriends = new ArrayList<>();
+        for (int i = 0; i < results.size(); i++) {
+            FacebookFriend friend = results.get(i);
+            mFacebookFriendsMap.put(friend.getName(), friend.getFbId());
+            adapterFriends.add(results.get(i).getName());
+        }
+        mView.addPeopleAdapter(adapterFriends);
+    }
+
+    public void getUserUuid(String userName) {
+        if (mFacebookFriendsMap.containsKey(userName)) {
+            // user is chosen using name
+            String facebookId = mFacebookFriendsMap.get(userName);
+            Query facebookUser = FirebaseUtilities.getListOfUserWithFacebookId(facebookId);
+
+            facebookUser.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String email;
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        System.out.println(child.getKey()); // users
+                        for (DataSnapshot value : child.getChildren()) {
+                            if (value.getKey().equals("email")) {
+                                email = value.getValue().toString();
+                                mView.sendingTargetId(email);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    mView.sendToast();
+                }
+            });
+        } else {
+            // Sending Email through
+            mView.sendingTargetId(userName);
+        }
     }
 }
