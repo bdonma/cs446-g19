@@ -5,7 +5,13 @@ package com.ba.cg.jn.tl.barter;
  */
 
 interface TransactionViewInterface {
+
     void showTransactionInformation();
     void showApprovalScreen();
+    void showApprovalScreenWithEditTransactionDisabled();
     void showInformationScreen();
-}
+
+    void enableTransactionCompleteButton();
+    void disableTransactionCompleteButton();
+
+} // TransactionViewInterface
