@@ -4,6 +4,7 @@ package com.ba.cg.jn.tl.barter;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,9 @@ import com.google.firebase.database.ValueEventListener;
  * A simple {@link Fragment} subclass.
  */
 public class TransactionFragment extends Fragment implements TransactionViewInterface {
+    public static final String ARGS_TRANSACTION_ID = "transaction_id";
+    private static String mTransactionId;
+
     private TransactionPresenter transactionPresenter;
 
     public TransactionFragment() {
@@ -32,23 +36,29 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_add_transaction_form, container, false);
+
+        Bundle args = getArguments();
+        mTransactionId = args.getString(ARGS_TRANSACTION_ID, null);
+
+        Log.d("TRANSACTION_FRAG", mTransactionId);
+
         ConstraintLayout layout = (ConstraintLayout) v.findViewById(R.id.transactionLayout);
         TextView amountBorrowedLoanedHeader = v.findViewById(R.id.amountBorrowedLoanedHeader);
         Transaction transaction;
 
-        final Button editTransactionsButton = v.findViewById(R.id.editTransactionButton);
-        editTransactionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                transactionPresenter.toggleEditMode();
-
-                if(transactionPresenter.getEditModeOn()){
-                    editTransactionsButton.setText("Edit Transaction");
-                } else {
-                    editTransactionsButton.setText("Save");
-                }
-            }
-        });
+//        final Button editTransactionsButton = v.findViewById(R.id.editTransactionButton);
+//        editTransactionsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                transactionPresenter.toggleEditMode();
+//
+//                if (transactionPresenter.getEditModeOn()) {
+//                    editTransactionsButton.setText("Edit Transaction");
+//                } else {
+//                    editTransactionsButton.setText("Save");
+//                }
+//            }
+//        });
 
 //        View approvalView = v.findViewById(R.id.approvalGreyView);
 //        approvalView.setBackgroundColor(20);
@@ -75,7 +85,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         super.onViewCreated(view, savedInstanceState);
         transactionPresenter = new TransactionPresenter(this);
 
-        transactionPresenter.getTransactionInformation();
+        transactionPresenter.getTransactionInformation(mTransactionId);
     }
 
     public void showTransactionInformation() {
