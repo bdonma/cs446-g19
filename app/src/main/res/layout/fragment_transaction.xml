@@ -5,6 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <View
+        android:id="@+id/approvalGreyView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/approvalOrSendButton"
+        style="@style/FirebaseUI.Button"
+        android:layout_width="wrap_content"
+        android:text="Approve"
+        tools:layout_editor_absoluteX="245dp"
+        tools:layout_editor_absoluteY="291dp" />
+
+
     <TextView
         android:id="@+id/transactionName"
         android:layout_width="wrap_content"
@@ -46,11 +60,7 @@
         style="@style/FirebaseUI.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:text="Edit Transaction"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        tools:layout_editor_absoluteX="39dp"
+        tools:layout_editor_absoluteY="291dp" />
 </android.support.constraint.ConstraintLayout>
