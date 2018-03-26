@@ -44,8 +44,8 @@ public class AddTransactionFormFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_add_transaction_form, container, false);
-        bar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        final View v = inflater.inflate(R.layout.fragment_add_transaction_form, container, false);
+        bar = ((AppCompatActivity)getActivity()).getSupportActionBar();
 
         RealmResults<FacebookFriend> results = FacebookUtils.getRealmFacebookResults();
         HashMap<String, String> facebookFriendsMap = new HashMap<>();
@@ -77,15 +77,15 @@ public class AddTransactionFormFragment extends Fragment {
         addFriendsButton = v.findViewById(R.id.addFriendsButton);
 
 //        eResultList = v.findViewById(R.id.resultsFriendsSearch);
-        addFriendsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: get friends list from firebase
-                //query Firebase to see users that match user's friendlist
-//                FacebookUtils.getTaggableFriends();
-                //if user is Facebook user
-            }
-        });
+//        addFriendsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // TODO: get friends list from firebase
+//                //query Firebase to see users that match user's friendlist
+////                FacebookUtils.getTaggableFriends();
+//                //if user is Facebook user
+//            }
+//        });
 
         //Facebook friend search
 
