@@ -4,17 +4,26 @@ package com.ba.cg.jn.tl.barter;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TransactionFragment extends Fragment {
+public class TransactionFragment extends Fragment implements TransactionViewInterface {
+    public static final String ARGS_TRANSACTION_ID = "transaction_id";
+    private static String mTransactionId;
+
     private TransactionPresenter transactionPresenter;
 
     public TransactionFragment() {
@@ -27,23 +36,32 @@ public class TransactionFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View v = inflater.inflate(R.layout.fragment_add_transaction_form, container, false);
+
+        Bundle args = getArguments();
+        mTransactionId = args.getString(ARGS_TRANSACTION_ID, null);
+
+        Log.d("TRANSACTION_FRAG", mTransactionId);
+
         ConstraintLayout layout = (ConstraintLayout) v.findViewById(R.id.transactionLayout);
         TextView amountBorrowedLoanedHeader = v.findViewById(R.id.amountBorrowedLoanedHeader);
         Transaction transaction;
 
-        final Button editTransactionsButton = v.findViewById(R.id.editTransactionButton);
-        editTransactionsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                transactionPresenter.toggleEditMode();
+//        final Button editTransactionsButton = v.findViewById(R.id.editTransactionButton);
+//        editTransactionsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                transactionPresenter.toggleEditMode();
+//
+//                if (transactionPresenter.getEditModeOn()) {
+//                    editTransactionsButton.setText("Edit Transaction");
+//                } else {
+//                    editTransactionsButton.setText("Save");
+//                }
+//            }
+//        });
 
-                if(transactionPresenter.getEditModeOn()){
-                    editTransactionsButton.setText("Edit Transaction");
-                } else {
-                    editTransactionsButton.setText("Save");
-                }
-            }
-        });
+//        View approvalView = v.findViewById(R.id.approvalGreyView);
+//        approvalView.setBackgroundColor(20);
 
 //        if(transaction.getIsBorrowed()){
 //            amountBorrowedLoanedHeader.setText("Amount Borrowed:");
@@ -65,6 +83,21 @@ public class TransactionFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        transactionPresenter = new TransactionPresenter(this);
+        transactionPresenter = new TransactionPresenter(this);
+
+        transactionPresenter.getTransactionInformation(mTransactionId);
+    }
+
+    public void showTransactionInformation() {
+
+    }
+
+    // TODO: Write the code to show approval screen
+    public void showApprovalScreen() {
+
+    }
+
+    public void showInformationScreen() {
+
     }
 }

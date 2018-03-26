@@ -55,7 +55,6 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    // TODO: TIFF LOOK @ THIS. Is this the correct way to like dismiss things
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -74,8 +73,8 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
+        } // switch
+    } // onOptionsItemSelected
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -136,7 +135,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         mPresenter = new DashboardPresenter(this);
         mPresenter.getInitialListOfTransaction();
         mPresenter.startUserTransactions();
-        mPresenter.calculateAmountsForTransaction();
+        mPresenter.calculateAndShowAmountsForTransaction();
     } // onViewCreated
 
     public void showListOfTransactions(List<Transaction> transactions) {
@@ -184,26 +183,21 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             return new TransactionViewHolder(itemView);
         } // onCreateViewHolder
 
+        // TODO: Complete the UI changes for transactions
         @Override
         public void onBindViewHolder(TransactionViewHolder holder, int position) {
             Transaction transaction = mTransactions.get(position);
             holder.name.setText(transaction.getName());
-//            holder.dateCreated.setText("March 23, 2018");
+            holder.dateCreated.setText(transaction.getDate());
 
             holder.cashValue.setText("$ " + Float.toString(transaction.getCashValue()));
             holder.barterValue.setText("Barter Value: " + Float.toString(transaction.getBarterValue()));
 
+            // TODO: Fade transaction if it's not accepted yet
             if (transaction.getIsActive()) {
-                if (transaction.getCreatorId() == FirebaseUtilities.getUser().getUid()) {
-                    // Current user is the one who created this transaction
-
-                } else {
-                    // Current user is one of the users who owes the creator of this transaction
-
-                }
+                // transaction is active
             } else {
                 // the transaction is not active yet (acknowledged by all parties)
-
             }
 
         } // onBindViewHolder
@@ -225,7 +219,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
 
                 // TODO: Set the viewholder values
                 name = (TextView) transactionView.findViewById(R.id.name);
-//                dateCreated = (TextView) transactionView.findViewById(R.id.dateCreated);
+                dateCreated = (TextView) transactionView.findViewById(R.id.dateCreated);
                 cashValue = (TextView) transactionView.findViewById(R.id.cashValueEditText);
                 barterValue = (TextView) transactionView.findViewById(R.id.barterValue);
 
@@ -235,6 +229,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             public void onClick(View v) {
                 int position = getAdapterPosition();
                 Log.d("SWAG", "Position: " + Integer.toString(position));
+                mCallback.callbackStartTransactionDetailsFragment(mTransactions.get(getAdapterPosition()));
             } // onClick
 
         } // TransactionViewHolder class
@@ -264,5 +259,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         void callbackDeleteAccount();
 
         void startAddTransactionFragment();
+
+        void callbackStartTransactionDetailsFragment(Transaction transaction);
     }
 }

@@ -14,6 +14,10 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
+
+import java.util.Date;
+import java.util.HashMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,7 +110,51 @@ public class AddTransactionFormFragment extends Fragment {
         createTransactionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.createTransaction();
+                EditText transactionNameEditText = v.findViewById(R.id.transactionNameEditText);
+                EditText peopleEditText = v.findViewById(R.id.peopleEditText);
+                EditText transactionNotesEditText = v.findViewById(R.id.transactionNotesEditText);
+                EditText cashValueEditText = v.findViewById(R.id.cashValueEditText);
+                EditText barterValueEditText = v.findViewById(R.id.barterValueEditText);
+                EditText barterUnitEditText = v.findViewById(R.id.barterUnitEditText);
+                RadioGroup borrowedLoaned = v.findViewById(R.id.borrowedLoanedRadioGroup);
+                int borrowedLoanedSelection = borrowedLoaned.getCheckedRadioButtonId();
+                String transactionName = transactionNameEditText.getText().toString();
+                String people = peopleEditText.getText().toString();
+                String cashValue = cashValueEditText.getText().toString();
+                String barterValue = barterValueEditText.getText().toString();
+                String barterUnit = barterUnitEditText.getText().toString();
+                String notes = transactionNotesEditText.getText().toString();
+                boolean isBorrowed;
+                float cashValueFloat;
+                float barterValueFloat;
+                HashMap<String, Boolean> targetUserIds = new HashMap<String, Boolean>();
+                HashMap<String, Boolean> acceptUserIds = new HashMap<String, Boolean>();
+
+                if(borrowedLoanedSelection == R.id.borrowedRadioButton){
+                    isBorrowed = true;
+                } else if(borrowedLoanedSelection == R.id.loanedRadioButton){
+                    isBorrowed = false;
+                } else{
+                    isBorrowed = false;
+                }
+
+                try{
+                    barterValueFloat = barterValue.length() == 0 ? -1 : Float.parseFloat(barterValue);
+                } catch(Exception e){
+                    barterValueFloat = -1;
+                }
+
+                try{
+                    cashValueFloat = Float.parseFloat(cashValue);
+                } catch(Exception e){
+                    cashValueFloat = -1;
+                }
+
+                targetUserIds.put(people, true);
+                acceptUserIds.put(FirebaseUtilities.getUser().getUid(), true);
+
+                presenter.createTransaction(transactionName, targetUserIds, cashValueFloat, barterValueFloat,
+                        barterUnit, isBorrowed, notes, acceptUserIds);
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });

@@ -14,17 +14,6 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/recurringHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="29dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="Recurring"
-            android:textAppearance="@android:style/TextAppearance.Material.Large"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/borrowedLoanedRadioGroup" />
-
-        <TextView
             android:id="@+id/transactionNameHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -79,8 +68,8 @@
             app:layout_constraintTop_toBottomOf="@+id/peopleEditText" />
 
         <RadioGroup
-            android:id="@+id/borrowedLoanedRadioGroup"
-            android:layout_width="match_parent"
+            android:id="@+id/radioGroup2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center_vertical"
@@ -90,24 +79,48 @@
             app:layout_constraintTop_toBottomOf="@id/peopleEditText">
 
             <RadioButton
-                android:id="@+id/borrowedRadioButton"
-                style="@android:style/Widget.Material.CompoundButton.RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Borrowed"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="226dp" />
-
-            <RadioButton
                 android:id="@+id/loanedRadioButton"
                 style="@android:style/Widget.Material.CompoundButton.RadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Loaned"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="104dp" />
+                android:text="Loaned" />
+
+            <RadioButton
+                android:id="@+id/borrowedRadioButton"
+                style="@android:style/Widget.Material.CompoundButton.RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Borrowed" />
         </RadioGroup>
+
+        <!--<TextView-->
+        <!--android:id="@+id/recurringHeader"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="29dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:text="Recurring"-->
+        <!--android:textAppearance="@android:style/TextAppearance.Material.Medium"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/radioGroup2" />-->
+
+
+        <!--<RadioGroup-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--tools:layout_editor_absoluteX="229dp"-->
+        <!--tools:layout_editor_absoluteY="233dp" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/textView2"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:text="Every"-->
+        <!--android:textAppearance="@android:style/TextAppearance.Material.Medium"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/recurringHeader" />-->
 
         <TextView
             android:id="@+id/cashHeader"

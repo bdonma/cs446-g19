@@ -1,6 +1,5 @@
 package com.ba.cg.jn.tl.barter;
 
-import java.util.Date;
 import java.util.Map;
 
 /**
@@ -8,33 +7,34 @@ import java.util.Map;
  */
 
 public class Transaction {
-    private String name;
-    private String creatorId;
-    private Map<String, Boolean> targetUserIds;
-    private float cashValue;
-    private float barterValue;
     private String barterUnit;
-    private boolean isBorrowed;
+    private float barterValue;
+    private float cashValue;
+    private String creatorId;
     private boolean isActive;
+    private boolean isBorrowed;
     private boolean isCompleted;
-    private boolean isRecurring;
-    private int recurringDays;
+//    private boolean isRecurring;
+//    private int recurringDays;
+    private String name;
     private String notes;
-    private Date creationDate;
+
+    private String date;
+    private String transactionId;
 
     private Map<String, Boolean> acceptedIds;
-
-    // TODO: add date created field
+    private Map<String, Boolean> targetUserIds;
 
     public Transaction() {
         // Empty constructor required to convert Firebase object into data object.
     }
 
-    public Transaction(String name, String creatorId, Map<String, Boolean> targetUserIds,
+    public Transaction(String name, String date, String creatorId, Map<String, Boolean> targetUserIds,
                        float cashValue, float barterValue, String barterUnit,
                        boolean isBorrowed, boolean isActive, boolean isCompleted, String notes,
-                       Map<String, Boolean> acceptedIds, Date creationDate) {
+                       Map<String, Boolean> acceptedIds) {
         this.name = name;
+        this.date = date;
         this.creatorId = creatorId;
         this.targetUserIds = targetUserIds;
         this.cashValue = cashValue;
@@ -45,11 +45,18 @@ public class Transaction {
         this.isCompleted = isCompleted;
         this.notes = notes;
         this.acceptedIds = acceptedIds;
-        this.creationDate = creationDate;
+    }
+
+    public String getTransactionId() {
+        return this.transactionId;
     }
 
     public String getName() {
         return this.name;
+    }
+
+    public String getDate() {
+        return this.date;
     }
 
     public String getCreatorId() {
@@ -90,6 +97,10 @@ public class Transaction {
 
     public Map<String, Boolean> getAcceptedIds() {
         return this.acceptedIds;
+    }
+
+    public void setTransactionId(String transactionId){
+        this.transactionId = transactionId;
     }
 
     public void setName(String name) {
@@ -136,7 +147,8 @@ public class Transaction {
         this.acceptedIds = acceptedIds;
     }
 
-    public Date getCreationDate(){
-        return creationDate;
+    public void setDate(String date) {
+        this.date = date;
     }
+
 } // Transaction
