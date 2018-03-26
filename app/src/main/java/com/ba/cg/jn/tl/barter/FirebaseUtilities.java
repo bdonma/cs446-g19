@@ -154,6 +154,15 @@ public class FirebaseUtilities {
     }
 
 
+    public static void removeTransactionWithUID(String uid) {
+        getDatabaseReference().child(_transactionsKey).child(uid).removeValue();
+    }
+
+    public static void removeTransactionFromUserList(String userID, String transactionID) {
+        getDatabaseReference().child(_usersKey).child(userID).child(_transactionsKey).child(transactionID).removeValue();
+    }
+
+
 
     /**
      * Fetches the list of transactions for user with uid

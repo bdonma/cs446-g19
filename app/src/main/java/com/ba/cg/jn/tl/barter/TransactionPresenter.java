@@ -8,6 +8,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Map;
+
 public class TransactionPresenter {
     private TransactionViewInterface mView;
     private boolean editModeOn;
@@ -94,6 +96,20 @@ public class TransactionPresenter {
 //                FirebaseUtilities.getDatabaseReference().child("transactions").child("transaction_key").setValue(currentTransaction);
 //
 //            }
+        }
+    }
+
+    public void completeTransaction() {
+
+        // Remove the transaction from the list of transactions
+        FirebaseUtilities.removeTransactionWithUID(transaction.getTransactionId());
+
+        // Remove transaction from creator transaction lists
+        FirebaseUtilities.removeTransactionFromUserList(transaction.getCreatorId(), transaction.getTransactionId());
+
+        // Remove transaction from targetedUserID transaction list
+        for (String key : transaction.getTargetUserIds().keySet()) {
+            FirebaseUtilities.removeTransactionFromUserList(key, transaction.getTransactionId());
         }
     }
 
