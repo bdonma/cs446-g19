@@ -10,12 +10,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TransactionFragment extends Fragment {
+public class TransactionFragment extends Fragment implements TransactionViewInterface {
     public static final String ARGS_TRANSACTION_ID = "transaction_id";
+
     private TransactionPresenter transactionPresenter;
 
     public TransactionFragment() {
@@ -51,6 +57,9 @@ public class TransactionFragment extends Fragment {
             }
         });
 
+//        View approvalView = v.findViewById(R.id.approvalGreyView);
+//        approvalView.setBackgroundColor(20);
+
 //        if(transaction.getIsBorrowed()){
 //            amountBorrowedLoanedHeader.setText("Amount Borrowed:");
 //        } else{
@@ -71,6 +80,21 @@ public class TransactionFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-//        transactionPresenter = new TransactionPresenter(this);
+        transactionPresenter = new TransactionPresenter(this);
+
+        transactionPresenter.getTransactionInformation();
+    }
+
+    public void showTransactionInformation() {
+
+    }
+
+    // TODO: Write the code to show approval screen
+    public void showApprovalScreen() {
+
+    }
+
+    public void showInformationScreen() {
+
     }
 }

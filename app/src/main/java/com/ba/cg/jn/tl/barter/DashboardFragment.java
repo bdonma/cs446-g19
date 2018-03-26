@@ -73,8 +73,8 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
+        } // switch
+    } // onOptionsItemSelected
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -111,7 +111,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         mPresenter = new DashboardPresenter(this);
         mPresenter.getInitialListOfTransaction();
         mPresenter.startUserTransactions();
-        mPresenter.calculateAmountsForTransaction();
+        mPresenter.calculateAndShowAmountsForTransaction();
     } // onViewCreated
 
     public void showListOfTransactions(List<Transaction> transactions) {
@@ -159,6 +159,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             return new TransactionViewHolder(itemView);
         } // onCreateViewHolder
 
+        // TODO: Complete the UI changes for transactions
         @Override
         public void onBindViewHolder(TransactionViewHolder holder, int position) {
             Transaction transaction = mTransactions.get(position);
@@ -168,17 +169,11 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             holder.cashValue.setText("$ " + Float.toString(transaction.getCashValue()));
             holder.barterValue.setText("Barter Value: " + Float.toString(transaction.getBarterValue()));
 
+            // TODO: Fade transaction if it's not accepted yet
             if (transaction.getIsActive()) {
-                if (transaction.getCreatorId() == FirebaseUtilities.getUser().getUid()) {
-                    // Current user is the one who created this transaction
-
-                } else {
-                    // Current user is one of the users who owes the creator of this transaction
-
-                }
+                // transaction is active
             } else {
                 // the transaction is not active yet (acknowledged by all parties)
-
             }
 
         } // onBindViewHolder
