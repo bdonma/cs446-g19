@@ -92,7 +92,7 @@ public class AddTransactionFormFragment extends Fragment {
                 EditText barterValueEditText = v.findViewById(R.id.barterValueEditText);
                 EditText barterUnitEditText = v.findViewById(R.id.barterUnitEditText);
                 RadioGroup borrowedLoaned = v.findViewById(R.id.borrowedLoanedRadioGroup);
-                int borrowedLoanedSlection = borrowedLoaned.getCheckedRadioButtonId();
+                int borrowedLoanedSelection = borrowedLoaned.getCheckedRadioButtonId();
                 String transactionName = transactionNameEditText.getText().toString();
                 String people = peopleEditText.getText().toString();
                 String cashValue = cashValueEditText.getText().toString();
@@ -104,11 +104,10 @@ public class AddTransactionFormFragment extends Fragment {
                 float barterValueFloat;
                 HashMap<String, Boolean> targetUserIds = new HashMap<String, Boolean>();
                 HashMap<String, Boolean> acceptUserIds = new HashMap<String, Boolean>();
-                Date creationDate = new Date();
 
-                if(borrowedLoanedSlection == R.id.borrowedRadioButton){
+                if(borrowedLoanedSelection == R.id.borrowedRadioButton){
                     isBorrowed = true;
-                } else if(borrowedLoanedSlection == R.id.loanedRadioButton){
+                } else if(borrowedLoanedSelection == R.id.loanedRadioButton){
                     isBorrowed = false;
                 } else{
                     isBorrowed = false;
@@ -127,10 +126,10 @@ public class AddTransactionFormFragment extends Fragment {
                 }
 
                 targetUserIds.put(people, true);
-                acceptUserIds.put(people, false);
+                acceptUserIds.put(FirebaseUtilities.getUser().getUid(), true);
 
                 presenter.createTransaction(transactionName, targetUserIds, cashValueFloat, barterValueFloat,
-                        barterUnit, isBorrowed, notes, acceptUserIds, creationDate);
+                        barterUnit, isBorrowed, notes, acceptUserIds);
                 getActivity().getSupportFragmentManager().popBackStack();
             }
         });

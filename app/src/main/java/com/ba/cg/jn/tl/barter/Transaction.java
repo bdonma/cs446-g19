@@ -7,11 +7,6 @@ import java.util.Map;
  */
 
 public class Transaction {
-    private String name;
-    private String creatorId;
-    private Map<String, Boolean> targetUserIds;
-    private float cashValue;
-    private float barterValue;
     private String barterUnit;
     private float barterValue;
     private float cashValue;
@@ -23,19 +18,23 @@ public class Transaction {
 //    private int recurringDays;
     private String name;
     private String notes;
-//    private Date creationDate;
-//    private Map<String, Boolean> acceptedIds;
+
+    private String date;
+    private String transactionId;
+
+    private Map<String, Boolean> acceptedIds;
     private Map<String, Boolean> targetUserIds;
 
     public Transaction() {
         // Empty constructor required to convert Firebase object into data object.
     }
 
-    public Transaction(String name, String creatorId, Map<String, Boolean> targetUserIds,
-                        float cashValue, float barterValue, String barterUnit,
-                        boolean isBorrowed, boolean isActive, boolean isCompleted, String notes,
-                        Map<String, Boolean> acceptedIds/*, Date creationDate */) {
+    public Transaction(String name, String date, String creatorId, Map<String, Boolean> targetUserIds,
+                       float cashValue, float barterValue, String barterUnit,
+                       boolean isBorrowed, boolean isActive, boolean isCompleted, String notes,
+                       Map<String, Boolean> acceptedIds) {
         this.name = name;
+        this.date = date;
         this.creatorId = creatorId;
         this.targetUserIds = targetUserIds;
         this.cashValue = cashValue;
@@ -45,16 +44,19 @@ public class Transaction {
         this.isActive = isActive;
         this.isCompleted = isCompleted;
         this.notes = notes;
-//        this.acceptedIds = acceptedIds;
-//        this.creationDate = creationDate;
+        this.acceptedIds = acceptedIds;
     }
 
-//    public void setTransactionId(String transactionId){
-//        this.transactionId = transactionId;
-//    }
+    public String getTransactionId() {
+        return this.transactionId;
+    }
 
     public String getName() {
         return this.name;
+    }
+
+    public String getDate() {
+        return this.date;
     }
 
     public String getCreatorId() {
@@ -93,9 +95,13 @@ public class Transaction {
         return this.notes;
     }
 
-//    public Map<String, Boolean> getAcceptedIds() {
-//        return this.acceptedIds;
-//    }
+    public Map<String, Boolean> getAcceptedIds() {
+        return this.acceptedIds;
+    }
+
+    public void setTransactionId(String transactionId){
+        this.transactionId = transactionId;
+    }
 
     public void setName(String name) {
         this.name = name;
@@ -137,16 +143,12 @@ public class Transaction {
         this.notes = notes;
     }
 
-//
-//    public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
-//        this.acceptedIds = acceptedIds;
-//    }
+    public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
+        this.acceptedIds = acceptedIds;
+    }
 
-//    public void setAcceptedIds(Map<String, Boolean> acceptedIds) {
-//        this.acceptedIds = acceptedIds;
-//    }
+    public void setDate(String date) {
+        this.date = date;
+    }
 
-//    public Date getCreationDate(){
-//        return creationDate;
-//    }
 } // Transaction

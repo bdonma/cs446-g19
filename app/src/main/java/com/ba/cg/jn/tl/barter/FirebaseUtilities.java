@@ -24,7 +24,6 @@ public class FirebaseUtilities {
     private static final String _transactionsKey = "transactions";
 
     // Transaction fields
-    private static final String _transactionId = "transactionId";
     private static final String _barterUnitKey = "barterUnit";
     private static final String _barterValueKey = "barterValue";
     private static final String _cashValueKey = "cashValue";
@@ -38,7 +37,9 @@ public class FirebaseUtilities {
     private static final String _fbAccessToken = "facebookAccessToken";
     private static final String _fbUserId = "facebookUserId";
     private static final String _emailKey = "email";
-
+    private static final String _transactionIdKey = "transactionId";
+    private static final String _acceptedIdsKey = "acceptedIds";
+    private static final String _dateKey = "date";
 
     public static FirebaseDatabase getDatabase() {
         return FirebaseDatabase.getInstance();
@@ -70,20 +71,27 @@ public class FirebaseUtilities {
         Query testQuery = FirebaseUtilities.getDatabaseReference().child(_usersKey).orderByChild(_emailKey).equalTo(transaction.getCreatorId());
         final String transactionKey = transactionRefPush.getKey();
         final DatabaseReference transactionRef = getDatabaseReference().child(_transactionsKey).child(transactionKey);
-//        transactionRef.child(_transactionId).setValue(transactionKey);
+
+        // TODO: might not need this first line
+        transaction.setTransactionId(transactionKey);
+
+        transactionRef.child(_transactionIdKey).setValue(transactionKey);
         transactionRef.child(_nameKey).setValue(transaction.getName());
         transactionRef.child(_cashValueKey).setValue(transaction.getCashValue());
         transactionRef.child(_isCompletedKey).setValue(false);
         transactionRef.child(_isActiveKey).setValue(false);
+        transactionRef.child(_dateKey).setValue(transaction.getDate());
+        transactionRef.child(_acceptedIdsKey).setValue(transaction.getAcceptedIds());
 
         if (transaction.getNotes().length() != 0) {
             transactionRef.child(_notesKey).setValue(transaction.getNotes());
         }
 
-        if ((transaction.getBarterValue() > 0) && (transaction.getBarterUnit().length() != 0)) {
+        // TODO: FIX THIS
+//        if ((transaction.getBarterValue() > 0) && (transaction.getBarterUnit().length() != 0)) {
             transactionRef.child(_barterUnitKey).setValue(transaction.getBarterUnit());
             transactionRef.child(_barterValueKey).setValue(transaction.getBarterValue());
-        }
+//        }
 
         if (transaction.getIsBorrowed()) {
             transactionRef.child(_isBorrowedKey).setValue(true);
@@ -120,10 +128,11 @@ public class FirebaseUtilities {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for (DataSnapshot userInfo : dataSnapshot.getChildren()) {
-                        String test = userInfo.getKey();
-                        transactionRef.child(_targetUserIds).child(test).setValue(true);
-                        usersRef.child(test).child(_transactionsKey).child(transactionKey).setValue(true);
-                        Log.d("TEST", test);
+                        String targetUID = userInfo.getKey();
+                        transactionRef.child(_targetUserIds).child(targetUID).setValue(true);
+                        transactionRef.child(_acceptedIdsKey).child(targetUID).setValue(false);
+                        usersRef.child(targetUID).child(_transactionsKey).child(transactionKey).setValue(true);
+                        Log.d("TEST", targetUID);
                     }
 
                     if(!dataSnapshot.exists()){
