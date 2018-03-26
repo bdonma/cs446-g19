@@ -4,6 +4,7 @@ package com.ba.cg.jn.tl.barter;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
 
         Bundle args = getArguments();
         String transactionId = args.getString(ARGS_TRANSACTION_ID, null);
-
+        Log.d("TRANSACTION_FRAG", transactionId);
 
         ConstraintLayout layout = (ConstraintLayout) v.findViewById(R.id.transactionLayout);
         TextView amountBorrowedLoanedHeader = v.findViewById(R.id.amountBorrowedLoanedHeader);
