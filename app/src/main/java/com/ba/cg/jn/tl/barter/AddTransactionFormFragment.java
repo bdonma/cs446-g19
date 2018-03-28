@@ -3,7 +3,9 @@ package com.ba.cg.jn.tl.barter;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.util.List;
@@ -30,6 +33,8 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
     private android.support.v7.app.ActionBar mActionBar;
     private AutoCompleteTextView mPeopleEditText;
 
+    private boolean isError = false;
+
     EditText mTransactionNameEditText;
     EditText mTransactionNotesEditText;
     EditText mCashValueEditText;
@@ -41,6 +46,14 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
 
     public AddTransactionFormFragment() {
         // Required empty public constructor
+    }
+
+    private void isStringEmpty(String text) {
+        if (text.isEmpty()) {
+            isError = true;
+        } else {
+            isError = false;
+        }
     }
 
     @Override
@@ -62,6 +75,8 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
         mBarterUnitEditText = v.findViewById(R.id.barterUnitEditText);
         mBorrowedLoaned = v.findViewById(R.id.borrowedLoanedRadioGroup);
         mPeopleEditText = v.findViewById(R.id.peopleEditText);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+        mPeopleEditText.setAdapter(adapter);
 
         mPeopleEditText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -70,38 +85,6 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
             }
         });
 
-
-//        addFriendsButton = v.findViewById(R.id.addFriendsButton);
-//        eResultList = v.findViewById(R.id.resultsFriendsSearch);
-//        addFriendsButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // TODO: get friends list from firebase
-//                //query Firebase to see users that match user's friendlist
-////                FacebookUtils.getTaggableFriends();
-//                //if user is Facebook user
-//            }
-//        });
-
-        //Facebook friend search
-
-//        final Spinner transactionTypeSpinner = (Spinner) v.findViewById(R.id.transactionTypeSpinner);
-//        ArrayAdapter<CharSequence> transactionTypeAdapter = ArrayAdapter.createFromResource(this.getActivity(),
-//                R.array.transaction_types, android.R.layout.simple_spinner_item);
-//        transactionTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        transactionTypeSpinner.setAdapter(transactionTypeAdapter);
-//
-//        final EditText mCashValueEditText = v.findViewById(R.id.mCashValueEditText);
-//        final EditText unitValueEditText = v.findViewById(R.id.unitValueEditText);
-//
-//        Spinner unitSpinner = (Spinner) v.findViewById(R.id.unitSpinner);
-//        ArrayAdapter<CharSequence> unitAdapter = ArrayAdapter.createFromResource(this.getActivity(),
-//                R.array.dummy_units, android.R.layout.simple_spinner_item);
-//        unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        unitSpinner.setAdapter(unitAdapter);
-//
-//        final EditText mTransactionNotesEditText = v.findViewById(R.id.mTransactionNotesEditText);
-//
         Button createTransactionButton = v.findViewById(R.id.createTransactionButton);
         createTransactionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,10 +95,11 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
                 HashMap<String, Boolean> targetUserIds = new HashMap<>();
                 HashMap<String, Boolean> acceptUserIds = new HashMap<>();
 
-                mPresenter.getUserUuid(mPeopleEditText.getText().toString());
                 int borrowedLoanedSelection = mBorrowedLoaned.getCheckedRadioButtonId();
                 String transactionName = mTransactionNameEditText.getText().toString();
+                isStringEmpty(transactionName);
                 String cashValue = mCashValueEditText.getText().toString();
+                isStringEmpty(cashValue);
                 String barterValue = mBarterValueEditText.getText().toString();
                 String barterUnit = mBarterUnitEditText.getText().toString();
                 String notes = mTransactionNotesEditText.getText().toString();
@@ -126,6 +110,7 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
                     isBorrowed = false;
                 } else {
                     isBorrowed = false;
+                    isError = true;
                 }
 
                 try {
@@ -143,14 +128,25 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
                 targetUserIds.put(mTargetUser, true);
                 acceptUserIds.put(FirebaseUtilities.getUser().getUid(), true);
 
-                mPresenter.createTransaction(transactionName, targetUserIds, cashValueFloat, barterValueFloat,
-                        barterUnit, isBorrowed, notes, acceptUserIds);
-                getActivity().getSupportFragmentManager().popBackStack();
+                if (targetUserIds.size() == 0) {
+                    isError = true;
+                }
+
+                if (isError) {
+                    Snackbar sbView = Snackbar.make(v, "Please fill in all mandatory fields", Snackbar.LENGTH_SHORT);
+                    sbView.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.holo_red_light));
+                    sbView.show();
+                } else {
+                    mPresenter.createTransaction(transactionName, targetUserIds, cashValueFloat, barterValueFloat,
+                            barterUnit, isBorrowed, notes, acceptUserIds);
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
             }
         });
 
         return v;
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -171,6 +167,6 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
 
     @Override
     public void sendToast() {
-        Toast.makeText(getContext(), "Firebase database error", Toast.LENGTH_SHORT);
+        Toast.makeText(getContext(), "Firebase database error", Toast.LENGTH_SHORT).show();
     }
 }
