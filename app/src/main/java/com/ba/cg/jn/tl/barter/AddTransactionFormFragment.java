@@ -73,38 +73,6 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
             }
         });
 
-
-//        addFriendsButton = v.findViewById(R.id.addFriendsButton);
-//        eResultList = v.findViewById(R.id.resultsFriendsSearch);
-//        addFriendsButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // TODO: get friends list from firebase
-//                //query Firebase to see users that match user's friendlist
-////                FacebookUtils.getTaggableFriends();
-//                //if user is Facebook user
-//            }
-//        });
-
-        //Facebook friend search
-
-//        final Spinner transactionTypeSpinner = (Spinner) v.findViewById(R.id.transactionTypeSpinner);
-//        ArrayAdapter<CharSequence> transactionTypeAdapter = ArrayAdapter.createFromResource(this.getActivity(),
-//                R.array.transaction_types, android.R.layout.simple_spinner_item);
-//        transactionTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        transactionTypeSpinner.setAdapter(transactionTypeAdapter);
-//
-//        final EditText mCashValueEditText = v.findViewById(R.id.mCashValueEditText);
-//        final EditText unitValueEditText = v.findViewById(R.id.unitValueEditText);
-//
-//        Spinner unitSpinner = (Spinner) v.findViewById(R.id.unitSpinner);
-//        ArrayAdapter<CharSequence> unitAdapter = ArrayAdapter.createFromResource(this.getActivity(),
-//                R.array.dummy_units, android.R.layout.simple_spinner_item);
-//        unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        unitSpinner.setAdapter(unitAdapter);
-//
-//        final EditText mTransactionNotesEditText = v.findViewById(R.id.mTransactionNotesEditText);
-//
         Button createTransactionButton = v.findViewById(R.id.createTransactionButton);
         createTransactionButton.setOnClickListener(new View.OnClickListener() {
             @Override

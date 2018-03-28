@@ -110,6 +110,7 @@ public class FacebookUtils {
         return facebookFriends;
     }
 
+    // TODO Excess code for future reference
 //    public static void getTaggableFriends() {
 //        new GraphRequest(
 //                AccessToken.getCurrentAccessToken(),
