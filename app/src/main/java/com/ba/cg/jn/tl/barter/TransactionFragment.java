@@ -199,6 +199,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
   
     public void setFriendTextView(String str){
         friendTextView.setText(str);
+    }
 
     // TODO: write these
     public void enableTransactionCompleteButton() {
