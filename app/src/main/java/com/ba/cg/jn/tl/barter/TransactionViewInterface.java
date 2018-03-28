@@ -5,7 +5,8 @@ package com.ba.cg.jn.tl.barter;
  */
 
 interface TransactionViewInterface {
-    void showTransactionInformation();
+    void showTransactionInformation(Transaction transaction);
     void showApprovalScreen();
     void showInformationScreen();
+    void setFriendTextView(String str);
 }

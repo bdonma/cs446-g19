@@ -8,7 +8,9 @@
     <View
         android:id="@+id/approvalGreyView"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="77dp" />
 
     <Button
         android:id="@+id/approvalOrSendButton"
@@ -26,40 +28,94 @@
 
 
     <TextView
-        android:id="@+id/transactionName"
+        android:id="@+id/amountBorrowedLoanedHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Amount"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/friendTextView" />
+
+    <TextView
+        android:id="@+id/creationDateHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="Transaction Name"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="Creation date"
         android:textAppearance="@android:style/TextAppearance.Material.Large"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/amountBorrowedLoanedHeader"
+        android:id="@+id/creationDateTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:text="Amount"
+        android:layout_height="30dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:text="-"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/transactionName" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creationDateHeader" />
 
     <TextView
-        android:id="@+id/amountBorrowedLoaned"
+        android:id="@+id/amountBorrowedLoanedTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:clickable="true"
-        android:text="$ Amount"
+        android:text="-"
         android:textAppearance="@android:style/TextAppearance.Material.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/amountBorrowedLoanedHeader" />
+
+    <TextView
+        android:id="@+id/peopleHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="People"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/creationDateTextView" />
+
+    <TextView
+        android:id="@+id/friendTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:text="-"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/peopleHeader" />
+
+    <TextView
+        android:id="@+id/additionalNotesHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Additional notes"
+        android:textAppearance="@android:style/TextAppearance.Material.Large"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/amountBorrowedLoanedTextView" />
+
+    <TextView
+        android:id="@+id/notesTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="-"
+        android:textAppearance="@android:style/TextAppearance.Material.Medium"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/additionalNotesHeader" />
 
     <Button
         android:id="@+id/editTransactionButton"

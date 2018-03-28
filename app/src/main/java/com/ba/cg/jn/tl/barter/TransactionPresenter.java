@@ -1,7 +1,6 @@
 package com.ba.cg.jn.tl.barter;
 
 import android.util.Log;
-import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,10 +42,33 @@ public class TransactionPresenter {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.getValue() != null) {
-
                     transaction = dataSnapshot.getValue(Transaction.class);
+                    mView.showTransactionInformation(transaction);
 
-                    mView.showTransactionInformation();
+                    for (String key : transaction.getTargetUserIds().keySet()) {
+                        Query transactionQuery = FirebaseUtilities.getDatabaseReference().child("users").child(key);
+                        transactionQuery.addValueEventListener(new ValueEventListener() {
+
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if (dataSnapshot.child("facebookUserId").getValue() != null) {
+                                    Log.d("found fbid", dataSnapshot.getValue().toString());
+                                    String friendName = (String) dataSnapshot.child("name").getValue();
+                                    mView.setFriendTextView(friendName);
+                                } else{
+                                    Log.d("fbid", "not found");
+                                    String friendEmail = (String) dataSnapshot.child("email").getValue();
+                                    mView.setFriendTextView(friendEmail);
+                                }
+
+                            } // onDataChange
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                            } // onCancelled
+
+                        });
+                    }
 
                     if (transaction.getIsActive()) {
                         mView.showInformationScreen();
