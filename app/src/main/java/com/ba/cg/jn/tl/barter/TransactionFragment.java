@@ -26,6 +26,9 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
     private TextView friendTextView;
     private TextView amountBorrowedLoanedTextView;
     private TextView notesTextView;
+    private TextView barterValueTextView;
+    private TextView barterUnitTextView;
+    private TextView amountBorrowedLoanedHeaderTextView;
 
     public TransactionFragment() {
         // Required empty public constructor
@@ -43,6 +46,9 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         friendTextView = v.findViewById(R.id.friendTextView);
         amountBorrowedLoanedTextView = v.findViewById(R.id.amountBorrowedLoanedTextView);
         notesTextView = v.findViewById(R.id.notesTextView);
+        barterValueTextView = v.findViewById(R.id.barterValueTextView);
+        barterUnitTextView = v.findViewById(R.id.barterUnitTextView);
+        amountBorrowedLoanedHeaderTextView = v.findViewById(R.id.amountBorrowedLoanedHeader);
 
         Log.d("TRANSACTION_FRAG", mTransactionId);
 
@@ -127,6 +133,20 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         creationDateTextView.setText(transaction.getDate());
         amountBorrowedLoanedTextView.setText("$ " + String.format("%,.2f", transaction.getCashValue()));
         notesTextView.setText(transaction.getNotes());
+
+        if(transaction.getBarterValue() >= 0){
+            barterValueTextView.setText(Float.toString(transaction.getBarterValue()));
+            barterUnitTextView.setText(transaction.getBarterUnit());
+        } else{
+            barterUnitTextView.setText("");
+            barterValueTextView.setText("");
+        }
+
+        if(transaction.getIsBorrowed()){
+            amountBorrowedLoanedHeaderTextView.setText("Amount borrowed");
+        } else {
+            amountBorrowedLoanedHeaderTextView.setText("Amount loaned");
+        }
 
 //        for (String key : transaction.getTargetUserIds().keySet()) {
 //            friendTextView.setText(key);

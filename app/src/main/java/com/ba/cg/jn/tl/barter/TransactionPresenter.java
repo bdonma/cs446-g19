@@ -54,8 +54,35 @@ public class TransactionPresenter {
                     transaction = dataSnapshot.getValue(Transaction.class);
                     mView.showTransactionInformation(transaction);
 
-                    for (String key : transaction.getTargetUserIds().keySet()) {
-                        Query transactionQuery = FirebaseUtilities.getDatabaseReference().child("users").child(key);
+                    Log.d("creator", transaction.getCreatorId());
+                    Log.d("current user", FirebaseUtilities.getUser().getUid());
+                    if(transaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())){
+                        for (String key : transaction.getTargetUserIds().keySet()) {
+                            Query transactionQuery = FirebaseUtilities.getDatabaseReference().child("users").child(key);
+                            transactionQuery.addValueEventListener(new ValueEventListener() {
+
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.child("facebookUserId").getValue() != null) {
+                                        Log.d("found fbid", dataSnapshot.getValue().toString());
+                                        String friendName = (String) dataSnapshot.child("name").getValue();
+                                        mView.setFriendTextView(friendName);
+                                    } else {
+                                        Log.d("fbid", "not found");
+                                        String friendEmail = (String) dataSnapshot.child("email").getValue();
+                                        mView.setFriendTextView(friendEmail);
+                                    }
+
+                                } // onDataChange
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                } // onCancelled
+
+                            });
+                        }
+                    } else{
+                        Query transactionQuery = FirebaseUtilities.getDatabaseReference().child("users").child(transaction.getCreatorId());
                         transactionQuery.addValueEventListener(new ValueEventListener() {
 
                             @Override
@@ -64,12 +91,7 @@ public class TransactionPresenter {
                                     Log.d("found fbid", dataSnapshot.getValue().toString());
                                     String friendName = (String) dataSnapshot.child("name").getValue();
                                     mView.setFriendTextView(friendName);
-                                } else{
-                                    Log.d("fbid", "not found");
-                                    String friendEmail = (String) dataSnapshot.child("email").getValue();
-                                    mView.setFriendTextView(friendEmail);
                                 }
-
                             } // onDataChange
 
                             @Override
@@ -78,7 +100,6 @@ public class TransactionPresenter {
 
                         });
                     }
-                  
                     mView.showTransactionInformation(transaction);
 
                     if (transaction.getIsActive()) {
