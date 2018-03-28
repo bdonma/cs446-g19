@@ -127,9 +127,9 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
 
                 if (mTargetUser == null) {
                     mTargetUser = mPeopleEditText.getText().toString();
-                } else {
-                    targetUserIds.put(mTargetUser, true);
                 }
+                targetUserIds.put(mTargetUser, true);
+
                 acceptUserIds.put(FirebaseUtilities.getUser().getUid(), true);
 
                 if (targetUserIds.size() == 0) {
