@@ -126,6 +126,8 @@ public class FirebaseUtilities {
                         String uuid = newUserRef.getKey();
                         usersRef.child(uuid).child(_transactionsKey).child(transactionKey).setValue(true);
                         usersRef.child(uuid).child(_emailKey).setValue(targetUserEmail);
+                        transactionRef.child(_targetUserIds).child(uuid).setValue(true);
+                        transactionRef.child(_acceptedIdsKey).child(uuid).setValue(false);
                     }
                 }
 
@@ -137,7 +139,6 @@ public class FirebaseUtilities {
 //
         }
     }
-
 
     public static void removeTransactionWithUID(String uid) {
         getDatabaseReference().child(_transactionsKey).child(uid).removeValue();
@@ -151,6 +152,9 @@ public class FirebaseUtilities {
         getDatabaseReference().child(_transactionsKey).child(transactionID).child(_acceptedIdsKey).child(userID).setValue(result);
     }
 
+    public static Query getListOfUserWithFacebookId(String fbId) {
+        return getDatabaseReference().child(_usersKey).orderByChild(_fbUserId).equalTo(fbId);
+    }
 
     /**
      * Fetches the list of transactions for user with uid

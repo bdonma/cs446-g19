@@ -41,7 +41,6 @@ public class DashboardPresenter {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 if (dataSnapshot != null) {
 
                     Map<String, Boolean> transactionIDs = new HashMap<String, Boolean>();
@@ -52,16 +51,16 @@ public class DashboardPresenter {
 
                             Transaction currentTransaction = transactionSnapshot.getValue(Transaction.class);
 
-                                if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
-                                    transactionIDs.put(transactionSnapshot.getKey(), true);
-                                    continue;
-                                } // if
+                            if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
+                                transactionIDs.put(transactionSnapshot.getKey(), true);
+                                continue;
+                            } // if
 
-                                for (Map.Entry<String, Boolean> entry : currentTransaction.getTargetUserIds().entrySet()) {
-                                    if (entry.getKey().equals(FirebaseUtilities.getUser().getUid())) {
-                                        transactionIDs.put(transactionSnapshot.getKey(), true);
-                                    } // if
-                                } // for
+                            for (Map.Entry<String, Boolean> entry : currentTransaction.getTargetUserIds().entrySet()) {
+                                if (entry.getKey().equals(FirebaseUtilities.getUser().getUid())) {
+                                    transactionIDs.put(transactionSnapshot.getKey(), true);
+                                } // if
+                            } // for
 
                         }
 
@@ -94,7 +93,7 @@ public class DashboardPresenter {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d("FIREBASE", "startUserTransactions:onChildAdded: Something was added to transactions");
 
-                if (dataSnapshot.getValue() != null) {
+                if (dataSnapshot.getValue() != null && dataSnapshot.exists()) {
                     // Get the UID of the newly added transaction
                     final String transactionID = dataSnapshot.getKey();
 
@@ -127,7 +126,7 @@ public class DashboardPresenter {
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 Log.d("FIREBASE", "startUserTransactions:onChildChanged: Something was changed in transactions");
 
-                if (dataSnapshot.getValue() != null) {
+                if (dataSnapshot.getValue() != null && dataSnapshot.exists()) {
                     // Get the UID of the newly changed transaction
                     final String transactionID = dataSnapshot.getKey();
 
@@ -163,7 +162,7 @@ public class DashboardPresenter {
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 Log.d("FIREBASE", "startUserTransactions:onChildRemoved: Something was removed from transactions");
 
-                if (dataSnapshot.getKey() != null) {
+                if (dataSnapshot.getKey() != null && dataSnapshot.exists()) {
                     // Get the UID of the newly removed transaction
                     final String transactionID = dataSnapshot.getKey();
 

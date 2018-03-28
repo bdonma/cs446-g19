@@ -5,17 +5,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 
 /**
@@ -26,6 +22,10 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
 
     private static String mTransactionId;
     private TransactionPresenter transactionPresenter;
+    private TextView creationDateTextView;
+    private TextView friendTextView;
+    private TextView amountBorrowedLoanedTextView;
+    private TextView notesTextView;
 
     public TransactionFragment() {
         // Required empty public constructor
@@ -39,6 +39,11 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
 
         Bundle args = getArguments();
         mTransactionId = args.getString(ARGS_TRANSACTION_ID, null);
+        creationDateTextView = v.findViewById(R.id.creationDateTextView);
+        friendTextView = v.findViewById(R.id.friendTextView);
+        amountBorrowedLoanedTextView = v.findViewById(R.id.amountBorrowedLoanedTextView);
+        notesTextView = v.findViewById(R.id.notesTextView);
+
         Log.d("TRANSACTION_FRAG", mTransactionId);
 
         ConstraintLayout layout = (ConstraintLayout) v.findViewById(R.id.transactionLayout);
@@ -109,10 +114,23 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         super.onViewCreated(view, savedInstanceState);
         transactionPresenter = new TransactionPresenter(this);
         transactionPresenter.getTransactionInformation(mTransactionId);
+
+
     }
 
-    public void showTransactionInformation() {
+    public void showTransactionInformation(Transaction transaction) {
+        android.support.v7.app.ActionBar mActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (mActionBar != null) {
+            mActionBar.setTitle(transaction.getName());
+        }
 
+        creationDateTextView.setText(transaction.getDate());
+        amountBorrowedLoanedTextView.setText("$ " + String.format("%,.2f", transaction.getCashValue()));
+        notesTextView.setText(transaction.getNotes());
+
+//        for (String key : transaction.getTargetUserIds().keySet()) {
+//            friendTextView.setText(key);
+//        }
     }
 
     // TODO: Write the code to show approval screen
@@ -177,6 +195,10 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
                 completeTransactionButton.setEnabled(false);
             }
         }
+    }
+  
+    public void setFriendTextView(String str){
+        friendTextView.setText(str);
     }
 
     // TODO: write these

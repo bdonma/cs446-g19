@@ -5,13 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
-
-import com.facebook.AccessToken;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class OnboardingActivity extends AppCompatActivity {
     static final String TAG = "Onboarding";
@@ -40,7 +34,7 @@ public class OnboardingActivity extends AppCompatActivity {
     private void startFirstOnboarding() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment onboarding1 = new Onboarding1Fragment();
+        Fragment onboarding1 = new OnboardingFragment();
 
         fragmentTransaction.replace(R.id.fragment_container, onboarding1);
         fragmentTransaction.addToBackStack(null);

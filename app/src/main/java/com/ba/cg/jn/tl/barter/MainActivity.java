@@ -21,6 +21,9 @@ import com.google.firebase.auth.UserInfo;
 
 import java.util.Arrays;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+
 public class MainActivity extends AppCompatActivity implements DashboardFragment.OnDashboardActionSelected {
     private static final int RC_SIGN_IN = 123;
 
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUtilities.addUser();
+                FacebookUtils.getFriendOnApp();
+// This will automatically trigger the migration if needed
                 for (UserInfo iuser : FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
                     if (iuser.getProviderId().equals("facebook.com")) {
                         System.out.println("User is signed in with Facebook");
@@ -51,8 +56,20 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Realm.getDefaultInstance().close();
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Realm.init(this);
+
+        final RealmConfiguration configuration = new RealmConfiguration.Builder().name("sample.realm").schemaVersion(2).migration(new RealmMigration()).build();
+        Realm.setDefaultConfiguration(configuration);
+        Realm.getInstance(configuration);
+
         setContentView(R.layout.activity_main);
         Fresco.initialize(this);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

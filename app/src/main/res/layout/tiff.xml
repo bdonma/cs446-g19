@@ -3,23 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
     android:layout_marginTop="8dp"
-    android:layout_weight="1"
-    android:scrollbars="vertical">
+    android:scrollbars="vertical"
+    tools:context="com.ba.cg.jn.tl.barter.DashboardFragment">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        tools:context="com.ba.cg.jn.tl.barter.DashboardFragment">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/transactionNameHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Transaction name: *"
+            android:text="Transaction name:"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -32,43 +30,60 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/transactionNameHeader" />
 
-        <TextView
-            android:id="@+id/peopleHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="People:*"
-            android:textAppearance="@android:style/TextAppearance.Material.Medium"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/transactionNameEditText" />
-
         <AutoCompleteTextView
             android:id="@+id/peopleEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:completionThreshold="1"
-            android:ems="10"
             android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/peopleHeader" />
 
         <TextView
+            android:id="@+id/peopleHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="People:"
+            android:textAppearance="@android:style/TextAppearance.Material.Medium"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/transactionNameEditText" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/addFriendsButton"
+            android:layout_width="30dp"
+            android:layout_height="37dp"
+            android:clickable="true"
+            android:src="@drawable/ic_add_white_24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/peopleEditText"
+            app:layout_constraintStart_toEndOf="@+id/peopleEditText" />
+
+        <TextView
             android:id="@+id/typeHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Type:*"
+            android:layout_marginTop="16dp"
+            android:text="Type:"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/peopleEditText" />
 
         <RadioGroup
-            android:id="@+id/borrowedLoanedRadioGroup"
-            android:layout_width="match_parent"
+            android:id="@+id/radioGroup2"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/typeHeader">
+            app:layout_constraintLeft_toRightOf="@id/typeHeader"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/peopleEditText">
+
+            <RadioButton
+                android:id="@+id/loanedRadioButton"
+                style="@android:style/Widget.Material.CompoundButton.RadioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Loaned" />
 
             <RadioButton
                 android:id="@+id/borrowedRadioButton"
@@ -76,31 +91,53 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Borrowed" />
-
-            <RadioButton
-                android:id="@+id/loanedRadioButton"
-                style="@android:style/Widget.Material.CompoundButton.RadioButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Loaned"
-                app:layout_constraintTop_toTopOf="parent" />
         </RadioGroup>
+
+        <!--<TextView-->
+        <!--android:id="@+id/recurringHeader"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="29dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:text="Recurring"-->
+        <!--android:textAppearance="@android:style/TextAppearance.Material.Medium"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/radioGroup2" />-->
+
+
+        <!--<RadioGroup-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--tools:layout_editor_absoluteX="229dp"-->
+        <!--tools:layout_editor_absoluteY="233dp" />-->
+
+        <!--<TextView-->
+        <!--android:id="@+id/textView2"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:text="Every"-->
+        <!--android:textAppearance="@android:style/TextAppearance.Material.Medium"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/recurringHeader" />-->
 
         <TextView
             android:id="@+id/cashHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cash:*"
+            android:layout_marginTop="16dp"
+            android:text="Cash"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/borrowedLoanedRadioGroup" />
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup2" />
 
         <EditText
             android:id="@+id/cashValueEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="$"
-            android:inputType="number"
+            android:inputType="textPersonName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cashHeader" />
 
@@ -108,22 +145,21 @@
             android:id="@+id/barterHeading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Barter (optional)"
+            android:layout_marginTop="16dp"
+            android:text="Barter (optional):"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cashValueEditText" />
-
 
         <EditText
             android:id="@+id/barterValueEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:hint="Quantity"
             android:inputType="textPersonName"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/barterUnitEditText"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barterHeading" />
+            app:layout_constraintTop_toBottomOf="@id/barterHeading" />
 
         <EditText
             android:id="@+id/barterUnitEditText"
@@ -133,41 +169,35 @@
             android:inputType="textPersonName"
             app:layout_constraintLeft_toRightOf="@id/barterValueEditText"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barterHeading" />
+            app:layout_constraintTop_toBottomOf="@id/barterHeading" />
 
         <TextView
             android:id="@+id/notesHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Additional notes"
+            android:layout_marginTop="16dp"
+            android:text="Additional Notes:"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/barterValueEditText" />
+
 
         <EditText
             android:id="@+id/transactionNotesEditText"
             style="@android:style/Widget.Holo.Light.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
             android:inputType="textMultiLine"
-            app:layout_constraintBottom_toTopOf="@+id/createTransactionButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/notesHeader"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/notesHeader" />
 
         <Button
             android:id="@+id/createTransactionButton"
             style="@style/FirebaseUI.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
             android:text="Create transaction"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
-
+            app:layout_constraintTop_toBottomOf="@id/transactionNotesEditText" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
 
