@@ -44,10 +44,11 @@ public class FacebookUtils {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
                         if (oldFriends.size() == 0 || !oldFriends.get(0).getFbId().equals(firstFriendId)) {
                             parseJSONResponse(response.getJSONObject());
                             getNextFriendsOnApp(response);
-                        }
+//                        }
                     }
                 });
         getRealmFacebookResults();
