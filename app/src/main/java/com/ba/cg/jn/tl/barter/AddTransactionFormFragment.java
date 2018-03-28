@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import java.util.List;
@@ -62,6 +63,8 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
         mBarterUnitEditText = v.findViewById(R.id.barterUnitEditText);
         mBorrowedLoaned = v.findViewById(R.id.borrowedLoanedRadioGroup);
         mPeopleEditText = v.findViewById(R.id.peopleEditText);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line, new ArrayList<String>());
+        mPeopleEditText.setAdapter(adapter);
 
         mPeopleEditText.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -112,7 +115,6 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
                 HashMap<String, Boolean> targetUserIds = new HashMap<>();
                 HashMap<String, Boolean> acceptUserIds = new HashMap<>();
 
-                mPresenter.getUserUuid(mPeopleEditText.getText().toString());
                 int borrowedLoanedSelection = mBorrowedLoaned.getCheckedRadioButtonId();
                 String transactionName = mTransactionNameEditText.getText().toString();
                 String cashValue = mCashValueEditText.getText().toString();
@@ -171,6 +173,6 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
 
     @Override
     public void sendToast() {
-        Toast.makeText(getContext(), "Firebase database error", Toast.LENGTH_SHORT);
+        Toast.makeText(getContext(), "Firebase database error", Toast.LENGTH_SHORT).show();
     }
 }
