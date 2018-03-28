@@ -1,14 +1,12 @@
 package com.ba.cg.jn.tl.barter;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -17,12 +15,11 @@ import com.facebook.drawee.view.SimpleDraweeView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Onboarding1Fragment extends Fragment {
-//    private Onboarding1Listener mCallback;
+public class OnboardingFragment extends Fragment {
 
     private int count = 0;
 
-    public Onboarding1Fragment() {
+    public OnboardingFragment() {
         // Required empty public constructor
     }
 
