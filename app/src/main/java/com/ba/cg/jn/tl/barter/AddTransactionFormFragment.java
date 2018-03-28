@@ -3,7 +3,9 @@ package com.ba.cg.jn.tl.barter;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,8 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
     private android.support.v7.app.ActionBar mActionBar;
     private AutoCompleteTextView mPeopleEditText;
 
+    private boolean isError = false;
+
     EditText mTransactionNameEditText;
     EditText mTransactionNotesEditText;
     EditText mCashValueEditText;
@@ -42,6 +46,14 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
 
     public AddTransactionFormFragment() {
         // Required empty public constructor
+    }
+
+    private void isStringEmpty(String text) {
+        if (text.isEmpty()) {
+            isError = true;
+        } else {
+            isError = false;
+        }
     }
 
     @Override
@@ -85,7 +97,9 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
 
                 int borrowedLoanedSelection = mBorrowedLoaned.getCheckedRadioButtonId();
                 String transactionName = mTransactionNameEditText.getText().toString();
+                isStringEmpty(transactionName);
                 String cashValue = mCashValueEditText.getText().toString();
+                isStringEmpty(cashValue);
                 String barterValue = mBarterValueEditText.getText().toString();
                 String barterUnit = mBarterUnitEditText.getText().toString();
                 String notes = mTransactionNotesEditText.getText().toString();
@@ -96,6 +110,7 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
                     isBorrowed = false;
                 } else {
                     isBorrowed = false;
+                    isError = true;
                 }
 
                 try {
@@ -113,14 +128,25 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
                 targetUserIds.put(mTargetUser, true);
                 acceptUserIds.put(FirebaseUtilities.getUser().getUid(), true);
 
-                mPresenter.createTransaction(transactionName, targetUserIds, cashValueFloat, barterValueFloat,
-                        barterUnit, isBorrowed, notes, acceptUserIds);
-                getActivity().getSupportFragmentManager().popBackStack();
+                if (targetUserIds.size() == 0) {
+                    isError = true;
+                }
+
+                if (isError) {
+                    Snackbar sbView = Snackbar.make(v, "Please fill in all mandatory fields", Snackbar.LENGTH_SHORT);
+                    sbView.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.holo_red_light));
+                    sbView.show();
+                } else {
+//                    mPresenter.createTransaction(transactionName, targetUserIds, cashValueFloat, barterValueFloat,
+//                            barterUnit, isBorrowed, notes, acceptUserIds);
+                    getActivity().getSupportFragmentManager().popBackStack();
+                }
             }
         });
 
         return v;
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

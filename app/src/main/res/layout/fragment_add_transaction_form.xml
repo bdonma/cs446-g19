@@ -19,7 +19,7 @@
             android:id="@+id/transactionNameHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Transaction name:"
+            android:text="Transaction name: *"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -36,7 +36,7 @@
             android:id="@+id/peopleHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="People:"
+            android:text="People:*"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/transactionNameEditText" />
@@ -55,7 +55,7 @@
             android:id="@+id/typeHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Type:"
+            android:text="Type:*"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/peopleEditText" />
@@ -90,8 +90,7 @@
             android:id="@+id/cashHeader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:text="Cash:"
+            android:text="Cash:*"
             android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/borrowedLoanedRadioGroup" />
@@ -101,6 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="$"
+            android:inputType="number"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cashHeader" />
 
