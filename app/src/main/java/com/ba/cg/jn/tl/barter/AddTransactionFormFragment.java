@@ -137,8 +137,8 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
                     sbView.getView().setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.holo_red_light));
                     sbView.show();
                 } else {
-//                    mPresenter.createTransaction(transactionName, targetUserIds, cashValueFloat, barterValueFloat,
-//                            barterUnit, isBorrowed, notes, acceptUserIds);
+                    mPresenter.createTransaction(transactionName, targetUserIds, cashValueFloat, barterValueFloat,
+                            barterUnit, isBorrowed, notes, acceptUserIds);
                     getActivity().getSupportFragmentManager().popBackStack();
                 }
             }
