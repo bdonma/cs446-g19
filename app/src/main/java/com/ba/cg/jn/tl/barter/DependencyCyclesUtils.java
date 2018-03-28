@@ -38,8 +38,6 @@ public class DependencyCycleUtils {
 
     public void handleDependencies() {
 
-
-
         selfuserStartUserTransactions();
         selfuserGetInitialListOfTransaction();
 
@@ -52,19 +50,23 @@ public class DependencyCycleUtils {
                 //to the lender
 
                 Map <String, Boolean> newTargetUsers = t.getTargetUserIds();
+
+                //label to break out of loop when done with the current transaction
                 nextTTransaction:
                 for (Map.Entry<String, Boolean> tuser : newTargetUsers.entrySet()) {
-                    //do graph call to get facebook setup
+                    //do Graph API call to get facebook setup
+
+
+
                     String lender = tuser.getKey();
                     //if lender has facebook and is a facebook friend
-                    FacebookUtils.getUserId()
+                    FacebookUtils.getUserId();
                     if  (lender is member of user friends){
                         userGetInitialListOfTransaction(lender);
                         userStartUserTransactions(lender);
                         //for all transactions where the lender borrowed money that wasnt from this transaction
                         for (Map.Entry<String, Transaction> entry2 : userTransactionMap.entrySet()) {
                             Transaction s = entry2.getValue();
-
 
                             if ((s.getTransactionID != t.getTransactionID) && (s.getIsBorrowed())) {
 
