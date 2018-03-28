@@ -90,7 +90,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
 
 
         View approvalView = v.findViewById(R.id.approvalGreyView);
-        v.setBackgroundColor(Color.parseColor("#EEEEEE"));
+        v.setBackgroundColor(Color.parseColor("#80E0E0E0"));
 
 //        if(transaction.getIsBorrowed()){
 //            amountBorrowedLoanedHeader.setText("Amount Borrowed:");
@@ -114,8 +114,6 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         super.onViewCreated(view, savedInstanceState);
         transactionPresenter = new TransactionPresenter(this);
         transactionPresenter.getTransactionInformation(mTransactionId);
-
-
     }
 
     public void showTransactionInformation(Transaction transaction) {
@@ -137,8 +135,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
     public void showApprovalScreen() {
         if (getView() != null) {
             View approvalView = getView().findViewById(R.id.approvalGreyView);
-            approvalView.setBackgroundColor(Color.parseColor("#000000"));
-            approvalView.setAlpha(1);
+            approvalView.setBackgroundColor(Color.parseColor("#80E0E0E0"));
 
             Button interactiveButton = getView().findViewById(R.id.editTransactionButton);
             interactiveButton.setBackgroundColor(Color.parseColor("#66BB6A"));
@@ -154,7 +151,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
     public void showApprovalScreenWithEditTransactionDisabled() {
         if (getView() != null) {
             View approvalView = getView().findViewById(R.id.approvalGreyView);
-            approvalView.setBackgroundColor(Color.parseColor("#000000"));
+            approvalView.setBackgroundColor(Color.parseColor("#80E0E0E0"));
             approvalView.setAlpha(1);
 
             Button interactiveButton = getView().findViewById(R.id.editTransactionButton);
@@ -163,7 +160,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
             interactiveButton.setEnabled(false);
 
             Button completeTransactionButton = getView().findViewById(R.id.complete_transaction_button);
-            completeTransactionButton.setBackgroundColor(Color.parseColor("#E0E0E0"));
+            completeTransactionButton.setBackgroundColor(Color.parseColor("#BDBDBD"));
             completeTransactionButton.setEnabled(false);
         }
     }
@@ -172,8 +169,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         if (getView() != null) {
 
             View informationView = getView().findViewById(R.id.approvalGreyView);
-            informationView.setBackgroundColor(Color.parseColor("#EEEEEE"));
-            informationView.setAlpha(0);
+            informationView.setBackgroundColor(Color.parseColor("#00ffffff"));
 
             Button interactiveButton = getView().findViewById(R.id.editTransactionButton);
             interactiveButton.setEnabled(true);
@@ -191,7 +187,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
                 completeTransactionButton.setBackgroundColor(Color.parseColor("#F44336"));
                 completeTransactionButton.setEnabled(true);
             } else {
-                completeTransactionButton.setBackgroundColor(Color.parseColor("#E0E0E0"));
+                completeTransactionButton.setBackgroundColor(Color.parseColor("#BDBDBD"));
                 completeTransactionButton.setEnabled(false);
             }
         }

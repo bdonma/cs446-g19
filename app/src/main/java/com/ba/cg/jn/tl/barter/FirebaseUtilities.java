@@ -11,6 +11,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -63,6 +64,84 @@ public class FirebaseUtilities {
         s.child(_nameKey).setValue(getUser().getDisplayName());
         s.child(_fbAccessToken).setValue(FacebookUtils.getAccessToken().getToken());
         s.child(_fbUserId).setValue(FacebookUtils.getUserId());
+    }
+
+    public static void checkForExistingUserAccounts() {
+
+        Query userQuery = getDatabaseReference().child(_usersKey).orderByChild(_emailKey).equalTo(FirebaseUtilities.getUser().getEmail());
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    if (dataSnapshot.getChildrenCount() > 1) {
+
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+
+                            if (userSnapshot.child(_fbUserId).getValue() == null) {
+
+                                final String oldUserKey = userSnapshot.getKey();
+
+                                Map<String, Boolean> transactionsToCopy = (HashMap<String, Boolean>) userSnapshot.child(_transactionsKey).getValue();
+
+                                for (Map.Entry<String, Boolean> entry : transactionsToCopy.entrySet()) {
+                                    Query transaction = getDatabaseReference().child(_transactionsKey).child(entry.getKey());
+                                    transaction.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()) {
+
+                                                // It'll never be creatorID
+
+                                                Map<String, Boolean> targetUserIds = (HashMap<String, Boolean>) dataSnapshot.child(_targetUserIds).getValue();
+                                                Map<String, Boolean> newTargetUserIds = new HashMap<String, Boolean>();
+
+                                                for (Map.Entry<String, Boolean> entry : targetUserIds.entrySet()) {
+                                                    if (entry.getKey() == oldUserKey) {
+                                                        newTargetUserIds.put(getUser().getUid(), entry.getValue());
+                                                    }
+                                                }
+
+                                                Map<String, Boolean> acceptedIds = (HashMap<String, Boolean>) dataSnapshot.child(_acceptedIdsKey).getValue();
+                                                Map<String, Boolean> newAcceptedIds = new HashMap<String, Boolean>();
+
+                                                for (Map.Entry<String, Boolean> entry : acceptedIds.entrySet()) {
+                                                    if (entry.getKey() == oldUserKey) {
+                                                        newAcceptedIds.put(getUser().getUid(), entry.getValue());
+                                                    }
+                                                }
+
+                                                getDatabaseReference().child(_transactionsKey).child(_targetUserIds).setValue(newTargetUserIds);
+                                                getDatabaseReference().child(_transactionsKey).child(_acceptedIdsKey).setValue(newAcceptedIds);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+
+                                }
+
+                            }
+                        }
+                    }
+
+                } // if
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+
+
     }
 
     public static void addTransaction(Transaction transaction) {
