@@ -125,7 +125,11 @@ public class AddTransactionFormFragment extends Fragment implements AddTransacti
                     cashValueFloat = -1;
                 }
 
-                targetUserIds.put(mTargetUser, true);
+                if (mTargetUser == null) {
+                    mTargetUser = mPeopleEditText.getText().toString();
+                } else {
+                    targetUserIds.put(mTargetUser, true);
+                }
                 acceptUserIds.put(FirebaseUtilities.getUser().getUid(), true);
 
                 if (targetUserIds.size() == 0) {
