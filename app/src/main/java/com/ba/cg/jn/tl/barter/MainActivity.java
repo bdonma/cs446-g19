@@ -37,8 +37,6 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 FirebaseUtilities.addUser();
-                FirebaseUtilities.checkForExistingUserAccounts();
-
                 FacebookUtils.getFriendOnApp();
 // This will automatically trigger the migration if needed
                 for (UserInfo iuser : FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {

@@ -26,6 +26,7 @@ public class DashboardPresenter {
 
     private DashboardViewInterface mView;
     private Map<String, Transaction> transactionMap = new HashMap<String, Transaction>();
+    private boolean checkedForPreviousTransactions = false;
 
     public DashboardPresenter(DashboardViewInterface view) {
         this.mView = view;
@@ -41,9 +42,6 @@ public class DashboardPresenter {
                 if (dataSnapshot.exists()) {
 
                     if (dataSnapshot.getChildrenCount() > 1) {
-
-                        Map<String, Boolean> transactionToSave = new HashMap<String, Boolean>();
-                        transactionToSave.put("fake", true);
 
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             if (userSnapshot.child("facebookUserId").getValue() == null) {
@@ -65,33 +63,29 @@ public class DashboardPresenter {
                                                 String oldUserKey = dataSnapshot.child("targetUserId").getValue(String.class);
 
                                                 Map<String, Boolean> targetUserIds = (HashMap<String, Boolean>) dataSnapshot.child("targetUserIds").getValue();
-                                                Map<String, Boolean> newTargetUserIds = new HashMap<String, Boolean>();
 
                                                 for (Map.Entry<String, Boolean> entry : targetUserIds.entrySet()) {
-
                                                     if (entry.getKey().equals(oldUserKey)) {
-                                                        newTargetUserIds.put(FirebaseUtilities.getUser().getUid(), entry.getValue());
+                                                        targetUserIds.put(FirebaseUtilities.getUser().getUid(), entry.getValue());
                                                     } else {
-                                                        newTargetUserIds.put(entry.getKey(), entry.getValue());
+                                                        targetUserIds.put(entry.getKey(), entry.getValue());
                                                     }
                                                 }
 
-                                                Map<String, Boolean> acceptedIds = (HashMap<String, Boolean>) dataSnapshot.child(_acceptedIdsKey).getValue();
-                                                Map<String, Boolean> newAcceptedIds = new HashMap<String, Boolean>();
-
+                                                Map<String, Boolean> acceptedIds = (HashMap<String, Boolean>) dataSnapshot.child("acceptedIds").getValue();
                                                 for (Map.Entry<String, Boolean> entry : acceptedIds.entrySet()) {
                                                     if (entry.getKey().equals(oldUserKey)) {
-                                                        newAcceptedIds.put(FirebaseUtilities.getUser().getUid(), entry.getValue());
+                                                        acceptedIds.put(FirebaseUtilities.getUser().getUid(), entry.getValue());
                                                     } else {
-                                                        newAcceptedIds.put(entry.getKey(), entry.getValue());
+                                                        acceptedIds.put(entry.getKey(), entry.getValue());
                                                     }
                                                 }
 
-                                                getDatabaseReference().child("transactions").child(transactionID).child("targetUserIds").setValue(newTargetUserIds);
-                                                getDatabaseReference().child("transactions").child(transactionID).child("acceptedIds").setValue(newAcceptedIds);
+                                                getDatabaseReference().child("transactions").child(transactionID).child("targetUserIds").setValue(targetUserIds);
+                                                getDatabaseReference().child("transactions").child(transactionID).child("acceptedIds").setValue(acceptedIds);
 
                                             } // if
-                                        }
+                                        } // onDataChange
 
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
@@ -99,9 +93,12 @@ public class DashboardPresenter {
                                         }
 
                                     });
-                                }
-                            }
-                        }
+
+                                } // for
+
+                                getDatabaseReference().child("users").child(userSnapshot.getKey()).removeValue();
+                            } // if
+                        } // for
                     }
                 }
             }

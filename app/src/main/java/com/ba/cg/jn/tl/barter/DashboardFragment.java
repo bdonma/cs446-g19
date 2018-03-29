@@ -110,6 +110,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter = new DashboardPresenter(this);
+        mPresenter.checkForTempUserTransactions();
         mPresenter.getInitialListOfTransaction();
         mPresenter.startUserTransactions();
         mPresenter.calculateAndShowAmountsForTransaction();
@@ -162,7 +163,6 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             return new TransactionViewHolder(itemView);
         } // onCreateViewHolder
 
-        // TODO: Complete the UI changes for transactions
         @Override
         public void onBindViewHolder(TransactionViewHolder holder, int position) {
             Transaction transaction = mTransactions.get(position);
@@ -177,23 +177,15 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
                 String cashValueText = "$ " + df.format(transaction.getCashValue());
                 holder.cashValue.setText(cashValueText);
 
-                if (!transaction.getBarterUnit().equals("") && transaction.getBarterValue() != -1) {
+                if (transaction.getBarterValue() == -1) {
+                    holder.barterValue.setText("");
+                } else {
                     DecimalFormat barterDF = new DecimalFormat("##.##");
                     String barterValueText = barterDF.format(transaction.getBarterValue());
                     holder.barterValue.setText(barterValueText + " " + transaction.getBarterUnit());
                 }
 
                 holder.container.setBackgroundColor(mPresenter.determineCellColor(transaction));
-
-                // TODO: Fade transaction if it's not accepted yet
-                if (transaction.getIsActive()) {
-                    // transaction is active
-//                    holder.container.setBackgroundColor(Color.parseColor("#"));
-
-                } else {
-//                    holder.container.setBackgroundColor(Color.parseColor());
-                    // the transaction is not active yet (acknowledged by all parties)
-                }
             }
 
         } // onBindViewHolder
