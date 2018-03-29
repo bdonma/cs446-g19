@@ -183,7 +183,7 @@ public class TransactionPresenter {
 
 
     public boolean canCompleteTransaction() {
-        return transaction.getIsCompleted();
+        return !transaction.getIsCompleted();
     } // conCompleteTransaction
 
     /**
