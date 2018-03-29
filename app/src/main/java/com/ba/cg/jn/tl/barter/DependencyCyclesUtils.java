@@ -64,7 +64,11 @@ public class DependencyCycleUtils {
 
                     String lender = tuser.getKey();
                     //if lender has facebook and is a facebook friend
-                    FacebookUtils.getUserId();
+                    //FacebookUtils.getUserId();
+
+
+
+
                     if  (lender is member of user friends){
                         userGetInitialListOfTransaction(lender);
                         userStartUserTransactions(lender);
