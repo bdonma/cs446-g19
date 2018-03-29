@@ -2,7 +2,6 @@ package com.ba.cg.jn.tl.barter;
 
 import android.util.Log;
 
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
@@ -10,12 +9,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Date;
 
-import io.realm.RealmResults;
+//import io.realm.RealmResults;
 
 /**
  * Created by brandonma on 2018-03-23.
@@ -55,14 +54,14 @@ public class AddTransactionFormPresenter {
     }
 
     public void startGettingFacebookFriends() {
-        RealmResults<FacebookFriend> results = FacebookUtils.getRealmFacebookResults();
-        List<String> adapterFriends = new ArrayList<>();
-        for (int i = 0; i < results.size(); i++) {
-            FacebookFriend friend = results.get(i);
-            mFacebookFriendsMap.put(friend.getName(), friend.getFbId());
-            adapterFriends.add(results.get(i).getName());
-        }
-        mView.addPeopleAdapter(adapterFriends);
+//        RealmResults<FacebookFriend> results = FacebookUtils.getRealmFacebookResults();
+//        List<String> adapterFriends = new ArrayList<>();
+//        for (int i = 0; i < results.size(); i++) {
+//            FacebookFriend friend = results.get(i);
+//            mFacebookFriendsMap.put(friend.getName(), friend.getFbId());
+//            adapterFriends.add(results.get(i).getName());
+//        }
+//        mView.addPeopleAdapter(adapterFriends);
     }
 
     public void getUserUuid(String userName) {
