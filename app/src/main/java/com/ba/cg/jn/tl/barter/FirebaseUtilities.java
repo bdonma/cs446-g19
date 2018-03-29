@@ -83,9 +83,12 @@ public class FirebaseUtilities {
 
                                 final String oldUserKey = userSnapshot.getKey();
 
+                                Map<String, Boolean> newTransactions = new HashMap<String, Boolean>();
                                 Map<String, Boolean> transactionsToCopy = (HashMap<String, Boolean>) userSnapshot.child(_transactionsKey).getValue();
 
-                                for (Map.Entry<String, Boolean> entry : transactionsToCopy.entrySet()) {
+                                for (final Map.Entry<String, Boolean> entry : transactionsToCopy.entrySet()) {
+                                    newTransactions.put(entry.getKey(), entry.getValue());
+
                                     Query transaction = getDatabaseReference().child(_transactionsKey).child(entry.getKey());
                                     transaction.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -93,14 +96,17 @@ public class FirebaseUtilities {
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             if (dataSnapshot.exists()) {
 
-                                                // It'll never be creatorID
+                                                String transactionID = dataSnapshot.child(_transactionIdKey).getValue(String.class);
 
                                                 Map<String, Boolean> targetUserIds = (HashMap<String, Boolean>) dataSnapshot.child(_targetUserIds).getValue();
                                                 Map<String, Boolean> newTargetUserIds = new HashMap<String, Boolean>();
 
                                                 for (Map.Entry<String, Boolean> entry : targetUserIds.entrySet()) {
-                                                    if (entry.getKey() == oldUserKey) {
+
+                                                    if (entry.getKey().equals(oldUserKey)) {
                                                         newTargetUserIds.put(getUser().getUid(), entry.getValue());
+                                                    } else {
+                                                        newTargetUserIds.put(entry.getKey(), entry.getValue());
                                                     }
                                                 }
 
@@ -108,13 +114,15 @@ public class FirebaseUtilities {
                                                 Map<String, Boolean> newAcceptedIds = new HashMap<String, Boolean>();
 
                                                 for (Map.Entry<String, Boolean> entry : acceptedIds.entrySet()) {
-                                                    if (entry.getKey() == oldUserKey) {
+                                                    if (entry.getKey().equals(oldUserKey)) {
                                                         newAcceptedIds.put(getUser().getUid(), entry.getValue());
+                                                    } else {
+                                                        newAcceptedIds.put(entry.getKey(), entry.getValue());
                                                     }
                                                 }
 
-                                                getDatabaseReference().child(_transactionsKey).child(_targetUserIds).setValue(newTargetUserIds);
-                                                getDatabaseReference().child(_transactionsKey).child(_acceptedIdsKey).setValue(newAcceptedIds);
+                                                getDatabaseReference().child(_transactionsKey).child(transactionID).child(_targetUserIds).setValue(newTargetUserIds);
+                                                getDatabaseReference().child(_transactionsKey).child(transactionID).child(_acceptedIdsKey).setValue(newAcceptedIds);
                                             }
                                         }
 
@@ -123,16 +131,18 @@ public class FirebaseUtilities {
 
                                         }
                                     });
+                                } // for
 
+                                getDatabaseReference().child(_usersKey).child(getUser().getUid()).child(_transactionsKey).setValue(newTransactions);
+                            } // if
 
-                                }
+                        } // if
 
-                            }
-                        }
-                    }
+                    } // if
 
                 } // if
-            }
+
+            } // onDataChange
 
             @Override
             public void onCancelled(DatabaseError databaseError) {

@@ -2,6 +2,7 @@ package com.ba.cg.jn.tl.barter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -167,6 +168,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             Transaction transaction = mTransactions.get(position);
 
             if (transaction != null) {
+
                 holder.name.setText(transaction.getName());
                 holder.dateCreated.setText(transaction.getDate());
 
@@ -175,14 +177,21 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
                 String cashValueText = "$ " + df.format(transaction.getCashValue());
                 holder.cashValue.setText(cashValueText);
 
-                DecimalFormat barterDF = new DecimalFormat("##.##");
-                String barterValueText = barterDF.format(transaction.getBarterValue());
-                holder.barterValue.setText(barterValueText + " " + transaction.getBarterUnit());
+                if (!transaction.getBarterUnit().equals("") && transaction.getBarterValue() != -1) {
+                    DecimalFormat barterDF = new DecimalFormat("##.##");
+                    String barterValueText = barterDF.format(transaction.getBarterValue());
+                    holder.barterValue.setText(barterValueText + " " + transaction.getBarterUnit());
+                }
+
+                holder.container.setBackgroundColor(mPresenter.determineCellColor(transaction));
 
                 // TODO: Fade transaction if it's not accepted yet
                 if (transaction.getIsActive()) {
                     // transaction is active
+//                    holder.container.setBackgroundColor(Color.parseColor("#"));
+
                 } else {
+//                    holder.container.setBackgroundColor(Color.parseColor());
                     // the transaction is not active yet (acknowledged by all parties)
                 }
             }

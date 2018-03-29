@@ -1,5 +1,6 @@
 package com.ba.cg.jn.tl.barter;
 
+import android.graphics.Color;
 import android.provider.ContactsContract;
 import android.util.Log;
 
@@ -41,7 +42,7 @@ public class DashboardPresenter {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
+                if (dataSnapshot.exists()) {
 
                     Map<String, Boolean> transactionIDs = new HashMap<String, Boolean>();
 
@@ -62,7 +63,7 @@ public class DashboardPresenter {
                                 } // if
                             } // for
 
-                        }
+                        } // if
 
                     } // for
 
@@ -208,17 +209,38 @@ public class DashboardPresenter {
                     amountIAmDue += currentTransaction.getCashValue();
                 } else {
                     amountIOwe += currentTransaction.getCashValue();
-                }
+                } // if
             } else {
                 if (currentTransaction.getIsBorrowed()) {
                     amountIOwe += currentTransaction.getCashValue();
                 } else {
                     amountIAmDue += currentTransaction.getCashValue();
-                }
-            }
-        }
+                } // if
+            } // if
+        } // for
 
         mView.showAmountsOfCurrentUser(amountIOwe, amountIAmDue);
-    }
+    } // calculateAndShowAmountsForTransaction
+
+    /**
+     * Determines what color the cell holding the transaction should be
+     * @param transaction - the transaction object
+     * @return - returns either green or red depending on the results
+     */
+    public int determineCellColor(Transaction transaction) {
+
+        if (transaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
+            if (transaction.getIsBorrowed()) {
+                return Color.parseColor("#81C784");
+            } // if
+        } else {
+            if (!transaction.getIsBorrowed()) {
+                return Color.parseColor("#81C784");
+            } // if
+        } // if
+
+        return Color.parseColor("#E57373");
+
+    } // determineCellColor
 
 } // DashboardPresenter
