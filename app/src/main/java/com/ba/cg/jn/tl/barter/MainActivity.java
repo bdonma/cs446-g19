@@ -101,8 +101,6 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
     }
 
     private void signInUi() {
-        AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.GoogleBuilder().build();
-        AuthUI.IdpConfig emailIdp = new AuthUI.IdpConfig.EmailBuilder().build();
         AuthUI.IdpConfig facebookIdp = new AuthUI.IdpConfig.FacebookBuilder()
                 .setPermissions(Arrays.asList("user_friends", "public_profile", "email"))
                 .build();
@@ -110,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements DashboardFragment
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
-                        .setAvailableProviders(Arrays.asList(facebookIdp, googleIdp, emailIdp))
+                        .setAvailableProviders(Arrays.asList(facebookIdp))
                         .build()
                 , RC_SIGN_IN);
     }
