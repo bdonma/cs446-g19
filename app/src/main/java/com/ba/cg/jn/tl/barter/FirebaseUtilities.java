@@ -79,7 +79,6 @@ public class FirebaseUtilities {
         transactionRef.child(_nameKey).setValue(transaction.getName());
         transactionRef.child(_cashValueKey).setValue(transaction.getCashValue());
         transactionRef.child(_isCompletedKey).setValue(false);
-        transactionRef.child(_isActiveKey).setValue(false);
         transactionRef.child(_dateKey).setValue(transaction.getDate());
         transactionRef.child(_acceptedIdsKey).setValue(transaction.getAcceptedIds());
 
@@ -114,10 +113,26 @@ public class FirebaseUtilities {
                         String targetUID = userInfo.getKey();
                         transactionRef.child(_targetUserIds).child(targetUID).setValue(true);
                         transactionRef.child(_acceptedIdsKey).child(targetUID).setValue(false);
-
                         usersRef.child(FirebaseUtilities.getUser().getUid()).child(_transactionsKey).child(transactionKey).setValue(true);
                         usersRef.child(targetUID).child(_transactionsKey).child(transactionKey).setValue(true);
                         Log.d("TEST", targetUID);
+
+                        Query fbQuery = FirebaseUtilities.getDatabaseReference().child(_usersKey).child(targetUID).child(_fbUserId);
+                        fbQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()){
+                                    transactionRef.child(_isActiveKey).setValue(false);
+                                } else{
+                                    transactionRef.child(_isActiveKey).setValue(true);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
                     }
 
                     if(!dataSnapshot.exists()){
@@ -127,7 +142,8 @@ public class FirebaseUtilities {
                         usersRef.child(uuid).child(_transactionsKey).child(transactionKey).setValue(true);
                         usersRef.child(uuid).child(_emailKey).setValue(targetUserEmail);
                         transactionRef.child(_targetUserIds).child(uuid).setValue(true);
-                        transactionRef.child(_acceptedIdsKey).child(uuid).setValue(false);
+                        transactionRef.child(_acceptedIdsKey).child(uuid).setValue(true);
+                        transactionRef.child(_isActiveKey).setValue(true);
                     }
                 }
 
@@ -136,7 +152,6 @@ public class FirebaseUtilities {
 
                 }
             });
-//
         }
         DependencyCycleUtils.handleDependencies();
         Log.d("testingdependencies", "Got here");
