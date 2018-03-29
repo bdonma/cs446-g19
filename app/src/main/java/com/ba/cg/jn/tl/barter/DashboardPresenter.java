@@ -1,5 +1,6 @@
 package com.ba.cg.jn.tl.barter;
 
+import android.graphics.Color;
 import android.provider.ContactsContract;
 import android.util.Log;
 
@@ -25,9 +26,98 @@ public class DashboardPresenter {
 
     private DashboardViewInterface mView;
     private Map<String, Transaction> transactionMap = new HashMap<String, Transaction>();
+    private boolean checkedForPreviousTransactions = false;
 
     public DashboardPresenter(DashboardViewInterface view) {
         this.mView = view;
+    }
+
+    public void checkForTempUserTransactions() {
+        Query userQuery = FirebaseUtilities.getDatabaseReference().child("users")
+                .orderByChild("email").equalTo(FirebaseUtilities.getUser().getEmail());
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    if (dataSnapshot.getChildrenCount() > 1) {
+
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            if (userSnapshot.child("facebookUserId").getValue() == null) {
+
+                                Map<String, Boolean> transactionList = (HashMap<String, Boolean>) userSnapshot.child("transactions").getValue();
+
+                                for (String key : transactionList.keySet()) {
+                                    getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid())
+                                            .child("transactions").child(key).setValue(true);
+
+                                    Query transactionQuery = getDatabaseReference().child("transactions").child(key);
+                                    transactionQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()) {
+
+                                                String transactionID = dataSnapshot.child("transactionId").getValue(String.class);
+
+                                                Map<String, Boolean> targetUserIds = (HashMap<String, Boolean>) dataSnapshot.child("targetUserIds").getValue();
+                                                String oldUserKey = new String();
+
+                                                for (String key : targetUserIds.keySet()) {
+                                                    oldUserKey = key;
+                                                }
+
+
+                                                for (Map.Entry<String, Boolean> entry : targetUserIds.entrySet()) {
+                                                    if (entry.getKey().equals(oldUserKey)) {
+                                                        targetUserIds.remove(oldUserKey);
+                                                        targetUserIds.put(FirebaseUtilities.getUser().getUid(), entry.getValue());
+                                                    } else {
+                                                        targetUserIds.put(entry.getKey(), entry.getValue());
+                                                    }
+                                                }
+
+                                                Map<String, Boolean> acceptedIds = (HashMap<String, Boolean>) dataSnapshot.child("acceptedIds").getValue();
+                                                for (Map.Entry<String, Boolean> entry : acceptedIds.entrySet()) {
+                                                    if (entry.getKey().equals(oldUserKey)) {
+                                                        acceptedIds.remove(oldUserKey);
+                                                        acceptedIds.put(FirebaseUtilities.getUser().getUid(), entry.getValue());
+                                                    } else {
+                                                        acceptedIds.put(entry.getKey(), entry.getValue());
+                                                    }
+                                                }
+
+                                                getDatabaseReference().child("transactions").child(transactionID).child("targetUserIds").setValue(targetUserIds);
+                                                getDatabaseReference().child("transactions").child(transactionID).child("acceptedIds").setValue(acceptedIds);
+
+                                            } // if
+                                        } // onDataChange
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+
+                                    });
+
+                                } // for
+
+                                getDatabaseReference().child("users").child(userSnapshot.getKey()).removeValue();
+                            } // if
+                        } // for
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+
+
     }
 
     /**
@@ -41,9 +131,7 @@ public class DashboardPresenter {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot != null) {
-
-                    Map<String, Boolean> transactionIDs = new HashMap<String, Boolean>();
+                if (dataSnapshot.exists()) {
 
                     for (DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
 
@@ -52,21 +140,22 @@ public class DashboardPresenter {
                             Transaction currentTransaction = transactionSnapshot.getValue(Transaction.class);
 
                             if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
-                                transactionIDs.put(transactionSnapshot.getKey(), true);
+                                getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid())
+                                        .child("transactions").child(transactionSnapshot.getKey()).setValue(true);
                                 continue;
                             } // if
 
                             for (Map.Entry<String, Boolean> entry : currentTransaction.getTargetUserIds().entrySet()) {
                                 if (entry.getKey().equals(FirebaseUtilities.getUser().getUid())) {
-                                    transactionIDs.put(transactionSnapshot.getKey(), true);
+                                    getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid())
+                                            .child("transactions").child(transactionSnapshot.getKey()).setValue(true);
                                 } // if
                             } // for
 
-                        }
+                        } // if
 
                     } // for
 
-                    FirebaseUtilities.setListOfUserTransactionsWithUID(FirebaseUtilities.getUser().getUid(), transactionIDs);
                 } // if
 
             } // addListenerForSingleValueEvent
@@ -208,17 +297,38 @@ public class DashboardPresenter {
                     amountIAmDue += currentTransaction.getCashValue();
                 } else {
                     amountIOwe += currentTransaction.getCashValue();
-                }
+                } // if
             } else {
                 if (currentTransaction.getIsBorrowed()) {
                     amountIOwe += currentTransaction.getCashValue();
                 } else {
                     amountIAmDue += currentTransaction.getCashValue();
-                }
-            }
-        }
+                } // if
+            } // if
+        } // for
 
         mView.showAmountsOfCurrentUser(amountIOwe, amountIAmDue);
-    }
+    } // calculateAndShowAmountsForTransaction
+
+    /**
+     * Determines what color the cell holding the transaction should be
+     * @param transaction - the transaction object
+     * @return - returns either green or red depending on the results
+     */
+    public int determineCellColor(Transaction transaction) {
+
+        if (transaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
+            if (transaction.getIsBorrowed()) {
+                return Color.parseColor("#81C784");
+            } // if
+        } else {
+            if (!transaction.getIsBorrowed()) {
+                return Color.parseColor("#81C784");
+            } // if
+        } // if
+
+        return Color.parseColor("#E57373");
+
+    } // determineCellColor
 
 } // DashboardPresenter

@@ -2,6 +2,7 @@ package com.ba.cg.jn.tl.barter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -109,6 +110,7 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mPresenter = new DashboardPresenter(this);
+        mPresenter.checkForTempUserTransactions();
         mPresenter.getInitialListOfTransaction();
         mPresenter.startUserTransactions();
         mPresenter.calculateAndShowAmountsForTransaction();
@@ -161,12 +163,12 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
             return new TransactionViewHolder(itemView);
         } // onCreateViewHolder
 
-        // TODO: Complete the UI changes for transactions
         @Override
         public void onBindViewHolder(TransactionViewHolder holder, int position) {
             Transaction transaction = mTransactions.get(position);
 
             if (transaction != null) {
+
                 holder.name.setText(transaction.getName());
                 holder.dateCreated.setText(transaction.getDate());
 
@@ -175,16 +177,15 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
                 String cashValueText = "$ " + df.format(transaction.getCashValue());
                 holder.cashValue.setText(cashValueText);
 
-                DecimalFormat barterDF = new DecimalFormat("##.##");
-                String barterValueText = barterDF.format(transaction.getBarterValue());
-                holder.barterValue.setText(barterValueText + " " + transaction.getBarterUnit());
-
-                // TODO: Fade transaction if it's not accepted yet
-                if (transaction.getIsActive()) {
-                    // transaction is active
+                if (transaction.getBarterValue() == -1) {
+                    holder.barterValue.setText("");
                 } else {
-                    // the transaction is not active yet (acknowledged by all parties)
+                    DecimalFormat barterDF = new DecimalFormat("##.##");
+                    String barterValueText = barterDF.format(transaction.getBarterValue());
+                    holder.barterValue.setText(barterValueText + " " + transaction.getBarterUnit());
                 }
+
+                holder.container.setBackgroundColor(mPresenter.determineCellColor(transaction));
             }
 
         } // onBindViewHolder
