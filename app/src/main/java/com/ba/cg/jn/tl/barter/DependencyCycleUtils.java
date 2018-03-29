@@ -462,7 +462,7 @@ public class DependencyCycleUtils {
      * to the currentUsers transactions and respond accordingly.
      */
 
-    public static void selfuserGetInitialListOfTransaction() {
+    private static void selfuserGetInitialListOfTransaction() {
         Query transactionListQuery = FirebaseUtilities.getDatabaseReference().child("transactions");
         transactionListQuery.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -508,7 +508,7 @@ public class DependencyCycleUtils {
      * Start userQuery to add ChildEventListener to track whenever changes are made
      * to the currentUsers transactions and respond accordingly.
      */
-    public static void selfuserStartUserTransactions() {
+    private static void selfuserStartUserTransactions() {
         Query userQuery = FirebaseUtilities.getListOfUserTransactionsWithUID(FirebaseUtilities.getUser().getUid());
         userQuery.addChildEventListener(new ChildEventListener() {
 
@@ -632,7 +632,7 @@ public class DependencyCycleUtils {
     } // startUserTransactions
 
 
-    public static void selfuserGetUserFriends() {
+    private static void selfuserGetUserFriends() {
         RealmResults<FacebookFriend> selfFriends = FacebookUtils.getRealmFacebookResults();
         List<String> adapterFriends = new ArrayList<>();
 
@@ -651,7 +651,7 @@ public class DependencyCycleUtils {
      * to the currentUsers transactions and respond accordingly.
      */
 
-    public static void userGetInitialListOfTransaction(final String taggedUserID) {
+    private static void userGetInitialListOfTransaction(final String taggedUserID) {
         Query transactionListQuery = FirebaseUtilities.getDatabaseReference().child("transactions");
         transactionListQuery.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -697,7 +697,7 @@ public class DependencyCycleUtils {
      * Start userQuery to add ChildEventListener to track whenever changes are made
      * to the currentUsers transactions and respond accordingly.
      */
-    public static void userStartUserTransactions(String taggedUserID) {
+    private static void userStartUserTransactions(String taggedUserID) {
         Query userQuery = FirebaseUtilities.getListOfUserTransactionsWithUID(taggedUserID);
         userQuery.addChildEventListener(new ChildEventListener() {
 
