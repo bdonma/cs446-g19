@@ -60,12 +60,18 @@ public class DashboardPresenter {
                                             if (dataSnapshot.exists()) {
 
                                                 String transactionID = dataSnapshot.child("transactionId").getValue(String.class);
-                                                String oldUserKey = dataSnapshot.child("targetUserId").getValue(String.class);
 
                                                 Map<String, Boolean> targetUserIds = (HashMap<String, Boolean>) dataSnapshot.child("targetUserIds").getValue();
+                                                String oldUserKey = new String();
+
+                                                for (String key : targetUserIds.keySet()) {
+                                                    oldUserKey = key;
+                                                }
+
 
                                                 for (Map.Entry<String, Boolean> entry : targetUserIds.entrySet()) {
                                                     if (entry.getKey().equals(oldUserKey)) {
+                                                        targetUserIds.remove(oldUserKey);
                                                         targetUserIds.put(FirebaseUtilities.getUser().getUid(), entry.getValue());
                                                     } else {
                                                         targetUserIds.put(entry.getKey(), entry.getValue());
@@ -75,6 +81,7 @@ public class DashboardPresenter {
                                                 Map<String, Boolean> acceptedIds = (HashMap<String, Boolean>) dataSnapshot.child("acceptedIds").getValue();
                                                 for (Map.Entry<String, Boolean> entry : acceptedIds.entrySet()) {
                                                     if (entry.getKey().equals(oldUserKey)) {
+                                                        acceptedIds.remove(oldUserKey);
                                                         acceptedIds.put(FirebaseUtilities.getUser().getUid(), entry.getValue());
                                                     } else {
                                                         acceptedIds.put(entry.getKey(), entry.getValue());
