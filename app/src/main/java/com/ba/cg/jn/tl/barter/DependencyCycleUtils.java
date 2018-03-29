@@ -36,9 +36,8 @@ public class DependencyCycleUtils {
 
     private static Map<String, Transaction> selfuserTransactionMap = new HashMap<String, Transaction>();
     private static HashMap<String, String> selfuserListOfFriends = new HashMap<>();
-
-
     private static Map<String, Transaction> userTransactionMap = new HashMap<String, Transaction>();
+
 
     private static String currentFBUserID;
 
@@ -58,8 +57,10 @@ public class DependencyCycleUtils {
         //(every Transaction t for user)
         for (Map.Entry<String, Transaction> entry : selfuserTransactionMap.entrySet())
         {
-            //user borrowed money
+            setFBuserID(null);
             Transaction t = entry.getValue();
+
+            //user borrowed money
             if (t.getIsBorrowed()) {
                 //to the lender
 
@@ -68,13 +69,7 @@ public class DependencyCycleUtils {
                 //label to break out of loop when done with the current transaction
                 nextTTransaction:
                 for (Map.Entry<String, Boolean> tuser : newTargetUsers.entrySet()) {
-                    //do Graph API call to get facebook setup
-
-
                     final String lender = tuser.getKey();
-                    //if lender has facebook and is a facebook friend
-                    //FacebookUtils.getUserId();
-
 
                     Query selfuserListQuery = FirebaseUtilities.getDatabaseReference().child("users");
                     selfuserListQuery.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -116,6 +111,7 @@ public class DependencyCycleUtils {
                     if (firstlenderFBid == null) {
                         break nextTTransaction;
                     }
+                    //Check if the lender is friends
                     else if (selfuserListOfFriends.get(firstlenderFBid) != null) {
                         userGetInitialListOfTransaction(lender);
                         userStartUserTransactions(lender);
@@ -127,7 +123,7 @@ public class DependencyCycleUtils {
 
                                 nextSTransaction:
                                 for (Map.Entry<String, Boolean> lender2 : s.getTargetUserIds().entrySet()) {
-
+                                    setFBuserID(null);
 
                                     Query userListQuery = FirebaseUtilities.getDatabaseReference().child("users");
                                     userListQuery.addListenerForSingleValueEvent(new ValueEventListener() {
