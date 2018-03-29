@@ -33,15 +33,23 @@ public class OnboardingFragment extends Fragment {
         final TextView titleText = v.findViewById(R.id.title);
 
         final SimpleDraweeView mainImage = v.findViewById(R.id.onboarding_view);
-        mainImage.setImageResource(R.drawable.pic);
+        mainImage.setImageResource(R.drawable.friends);
 //        mainImage.setImageURI("https://ibb.co/egS6DH");
 
         nextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (count == 0) {
-                    mainImage.setImageResource(R.drawable.money);
-                    titleText.setText("You can create your own transaction");
+                    mainImage.setImageResource(R.drawable.barter);
+                    titleText.setText("Pay someone back with everday things instead!");
+                    count++;
+                } else if (count == 1) {
+                    mainImage.setImageResource(R.drawable.approve);
+                    titleText.setText("Approve each transaction to know what you owe");
+                    count++;
+                } else if (count == 2) {
+                    mainImage.setImageResource(R.drawable.startnow);
+                    titleText.setText("Start making Transactions now!");
                     count++;
                 } else {
                     getActivity().finish();

@@ -91,6 +91,8 @@ public class DashboardPresenter {
                                                 getDatabaseReference().child("transactions").child(transactionID).child("targetUserIds").setValue(targetUserIds);
                                                 getDatabaseReference().child("transactions").child(transactionID).child("acceptedIds").setValue(acceptedIds);
 
+                                                getInitialListOfTransaction();
+
                                             } // if
                                         } // onDataChange
 
@@ -155,6 +157,7 @@ public class DashboardPresenter {
                         } // if
 
                     } // for
+                    startUserTransactions();
 
                 } // if
 
@@ -312,6 +315,7 @@ public class DashboardPresenter {
 
     /**
      * Determines what color the cell holding the transaction should be
+     *
      * @param transaction - the transaction object
      * @return - returns either green or red depending on the results
      */
