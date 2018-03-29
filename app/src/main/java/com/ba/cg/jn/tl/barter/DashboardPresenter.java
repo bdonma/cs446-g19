@@ -31,6 +31,91 @@ public class DashboardPresenter {
         this.mView = view;
     }
 
+    public void checkForTempUserTransactions() {
+        Query userQuery = FirebaseUtilities.getDatabaseReference().child("users")
+                .orderByChild("email").equalTo(FirebaseUtilities.getUser().getEmail());
+        userQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    if (dataSnapshot.getChildrenCount() > 1) {
+
+                        Map<String, Boolean> transactionToSave = new HashMap<String, Boolean>();
+                        transactionToSave.put("fake", true);
+
+                        for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                            if (userSnapshot.child("facebookUserId").getValue() == null) {
+
+                                Map<String, Boolean> transactionList = (HashMap<String, Boolean>) userSnapshot.child("transactions").getValue();
+
+                                for (String key : transactionList.keySet()) {
+                                    getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid())
+                                            .child("transactions").child(key).setValue(true);
+
+                                    Query transactionQuery = getDatabaseReference().child("transactions").child(key);
+                                    transactionQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()) {
+
+                                                String transactionID = dataSnapshot.child("transactionId").getValue(String.class);
+                                                String oldUserKey = dataSnapshot.child("targetUserId").getValue(String.class);
+
+                                                Map<String, Boolean> targetUserIds = (HashMap<String, Boolean>) dataSnapshot.child("targetUserIds").getValue();
+                                                Map<String, Boolean> newTargetUserIds = new HashMap<String, Boolean>();
+
+                                                for (Map.Entry<String, Boolean> entry : targetUserIds.entrySet()) {
+
+                                                    if (entry.getKey().equals(oldUserKey)) {
+                                                        newTargetUserIds.put(FirebaseUtilities.getUser().getUid(), entry.getValue());
+                                                    } else {
+                                                        newTargetUserIds.put(entry.getKey(), entry.getValue());
+                                                    }
+                                                }
+
+                                                Map<String, Boolean> acceptedIds = (HashMap<String, Boolean>) dataSnapshot.child(_acceptedIdsKey).getValue();
+                                                Map<String, Boolean> newAcceptedIds = new HashMap<String, Boolean>();
+
+                                                for (Map.Entry<String, Boolean> entry : acceptedIds.entrySet()) {
+                                                    if (entry.getKey().equals(oldUserKey)) {
+                                                        newAcceptedIds.put(FirebaseUtilities.getUser().getUid(), entry.getValue());
+                                                    } else {
+                                                        newAcceptedIds.put(entry.getKey(), entry.getValue());
+                                                    }
+                                                }
+
+                                                getDatabaseReference().child("transactions").child(transactionID).child("targetUserIds").setValue(newTargetUserIds);
+                                                getDatabaseReference().child("transactions").child(transactionID).child("acceptedIds").setValue(newAcceptedIds);
+
+                                            } // if
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+
+                                    });
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+
+
+    }
+
     /**
      * Initially called by DashboardPresenter during startup. Searches database for existing
      * transactions that the current user is a part of. Adds the transactions to a list that
@@ -44,8 +129,6 @@ public class DashboardPresenter {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
-                    Map<String, Boolean> transactionIDs = new HashMap<String, Boolean>();
-
                     for (DataSnapshot transactionSnapshot : dataSnapshot.getChildren()) {
 
                         if (transactionSnapshot.getValue() != null) {
@@ -53,13 +136,15 @@ public class DashboardPresenter {
                             Transaction currentTransaction = transactionSnapshot.getValue(Transaction.class);
 
                             if (currentTransaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())) {
-                                transactionIDs.put(transactionSnapshot.getKey(), true);
+                                getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid())
+                                        .child("transactions").child(transactionSnapshot.getKey()).setValue(true);
                                 continue;
                             } // if
 
                             for (Map.Entry<String, Boolean> entry : currentTransaction.getTargetUserIds().entrySet()) {
                                 if (entry.getKey().equals(FirebaseUtilities.getUser().getUid())) {
-                                    transactionIDs.put(transactionSnapshot.getKey(), true);
+                                    getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid())
+                                            .child("transactions").child(transactionSnapshot.getKey()).setValue(true);
                                 } // if
                             } // for
 
@@ -67,7 +152,6 @@ public class DashboardPresenter {
 
                     } // for
 
-                    FirebaseUtilities.setListOfUserTransactionsWithUID(FirebaseUtilities.getUser().getUid(), transactionIDs);
                 } // if
 
             } // addListenerForSingleValueEvent
