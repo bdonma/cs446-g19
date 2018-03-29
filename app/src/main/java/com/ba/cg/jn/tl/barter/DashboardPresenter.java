@@ -91,7 +91,7 @@ public class DashboardPresenter {
 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d("FIREBASE", "startUserTransactions:onChildAdded: Something was added to transactions");
+                Log.d("FIREBASE", "From Dashboard: startUserTransactions:onChildAdded: Something was added to transactions");
 
                 if (dataSnapshot.getValue() != null && dataSnapshot.exists()) {
                     // Get the UID of the newly added transaction

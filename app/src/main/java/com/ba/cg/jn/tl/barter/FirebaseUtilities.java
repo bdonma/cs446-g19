@@ -138,6 +138,8 @@ public class FirebaseUtilities {
             });
 //
         }
+        DependencyCycleUtils.handleDependencies();
+        Log.d("testingdependencies", "Got here");
     }
 
     public static void removeTransactionWithUID(String uid) {

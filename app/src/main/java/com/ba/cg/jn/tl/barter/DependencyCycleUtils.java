@@ -49,7 +49,7 @@ public class DependencyCycleUtils {
         currentFBUserID = fui;
     }
 
-    public void handleDependencies() {
+    public static void handleDependencies() {
 
         selfuserStartUserTransactions();
         selfuserGetInitialListOfTransaction();
