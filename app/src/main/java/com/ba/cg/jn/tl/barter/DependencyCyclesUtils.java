@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.realm.RealmResults;
+
 /**
  * Created by Caroline George
  */
@@ -32,14 +34,17 @@ import java.util.Map;
 public class DependencyCycleUtils {
 
     private static Map<String, Transaction> selfuserTransactionMap = new HashMap<String, Transaction>();
-    private static Map<String, Transaction> userTransactionMap = new HashMap<String, Transaction>();
+    private static HashMap<String, String> selfuserListOfFriends = new HashMap<>();
 
+
+    private static Map<String, Transaction> userTransactionMap = new HashMap<String, Transaction>();
 
 
     public void handleDependencies() {
 
         selfuserStartUserTransactions();
         selfuserGetInitialListOfTransaction();
+        selfuserGetUserFriends();
 
         //(every Transaction t for user)
         for (Map.Entry<String, Transaction> entry : selfuserTransactionMap.entrySet())
@@ -57,7 +62,6 @@ public class DependencyCycleUtils {
                     //do Graph API call to get facebook setup
 
 
-
                     String lender = tuser.getKey();
                     //if lender has facebook and is a facebook friend
                     FacebookUtils.getUserId();
@@ -68,10 +72,10 @@ public class DependencyCycleUtils {
                         for (Map.Entry<String, Transaction> entry2 : userTransactionMap.entrySet()) {
                             Transaction s = entry2.getValue();
 
-                            if ((s.getTransactionID != t.getTransactionID) && (s.getIsBorrowed())) {
+                            if ((s.getTransactionId() != t.getTransactionId()) && (s.getIsBorrowed())) {
 
                                 nextSTransaction:
-                                for (Map.Entry<String, Boolean> lender2 : s.getTargetUserIds()) {
+                                for (Map.Entry<String, Boolean> lender2 : s.getTargetUserIds().entrySet()) {
                                     //lender's lender has facebook and is a friend of lender and  lender's lender is friend of user
                                     if ( (lender2 is member of lender friends) &&
                                     (lender2 is member of user friends)){
@@ -81,7 +85,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
@@ -98,7 +102,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
 
                                                 r.setTargetUserIds(rtargetuserid);
@@ -118,7 +122,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
 
                                                 r.setTargetUserIds(rtargetuserid);
@@ -141,7 +145,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
@@ -158,7 +162,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
@@ -181,7 +185,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
                                                 r.setCashValue(t.getCashValue());
@@ -209,7 +213,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
                                                 r.setCashValue(t.getCashValue());
@@ -226,7 +230,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
@@ -250,7 +254,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
@@ -274,7 +278,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
                                                 r.setCashValue(t.getCashValue());
@@ -290,7 +294,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
@@ -313,7 +317,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid;
+                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
                                                 r.setCashValue(t.getCashValue());
@@ -523,6 +527,17 @@ public class DependencyCycleUtils {
     } // startUserTransactions
 
 
+    public static void selfuserGetUserFriends() {
+        RealmResults<FacebookFriend> selfFriends = FacebookUtils.getRealmFacebookResults();
+        List<String> adapterFriends = new ArrayList<>();
+
+        for (int i = 0; i < selfFriends.size(); i++) {
+            FacebookFriend friend = selfFriends.get(i);
+            selfuserListOfFriends.put(friend.getFbId(), friend.getName());
+            adapterFriends.add(selfFriends.get(i).getName());
+        }
+
+    }
 
 
 
