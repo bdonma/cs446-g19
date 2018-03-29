@@ -219,10 +219,10 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
             interactiveButton.setEnabled(true);
 
             if (transactionPresenter.getButtonState() == TransactionPresenter.ButtonState.INFORMATION) {
-                interactiveButton.setBackgroundColor(Color.parseColor("#66BB6A"));
+                interactiveButton.setBackgroundColor(Color.parseColor("#47445e"));
                 interactiveButton.setText("Edit Transaction");
             } else {
-                interactiveButton.setBackgroundColor(Color.parseColor("#29B6F6"));
+                interactiveButton.setBackgroundColor(Color.parseColor("#6bb298"));
                 interactiveButton.setText("Save Transaction");
             }
 
@@ -296,7 +296,13 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         constraintLayout.removeView(barterUnitEdit);
         constraintLayout.removeView(notesEdit);
         amountBorrowedLoanedTextView.setText("$ " + String.format("%,.2f", cashValueFloat));
-        barterValueTextView.setText(String.format("%,.2f", barterValueFloat));
+
+        if(barterValueFloat < 0){
+            barterValueTextView.setText("");
+        } else {
+            barterValueTextView.setText(String.format("%,.2f", barterValueFloat));
+        }
+
         barterUnitTextView.setText(barterUnit);
         notesTextView.setText(note);
         amountBorrowedLoanedTextView.setVisibility(View.VISIBLE);
