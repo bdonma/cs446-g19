@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class TransactionPresenter {
     private TransactionViewInterface mView;
-    private boolean editModeOn;
+//    private boolean editModeOn;
     private Transaction transaction;
 
     public enum ButtonState {
@@ -22,17 +22,17 @@ public class TransactionPresenter {
 
     public TransactionPresenter(TransactionViewInterface view) {
         this.mView = view;
-        editModeOn = false;
+//        editModeOn = false;
         transaction = new Transaction();
     }
 
-    public void toggleEditMode() {
-        editModeOn = !editModeOn;
-    }
-
-    public boolean getEditModeOn() {
-        return editModeOn;
-    }
+//    public void toggleEditMode() {
+//        editModeOn = !editModeOn;
+//    }
+//
+//    public boolean getEditModeOn() {
+//        return editModeOn;
+//    }
 
     public ButtonState getButtonState() {
         return this.mButtonState;
@@ -54,8 +54,35 @@ public class TransactionPresenter {
                     transaction = dataSnapshot.getValue(Transaction.class);
                     mView.showTransactionInformation(transaction);
 
-                    for (String key : transaction.getTargetUserIds().keySet()) {
-                        Query transactionQuery = FirebaseUtilities.getDatabaseReference().child("users").child(key);
+                    Log.d("creator", transaction.getCreatorId());
+                    Log.d("current user", FirebaseUtilities.getUser().getUid());
+                    if(transaction.getCreatorId().equals(FirebaseUtilities.getUser().getUid())){
+                        for (String key : transaction.getTargetUserIds().keySet()) {
+                            Query transactionQuery = FirebaseUtilities.getDatabaseReference().child("users").child(key);
+                            transactionQuery.addValueEventListener(new ValueEventListener() {
+
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.child("facebookUserId").getValue() != null) {
+                                        Log.d("found fbid", dataSnapshot.getValue().toString());
+                                        String friendName = (String) dataSnapshot.child("name").getValue();
+                                        mView.setFriendTextView(friendName);
+                                    } else {
+                                        Log.d("fbid", "not found");
+                                        String friendEmail = (String) dataSnapshot.child("email").getValue();
+                                        mView.setFriendTextView(friendEmail);
+                                    }
+
+                                } // onDataChange
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                } // onCancelled
+
+                            });
+                        }
+                    } else{
+                        Query transactionQuery = FirebaseUtilities.getDatabaseReference().child("users").child(transaction.getCreatorId());
                         transactionQuery.addValueEventListener(new ValueEventListener() {
 
                             @Override
@@ -64,12 +91,7 @@ public class TransactionPresenter {
                                     Log.d("found fbid", dataSnapshot.getValue().toString());
                                     String friendName = (String) dataSnapshot.child("name").getValue();
                                     mView.setFriendTextView(friendName);
-                                } else{
-                                    Log.d("fbid", "not found");
-                                    String friendEmail = (String) dataSnapshot.child("email").getValue();
-                                    mView.setFriendTextView(friendEmail);
                                 }
-
                             } // onDataChange
 
                             @Override
@@ -78,7 +100,6 @@ public class TransactionPresenter {
 
                         });
                     }
-                  
                     mView.showTransactionInformation(transaction);
 
                     if (transaction.getIsActive()) {
@@ -183,8 +204,14 @@ public class TransactionPresenter {
 
     } // completeTransaction
 
-    public void saveTransaction() {
-        // TODO: update record in Firebase
+    public void saveTransaction(float cashValue, float barterValue, String barterUnit, String note) {
+        transaction.setCashValue(cashValue);
+        transaction.setBarterValue(barterValue);
+        transaction.setBarterUnit(barterUnit);
+        transaction.setNotes(note);
+        FirebaseUtilities.modifyTransaction(transaction);
+        sendRequestForModification();
     }
+
 
 } // TransactionPresenter
