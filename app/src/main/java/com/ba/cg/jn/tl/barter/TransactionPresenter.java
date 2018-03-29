@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class TransactionPresenter {
     private TransactionViewInterface mView;
-    private boolean editModeOn;
+//    private boolean editModeOn;
     private Transaction transaction;
 
     public enum ButtonState {
@@ -22,17 +22,17 @@ public class TransactionPresenter {
 
     public TransactionPresenter(TransactionViewInterface view) {
         this.mView = view;
-        editModeOn = false;
+//        editModeOn = false;
         transaction = new Transaction();
     }
 
-    public void toggleEditMode() {
-        editModeOn = !editModeOn;
-    }
-
-    public boolean getEditModeOn() {
-        return editModeOn;
-    }
+//    public void toggleEditMode() {
+//        editModeOn = !editModeOn;
+//    }
+//
+//    public boolean getEditModeOn() {
+//        return editModeOn;
+//    }
 
     public ButtonState getButtonState() {
         return this.mButtonState;
@@ -204,8 +204,14 @@ public class TransactionPresenter {
 
     } // completeTransaction
 
-    public void saveTransaction() {
-        // TODO: update record in Firebase
+    public void saveTransaction(float cashValue, float barterValue, String barterUnit, String note) {
+        transaction.setCashValue(cashValue);
+        transaction.setBarterValue(barterValue);
+        transaction.setBarterUnit(barterUnit);
+        transaction.setNotes(note);
+        FirebaseUtilities.modifyTransaction(transaction);
+        sendRequestForModification();
     }
+
 
 } // TransactionPresenter

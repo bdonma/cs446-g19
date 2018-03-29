@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -29,6 +30,16 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
     private TextView barterValueTextView;
     private TextView barterUnitTextView;
     private TextView amountBorrowedLoanedHeaderTextView;
+    private EditText cashValueEdit;
+    private EditText barterValueEdit;
+    private EditText barterUnitEdit;
+    private EditText notesEdit;
+    private ConstraintLayout constraintLayout;
+    private android.support.v7.app.ActionBar mActionBar;
+    String lastCashValue;
+    String lastBarterValue;
+    String lastBarterUnit;
+    String lastNote;
 
     public TransactionFragment() {
         // Required empty public constructor
@@ -41,6 +52,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         View v = inflater.inflate(R.layout.fragment_transaction, container, false);
 
         Bundle args = getArguments();
+        mActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         mTransactionId = args.getString(ARGS_TRANSACTION_ID, null);
         creationDateTextView = v.findViewById(R.id.creationDateTextView);
         friendTextView = v.findViewById(R.id.friendTextView);
@@ -49,6 +61,16 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         barterValueTextView = v.findViewById(R.id.barterValueTextView);
         barterUnitTextView = v.findViewById(R.id.barterUnitTextView);
         amountBorrowedLoanedHeaderTextView = v.findViewById(R.id.amountBorrowedLoanedHeader);
+        constraintLayout = v.findViewById(R.id.transactionLayout);
+        cashValueEdit = new EditText(getActivity());
+        barterValueEdit = new EditText(getActivity());
+        barterUnitEdit = new EditText(getActivity());
+        notesEdit = new EditText(getActivity());
+
+        cashValueEdit.setLayoutParams(amountBorrowedLoanedTextView.getLayoutParams());
+        barterValueEdit.setLayoutParams(barterValueTextView.getLayoutParams());
+        barterUnitEdit.setLayoutParams(barterUnitTextView.getLayoutParams());
+        notesEdit.setLayoutParams(notesTextView.getLayoutParams());
 
         Log.d("TRANSACTION_FRAG", mTransactionId);
 
@@ -65,9 +87,12 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
                             // Change to editing mode
                             transactionPresenter.setButtonState(TransactionPresenter.ButtonState.EDITING);
                             showInformationScreen();
+                            enableEditing();
                             break;
                         case EDITING:
-                            transactionPresenter.sendRequestForModification();
+                            transactionPresenter.setButtonState(TransactionPresenter.ButtonState.INFORMATION);
+                            saveTransaction();
+                            showInformationScreen();
                             break;
                         case APPROVAL:
                             transactionPresenter.sendConfirmationForTransaction();
@@ -125,7 +150,6 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
     }
 
     public void showTransactionInformation(Transaction transaction) {
-        android.support.v7.app.ActionBar mActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (mActionBar != null) {
             mActionBar.setTitle(transaction.getName());
         }
@@ -135,7 +159,7 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         notesTextView.setText(transaction.getNotes());
 
         if(transaction.getBarterValue() >= 0){
-            barterValueTextView.setText(Float.toString(transaction.getBarterValue()));
+            barterValueTextView.setText(String.format("%,.2f", transaction.getBarterValue()));
             barterUnitTextView.setText(transaction.getBarterUnit());
         } else{
             barterUnitTextView.setText("");
@@ -147,10 +171,6 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
         } else {
             amountBorrowedLoanedHeaderTextView.setText("Amount loaned");
         }
-
-//        for (String key : transaction.getTargetUserIds().keySet()) {
-//            friendTextView.setText(key);
-//        }
     }
 
     // TODO: Write the code to show approval screen
@@ -228,5 +248,60 @@ public class TransactionFragment extends Fragment implements TransactionViewInte
 
     public void disableTransactionCompleteButton() {
 
+    }
+
+    public void enableEditing(){
+        lastCashValue = amountBorrowedLoanedTextView.getText().toString().substring(2);
+        lastBarterValue = barterValueTextView.getText().toString();
+        lastBarterUnit = barterUnitTextView.getText().toString();
+        lastNote = notesTextView.getText().toString();
+
+        amountBorrowedLoanedTextView.setVisibility(View.INVISIBLE);
+        barterValueTextView.setVisibility(View.INVISIBLE);
+        barterUnitTextView.setVisibility(View.INVISIBLE);
+        notesTextView.setVisibility(View.INVISIBLE);
+        cashValueEdit.setText(lastCashValue);
+        barterValueEdit.setText(lastBarterValue);
+        barterUnitEdit.setText(lastBarterUnit);
+        notesEdit.setText(lastNote);
+        constraintLayout.addView(cashValueEdit);
+        constraintLayout.addView(barterValueEdit);
+        constraintLayout.addView(barterUnitEdit);
+        constraintLayout.addView(notesEdit);
+    }
+
+    public void saveTransaction(){
+        String cashValue = cashValueEdit.getText().toString();
+        String barterValue = barterValueEdit.getText().toString();
+        String barterUnit = barterUnitEdit.getText().toString();
+        String note = notesEdit.getText().toString();
+        float cashValueFloat = 0;
+        float barterValueFloat;
+
+        try{
+            cashValueFloat = Float.parseFloat(cashValue);
+            barterValueFloat = Float.parseFloat(barterValue);
+        } catch(Exception e){
+            barterValueFloat = -1;
+            barterUnit = "";
+        }
+
+        if(!cashValue.equals(lastCashValue) || !barterValue.equals(lastBarterValue)
+                || !barterUnit.equals(lastBarterUnit) || !note.equals(lastNote)) {
+            transactionPresenter.saveTransaction(cashValueFloat, barterValueFloat, barterUnit, note);
+        }
+
+        constraintLayout.removeView(cashValueEdit);
+        constraintLayout.removeView(barterValueEdit);
+        constraintLayout.removeView(barterUnitEdit);
+        constraintLayout.removeView(notesEdit);
+        amountBorrowedLoanedTextView.setText("$ " + String.format("%,.2f", cashValueFloat));
+        barterValueTextView.setText(String.format("%,.2f", barterValueFloat));
+        barterUnitTextView.setText(barterUnit);
+        notesTextView.setText(note);
+        amountBorrowedLoanedTextView.setVisibility(View.VISIBLE);
+        barterValueTextView.setVisibility(View.VISIBLE);
+        barterUnitTextView.setVisibility(View.VISIBLE);
+        notesTextView.setVisibility(View.VISIBLE);
     }
 }
