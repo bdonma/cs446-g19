@@ -44,9 +44,9 @@ public class AddTransactionFormPresenter {
         Log.d("notes", notes);
 
         Date date = new Date();
-        Date newDate = new Date(date.getTime() + (604800000L * 2) + (24 * 60 * 60));
+//        Date newDate = new Date(date.getTime() + (604800000L * 2) + (24 * 60 * 60));
         SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd");
-        String stringDate = dt.format(newDate);
+        String stringDate = dt.format(date);
 
         Transaction transaction = new Transaction(transactionName, stringDate, FirebaseUtilities.getUser().getEmail(),
                 targetUserIds, cashValue, barterValue, barterUnit, isBorrowed, false, false,
