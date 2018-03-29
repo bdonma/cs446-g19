@@ -1,5 +1,6 @@
 package com.ba.cg.jn.tl.barter;
 
+import com.firebase.ui.auth.data.model.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
@@ -39,6 +40,14 @@ public class DependencyCycleUtils {
 
     private static Map<String, Transaction> userTransactionMap = new HashMap<String, Transaction>();
 
+    private static String currentFBUserID;
+
+    private static String getFBuserID() {
+        return currentFBUserID;
+    }
+    private static void setFBuserID(String fui) {
+        currentFBUserID = fui;
+    }
 
     public void handleDependencies() {
 
@@ -62,14 +71,52 @@ public class DependencyCycleUtils {
                     //do Graph API call to get facebook setup
 
 
-                    String lender = tuser.getKey();
+                    final String lender = tuser.getKey();
                     //if lender has facebook and is a facebook friend
                     //FacebookUtils.getUserId();
 
 
+                    Query selfuserListQuery = FirebaseUtilities.getDatabaseReference().child("users");
+                    selfuserListQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            if (dataSnapshot != null) {
+
+                                for (DataSnapshot userFBSnapshot : dataSnapshot.getChildren()) {
+
+                                    if (userFBSnapshot.getKey() == lender) {
+                                        //lenderfacebookID = userFBSnapshot.getValue(_u);
+                                        if (userFBSnapshot.child("facebookUserId").getValue() != null) {
+                                            Log.d("found fbid", userFBSnapshot.getValue().toString());
+                                            String lenderfacebookID =  (String) userFBSnapshot.child("facebookUserId").getValue();
+                                            setFBuserID(lenderfacebookID);
+                                        } else{
+                                            Log.d("fbid", "FBID not found");
+                                            setFBuserID(null);
+                                            //lenderfacebookID = (String) userFBSnapshot.child("facebookUserId").getValue();
+                                        }
+                                    }
 
 
-                    if  (lender is member of user friends){
+                                } // for
+                            } // if
+                        } // addListenerForSingleValueEvent
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            Log.d("fbid", "Response failed");
+                        } // onCancelled
+
+                    }); // addListenerForSingleValueEvent
+
+
+                    String firstlenderFBid = getFBuserID();
+                    if (firstlenderFBid == null) {
+                        break nextTTransaction;
+                    }
+                    else if (selfuserListOfFriends.get(firstlenderFBid) != null) {
                         userGetInitialListOfTransaction(lender);
                         userStartUserTransactions(lender);
                         //for all transactions where the lender borrowed money that wasnt from this transaction
@@ -80,16 +127,58 @@ public class DependencyCycleUtils {
 
                                 nextSTransaction:
                                 for (Map.Entry<String, Boolean> lender2 : s.getTargetUserIds().entrySet()) {
+
+
+                                    Query userListQuery = FirebaseUtilities.getDatabaseReference().child("users");
+                                    userListQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                            if (dataSnapshot != null) {
+
+                                                for (DataSnapshot userFBSnapshot : dataSnapshot.getChildren()) {
+
+                                                    if (userFBSnapshot.getKey() == lender) {
+                                                        //lenderfacebookID = userFBSnapshot.getValue(_u);
+                                                        if (userFBSnapshot.child("facebookUserId").getValue() != null) {
+                                                            Log.d("found fbid", userFBSnapshot.getValue().toString());
+                                                            String lender2facebookID =  (String) userFBSnapshot.child("facebookUserId").getValue();
+                                                            setFBuserID(lender2facebookID);
+                                                        } else{
+                                                            Log.d("fbid", "FBID not found 2");
+                                                            setFBuserID(null);
+                                                            //lenderfacebookID = (String) userFBSnapshot.child("facebookUserId").getValue();
+                                                        }
+                                                    }
+
+
+                                                } // for
+                                            } // if
+                                        } // addListenerForSingleValueEvent
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            Log.d("fbid", "Second fid failed");
+                                        } // onCancelled
+
+                                    }); // addListenerForSingleValueEvent
+
+
+
+                                    String secondlenderFBid = getFBuserID();
+                                    if (secondlenderFBid == null) {
+                                        break nextSTransaction;
+                                    }
                                     //lender's lender has facebook and is a friend of lender and  lender's lender is friend of user
-                                    if ( (lender2 is member of lender friends) &&
-                                    (lender2 is member of user friends)){
+                                    else if ((selfuserListOfFriends.get(secondlenderFBid) != null)) {
                                         //if both transactions uses money
                                         if ((t.getBarterValue() == 0.0f) && (s.getBarterValue() == 0.0f)) {
                                             if (t.getCashValue() == s.getCashValue()) {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
@@ -99,14 +188,16 @@ public class DependencyCycleUtils {
                                                 r.setNotes(s.getNotes());
                                                 FirebaseUtilities.addTransaction(r);
                                                 //FirebaseUtilities.deleteTransaction(s);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
                                                 //FirebaseUtilities.deleteTransaction(t);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
                                                 break nextTTransaction;
                                             } else if (t.getCashValue() > s.getCashValue()) {
 
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
 
                                                 r.setTargetUserIds(rtargetuserid);
@@ -119,6 +210,7 @@ public class DependencyCycleUtils {
                                                 float tNewCost = t.getCashValue() - s.getCashValue();
                                                 t.setCashValue(tNewCost);
                                                 //FirebaseUtilities.deleteTransaction(s);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
 
                                                 break nextSTransaction;
                                             } else if (t.getCashValue() < s.getCashValue()) {
@@ -126,7 +218,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
 
                                                 r.setTargetUserIds(rtargetuserid);
@@ -139,6 +231,7 @@ public class DependencyCycleUtils {
                                                 float sNewCost = s.getCashValue() - t.getCashValue();
                                                 s.setCashValue(sNewCost);
                                                 //FirebaseUtilities.deleteTransaction(t);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
 
                                                 break nextTTransaction;
                                             }
@@ -149,7 +242,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
@@ -160,13 +253,15 @@ public class DependencyCycleUtils {
                                                 FirebaseUtilities.addTransaction(r);
                                                 //FirebaseUtilities.deleteTransaction(s);
                                                 //FirebaseUtilities.deleteTransaction(t);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
+                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
                                                 break nextTTransaction;
                                             } else if (t.getCashValue() > s.getCashValue()) {
 
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
@@ -181,6 +276,7 @@ public class DependencyCycleUtils {
                                                 t.setCashValue(tNewCost);
 
                                                 //FirebaseUtilities.deleteTransaction(s);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
 
                                                 break nextSTransaction;
                                             } else if (t.getCashValue() < s.getCashValue()) {
@@ -189,7 +285,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
                                                 r.setCashValue(t.getCashValue());
@@ -207,6 +303,7 @@ public class DependencyCycleUtils {
                                                 s.setCashValue(sNewCost);
 
                                                 //FirebaseUtilities.deleteTransaction(t);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
 
                                                 break nextTTransaction;
                                             }
@@ -217,7 +314,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
                                                 r.setCashValue(t.getCashValue());
@@ -227,6 +324,8 @@ public class DependencyCycleUtils {
                                                 FirebaseUtilities.addTransaction(r);
                                                 //FirebaseUtilities.deleteTransaction(s);
                                                 //FirebaseUtilities.deleteTransaction(t);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
+                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
 
                                                 break nextTTransaction;
                                             } else if (t.getCashValue() > s.getCashValue()) {
@@ -234,13 +333,13 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
                                                 r.setCashValue(s.getCashValue());
                                                 r.setBarterValue(s.getBarterValue());
-                                                r.setBarterUnit(s.getBarterUnit() ());
+                                                r.setBarterUnit(s.getBarterUnit());
                                                 r.setNotes(s.getNotes());
                                                 FirebaseUtilities.addTransaction(r);
 
@@ -251,6 +350,7 @@ public class DependencyCycleUtils {
                                                 t.setBarterValue(tNewBartValue);
 
                                                 //FirebaseUtilities.deleteTransaction(s);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
 
                                                 break nextSTransaction;
                                             } else if (t.getCashValue() < s.getCashValue()) {
@@ -258,7 +358,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
@@ -272,6 +372,7 @@ public class DependencyCycleUtils {
                                                 s.setCashValue(sNewCost);
 
                                                 //FirebaseUtilities.deleteTransaction(t);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
                                                 break nextTTransaction;
 
                                             }
@@ -282,7 +383,7 @@ public class DependencyCycleUtils {
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
                                                 r.setCashValue(t.getCashValue());
@@ -292,13 +393,15 @@ public class DependencyCycleUtils {
                                                 FirebaseUtilities.addTransaction(r);
                                                 //FirebaseUtilities.deleteTransaction(s);
                                                 //FirebaseUtilities.deleteTransaction(t);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
+                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
                                                 break nextTTransaction;
                                             } else if (t.getCashValue() > s.getCashValue()) {
 
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
 
@@ -315,13 +418,14 @@ public class DependencyCycleUtils {
                                                 t.setBarterValue(tNewBartValue);
 
                                                 //FirebaseUtilities.deleteTransaction(s);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
                                                 break nextSTransaction;
                                             } else if (t.getCashValue() < s.getCashValue()) {
 
                                                 Transaction r = new Transaction();
                                                 r.setName(s.getName());
                                                 r.setCreatorId(t.getCreatorId());
-                                               Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
+                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
                                                 rtargetuserid.put(lender2.getKey(), lender2.getValue());
                                                 r.setTargetUserIds(rtargetuserid);
                                                 r.setCashValue(t.getCashValue());
@@ -339,6 +443,7 @@ public class DependencyCycleUtils {
                                                 float sNewBarterValue = s.getBarterValue() - rBarterValue;
                                                 s.setBarterValue(sNewBarterValue);
                                                 //FirebaseUtilities.deleteTransaction(t);
+                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
                                                 break nextTTransaction;
 
                                             }
@@ -718,6 +823,4 @@ public class DependencyCycleUtils {
         }); // addChildEventListener
 
     } // startUserTransactions
-
-
 }
