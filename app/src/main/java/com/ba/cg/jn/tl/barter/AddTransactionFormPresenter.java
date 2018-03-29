@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.realm.RealmResults;
+
 //import io.realm.RealmResults;
 
 /**
@@ -54,14 +56,14 @@ public class AddTransactionFormPresenter {
     }
 
     public void startGettingFacebookFriends() {
-//        RealmResults<FacebookFriend> results = FacebookUtils.getRealmFacebookResults();
-//        List<String> adapterFriends = new ArrayList<>();
-//        for (int i = 0; i < results.size(); i++) {
-//            FacebookFriend friend = results.get(i);
-//            mFacebookFriendsMap.put(friend.getName(), friend.getFbId());
-//            adapterFriends.add(results.get(i).getName());
-//        }
-//        mView.addPeopleAdapter(adapterFriends);
+        RealmResults<FacebookFriend> results = FacebookUtils.getRealmFacebookResults();
+        List<String> adapterFriends = new ArrayList<>();
+        for (int i = 0; i < results.size(); i++) {
+            FacebookFriend friend = results.get(i);
+            mFacebookFriendsMap.put(friend.getName(), friend.getFbId());
+            adapterFriends.add(results.get(i).getName());
+        }
+        mView.addPeopleAdapter(adapterFriends);
     }
 
     public void getUserUuid(String userName) {

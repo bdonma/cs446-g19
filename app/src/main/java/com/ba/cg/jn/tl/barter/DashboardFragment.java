@@ -110,9 +110,9 @@ public class DashboardFragment extends Fragment implements DashboardViewInterfac
         super.onViewCreated(view, savedInstanceState);
         mPresenter = new DashboardPresenter(this);
         mPresenter.checkForTempUserTransactions();
-//        mPresenter.getInitialListOfTransaction();
-//        mPresenter.startUserTransactions();
-//        mPresenter.calculateAndShowAmountsForTransaction();
+        mPresenter.getInitialListOfTransaction();
+        mPresenter.startUserTransactions();
+        mPresenter.calculateAndShowAmountsForTransaction();
     } // onViewCreated
 
     public void showListOfTransactions(List<Transaction> transactions) {

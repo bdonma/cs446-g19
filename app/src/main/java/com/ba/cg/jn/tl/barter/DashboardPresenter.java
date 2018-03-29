@@ -41,7 +41,7 @@ public class DashboardPresenter {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
 
-                    if (dataSnapshot.getChildrenCount() > 1) {
+//                    if (dataSnapshot.getChildrenCount() >= 1) {
 
                         for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                             if (userSnapshot.child("facebookUserId").getValue() == null) {
@@ -91,7 +91,7 @@ public class DashboardPresenter {
                                                 getDatabaseReference().child("transactions").child(transactionID).child("targetUserIds").setValue(targetUserIds);
                                                 getDatabaseReference().child("transactions").child(transactionID).child("acceptedIds").setValue(acceptedIds);
 
-                                                getInitialListOfTransaction();
+//                                                getInitialListOfTransaction();
 
                                             } // if
                                         } // onDataChange
@@ -106,7 +106,7 @@ public class DashboardPresenter {
                                 } // for
 
                                 getDatabaseReference().child("users").child(userSnapshot.getKey()).removeValue();
-                            } // if
+//                            } // if
                         } // for
                     }
                 }
@@ -157,7 +157,7 @@ public class DashboardPresenter {
                         } // if
 
                     } // for
-                    startUserTransactions();
+//                    startUserTransactions();
 
                 } // if
 
