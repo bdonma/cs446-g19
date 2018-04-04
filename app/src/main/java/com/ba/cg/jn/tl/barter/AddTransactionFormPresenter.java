@@ -52,6 +52,7 @@ public class AddTransactionFormPresenter {
                 targetUserIds, cashValue, barterValue, barterUnit, isBorrowed, false, false,
                 notes, acceptedIds);
 
+        //prepareAsyncData(transaction);
         FirebaseUtilities.addTransaction(transaction);
     }
 

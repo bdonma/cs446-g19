@@ -154,7 +154,7 @@ public class FirebaseUtilities {
                 }
             });
         }
-//        DependencyCycleUtils.handleDependencies();
+        //DependencyCycleUtils.handleDependencies();
 //        Log.d("testingdependencies", "Got here");
     }
 

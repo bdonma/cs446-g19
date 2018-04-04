@@ -44,416 +44,312 @@ public class DependencyCycleUtils {
     private static String getFBuserID() {
         return currentFBUserID;
     }
+
     private static void setFBuserID(String fui) {
         currentFBUserID = fui;
     }
 
-    public static void handleDependencies() {
-
-        selfuserStartUserTransactions();
-        selfuserGetInitialListOfTransaction();
-        selfuserGetUserFriends();
-
-        //(every Transaction t for user)
-        for (Map.Entry<String, Transaction> entry : selfuserTransactionMap.entrySet())
-        {
-            setFBuserID(null);
-            Transaction t = entry.getValue();
-
-            //user borrowed money
-            if (t.getIsBorrowed()) {
-                //to the lender
-
-                Map <String, Boolean> newTargetUsers = t.getTargetUserIds();
-
-                //label to break out of loop when done with the current transaction
-                nextTTransaction:
-                for (Map.Entry<String, Boolean> tuser : newTargetUsers.entrySet()) {
-                    final String lender = tuser.getKey();
-
-                    Query selfuserListQuery = FirebaseUtilities.getDatabaseReference().child("users");
-                    selfuserListQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                            if (dataSnapshot != null) {
-
-                                for (DataSnapshot userFBSnapshot : dataSnapshot.getChildren()) {
-
-                                    if (userFBSnapshot.getKey() == lender) {
-                                        //lenderfacebookID = userFBSnapshot.getValue(_u);
-                                        if (userFBSnapshot.child("facebookUserId").getValue() != null) {
-                                            Log.d("found fbid", userFBSnapshot.getValue().toString());
-                                            String lenderfacebookID =  (String) userFBSnapshot.child("facebookUserId").getValue();
-                                            setFBuserID(lenderfacebookID);
-                                        } else{
-                                            Log.d("fbid", "FBID not found");
-                                            setFBuserID(null);
-                                            //lenderfacebookID = (String) userFBSnapshot.child("facebookUserId").getValue();
-                                        }
-                                    }
-
-
-                                } // for
-                            } // if
-                        } // addListenerForSingleValueEvent
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            Log.d("fbid", "Response failed");
-                        } // onCancelled
-
-                    }); // addListenerForSingleValueEvent
-
-
-                    String firstlenderFBid = getFBuserID();
-                    if (firstlenderFBid == null) {
-                        break nextTTransaction;
-                    }
-                    //Check if the lender is friends
-                    else if (selfuserListOfFriends.get(firstlenderFBid) != null) {
-                        userGetInitialListOfTransaction(lender);
-                        userStartUserTransactions(lender);
-                        //for all transactions where the lender borrowed money that wasnt from this transaction
-                        for (Map.Entry<String, Transaction> entry2 : userTransactionMap.entrySet()) {
-                            Transaction s = entry2.getValue();
-
-                            if ((s.getTransactionId() != t.getTransactionId()) && (s.getIsBorrowed())) {
-
-                                nextSTransaction:
-                                for (Map.Entry<String, Boolean> lender2 : s.getTargetUserIds().entrySet()) {
-                                    setFBuserID(null);
-
-                                    Query userListQuery = FirebaseUtilities.getDatabaseReference().child("users");
-                                    userListQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                            if (dataSnapshot != null) {
-
-                                                for (DataSnapshot userFBSnapshot : dataSnapshot.getChildren()) {
-
-                                                    if (userFBSnapshot.getKey() == lender) {
-                                                        //lenderfacebookID = userFBSnapshot.getValue(_u);
-                                                        if (userFBSnapshot.child("facebookUserId").getValue() != null) {
-                                                            Log.d("found fbid", userFBSnapshot.getValue().toString());
-                                                            String lender2facebookID =  (String) userFBSnapshot.child("facebookUserId").getValue();
-                                                            setFBuserID(lender2facebookID);
-                                                        } else{
-                                                            Log.d("fbid", "FBID not found 2");
-                                                            setFBuserID(null);
-                                                            //lenderfacebookID = (String) userFBSnapshot.child("facebookUserId").getValue();
-                                                        }
-                                                    }
-
-
-                                                } // for
-                                            } // if
-                                        } // addListenerForSingleValueEvent
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                            Log.d("fbid", "Second fid failed");
-                                        } // onCancelled
-
-                                    }); // addListenerForSingleValueEvent
-
-
-
-                                    String secondlenderFBid = getFBuserID();
-                                    if (secondlenderFBid == null) {
-                                        break nextSTransaction;
-                                    }
-                                    //lender's lender has facebook and is a friend of lender and  lender's lender is friend of user
-                                    else if ((selfuserListOfFriends.get(secondlenderFBid) != null)) {
-                                        //if both transactions uses money
-                                        if ((t.getBarterValue() == 0.0f) && (s.getBarterValue() == 0.0f)) {
-                                            if (t.getCashValue() == s.getCashValue()) {
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-                                                r.setTargetUserIds(rtargetuserid);
-
-                                                r.setCashValue(t.getCashValue());
-                                                r.setBarterValue(t.getBarterValue());
-                                                r.setBarterUnit(t.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-                                                FirebaseUtilities.addTransaction(r);
-                                                //FirebaseUtilities.deleteTransaction(s);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
-                                                //FirebaseUtilities.deleteTransaction(t);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
-                                                break nextTTransaction;
-                                            } else if (t.getCashValue() > s.getCashValue()) {
-
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-
-                                                r.setTargetUserIds(rtargetuserid);
-                                                r.setCashValue(s.getCashValue());
-                                                r.setBarterValue(t.getBarterValue());
-                                                r.setBarterUnit(t.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-                                                FirebaseUtilities.addTransaction(r);
-
-                                                float tNewCost = t.getCashValue() - s.getCashValue();
-                                                t.setCashValue(tNewCost);
-                                                //FirebaseUtilities.deleteTransaction(s);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
-
-                                                break nextSTransaction;
-                                            } else if (t.getCashValue() < s.getCashValue()) {
-
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-
-                                                r.setTargetUserIds(rtargetuserid);
-                                                r.setCashValue(t.getCashValue());
-                                                r.setBarterValue(t.getBarterValue());
-                                                r.setBarterUnit(t.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-                                                FirebaseUtilities.addTransaction(r);
-
-                                                float sNewCost = s.getCashValue() - t.getCashValue();
-                                                s.setCashValue(sNewCost);
-                                                //FirebaseUtilities.deleteTransaction(t);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
-
-                                                break nextTTransaction;
-                                            }
-                                        } //endif both transactions uses money
-                                        //else if t transaction uses money
-                                        else if ((t.getBarterValue() == 0.0f)) {
-                                            if (t.getCashValue() == s.getCashValue()) {
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-                                                r.setTargetUserIds(rtargetuserid);
-
-                                                r.setCashValue(t.getCashValue());
-                                                r.setBarterValue(s.getBarterValue());
-                                                r.setBarterUnit(s.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-                                                FirebaseUtilities.addTransaction(r);
-                                                //FirebaseUtilities.deleteTransaction(s);
-                                                //FirebaseUtilities.deleteTransaction(t);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
-                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
-                                                break nextTTransaction;
-                                            } else if (t.getCashValue() > s.getCashValue()) {
-
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-                                                r.setTargetUserIds(rtargetuserid);
-
-                                                r.setCashValue(s.getCashValue());
-                                                r.setBarterValue(s.getBarterValue());
-                                                r.setBarterUnit(s.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-                                                FirebaseUtilities.addTransaction(r);
-
-
-                                                float tNewCost = t.getCashValue() - s.getCashValue();
-                                                t.setCashValue(tNewCost);
-
-                                                //FirebaseUtilities.deleteTransaction(s);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
-
-                                                break nextSTransaction;
-                                            } else if (t.getCashValue() < s.getCashValue()) {
-
-                                                //Set up transaction
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-                                                r.setTargetUserIds(rtargetuserid);
-                                                r.setCashValue(t.getCashValue());
-                                                r.setBarterUnit(s.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-                                                float sUnitCost = s.getCashValue() / s.getBarterValue();
-                                                float rBarterValue = t.getCashValue() / sUnitCost;
-                                                r.setBarterValue(rBarterValue);
-                                                FirebaseUtilities.addTransaction(r);
-
-
-                                                float sNewCost = s.getCashValue() - t.getCashValue();
-                                                s.setCashValue(sNewCost);
-                                                float sBarterValue = s.getBarterValue() - rBarterValue;
-                                                s.setCashValue(sNewCost);
-
-                                                //FirebaseUtilities.deleteTransaction(t);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
-
-                                                break nextTTransaction;
-                                            }
-                                        } //endif t transaction uses money
-                                        //else if s transaction uses money
-                                        else if ((s.getBarterValue() == 0.0f)) {
-                                            if (t.getCashValue() == s.getCashValue()) {
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-                                                r.setTargetUserIds(rtargetuserid);
-                                                r.setCashValue(t.getCashValue());
-                                                r.setBarterValue(s.getBarterValue());
-                                                r.setBarterUnit(s.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-                                                FirebaseUtilities.addTransaction(r);
-                                                //FirebaseUtilities.deleteTransaction(s);
-                                                //FirebaseUtilities.deleteTransaction(t);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
-                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
-
-                                                break nextTTransaction;
-                                            } else if (t.getCashValue() > s.getCashValue()) {
-
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-                                                r.setTargetUserIds(rtargetuserid);
-
-                                                r.setCashValue(s.getCashValue());
-                                                r.setBarterValue(s.getBarterValue());
-                                                r.setBarterUnit(s.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-                                                FirebaseUtilities.addTransaction(r);
-
-                                                float tUnitValue = t.getCashValue() / t.getBarterValue();
-                                                float tNewCost = t.getCashValue() - s.getCashValue();
-                                                t.setCashValue(tNewCost);
-                                                float tNewBartValue = t.getCashValue() / tUnitValue;
-                                                t.setBarterValue(tNewBartValue);
-
-                                                //FirebaseUtilities.deleteTransaction(s);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
-
-                                                break nextSTransaction;
-                                            } else if (t.getCashValue() < s.getCashValue()) {
-
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-                                                r.setTargetUserIds(rtargetuserid);
-
-                                                r.setCashValue(t.getCashValue());
-                                                r.setBarterUnit(s.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-                                                r.setBarterValue(s.getBarterValue());
-                                                FirebaseUtilities.addTransaction(r);
-
-                                                float sNewCost = s.getCashValue() - t.getCashValue();
-                                                s.setCashValue(sNewCost);
-
-                                                //FirebaseUtilities.deleteTransaction(t);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
-                                                break nextTTransaction;
-
-                                            }
-                                        } //endif s transaction uses money
-                                        //else neither use money
-                                        else {
-                                            if (t.getCashValue() == s.getCashValue()) {
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-                                                r.setTargetUserIds(rtargetuserid);
-                                                r.setCashValue(t.getCashValue());
-                                                r.setBarterValue(s.getBarterValue());
-                                                r.setBarterUnit(s.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-                                                FirebaseUtilities.addTransaction(r);
-                                                //FirebaseUtilities.deleteTransaction(s);
-                                                //FirebaseUtilities.deleteTransaction(t);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
-                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
-                                                break nextTTransaction;
-                                            } else if (t.getCashValue() > s.getCashValue()) {
-
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-                                                r.setTargetUserIds(rtargetuserid);
-
-                                                r.setCashValue(s.getCashValue());
-                                                r.setBarterValue(s.getBarterValue());
-                                                r.setBarterUnit(s.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-                                                FirebaseUtilities.addTransaction(r);
-
-                                                float tUnitValue = t.getCashValue() / t.getBarterValue();
-                                                float tNewCost = t.getCashValue() - s.getCashValue();
-                                                t.setCashValue(tNewCost);
-                                                float tNewBartValue = t.getCashValue() / tUnitValue;
-                                                t.setBarterValue(tNewBartValue);
-
-                                                //FirebaseUtilities.deleteTransaction(s);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender2.getKey(), s.getTransactionId());
-                                                break nextSTransaction;
-                                            } else if (t.getCashValue() < s.getCashValue()) {
-
-                                                Transaction r = new Transaction();
-                                                r.setName(s.getName());
-                                                r.setCreatorId(t.getCreatorId());
-                                                Map<String, Boolean> rtargetuserid =  new HashMap<String, Boolean>();
-                                                rtargetuserid.put(lender2.getKey(), lender2.getValue());
-                                                r.setTargetUserIds(rtargetuserid);
-                                                r.setCashValue(t.getCashValue());
-                                                r.setBarterUnit(s.getBarterUnit());
-                                                r.setNotes(s.getNotes());
-
-                                                float sUnitCost = s.getCashValue() / s.getBarterValue();
-                                                float rBarterValue = t.getCashValue() / sUnitCost;
-                                                r.setBarterValue(rBarterValue);
-                                                FirebaseUtilities.addTransaction(r);
-
-
-                                                float sNewCost = s.getCashValue() - t.getCashValue();
-                                                s.setCashValue(sNewCost);
-                                                float sNewBarterValue = s.getBarterValue() - rBarterValue;
-                                                s.setBarterValue(sNewBarterValue);
-                                                //FirebaseUtilities.deleteTransaction(t);
-                                                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
-                                                break nextTTransaction;
-
-                                            }
-                                        } //endelse neither use money
-
-                                    } //endif: lender's lender has facebook and is a friend of lender and  lender's lender is friend of user
-                                } //endif: getting lender's lender
-                            } //extra if
-                        } // endfor all transactions where the lender borrowed money that wasnt from this transaction
-                    }  // endif of  lender has facebook and is a facebook friend
-                }//end of lender for loop
+    //TTRansactions: userTransaction
+    //              stop the original loop  = true
+    //STRansactions: secondTransaction
+    //              continue the loop      = false
+
+    public static void handleDependencies(Transaction t, Transaction s, String lender, String lender2) {
+
+
+        //if both transactions uses money
+        if ((t.getBarterValue() == 0.0f) && (s.getBarterValue() == 0.0f)) {
+            if (t.getCashValue() == s.getCashValue()) {
+                Transaction r = new Transaction();
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+                r.setTargetUserIds(rtargetuserid);
+
+                r.setCashValue(t.getCashValue());
+                r.setBarterValue(t.getBarterValue());
+                r.setBarterUnit(t.getBarterUnit());
+                r.setNotes(s.getNotes());
+                FirebaseUtilities.addTransaction(r);
+                //FirebaseUtilities.deleteTransaction(s);
+                FirebaseUtilities.removeTransactionFromUserList(lender2, s.getTransactionId());
+                //FirebaseUtilities.deleteTransaction(t);
+                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
+
+                //break nextTTransaction;
+                AsyncPrepData.setUserTransaction(null);
+            } else if (t.getCashValue() > s.getCashValue()) {
+
+                Transaction r = new Transaction();
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+
+                r.setTargetUserIds(rtargetuserid);
+                r.setCashValue(s.getCashValue());
+                r.setBarterValue(t.getBarterValue());
+                r.setBarterUnit(t.getBarterUnit());
+                r.setNotes(s.getNotes());
+                FirebaseUtilities.addTransaction(r);
+
+                float tNewCost = t.getCashValue() - s.getCashValue();
+                t.setCashValue(tNewCost);
+                //FirebaseUtilities.deleteTransaction(s);
+                FirebaseUtilities.removeTransactionFromUserList(lender2, s.getTransactionId());
+
+                //break nextSTransaction;
+                AsyncPrepData.setSecondTransaction(null);
+            } else if (t.getCashValue() < s.getCashValue()) {
+
+                Transaction r = new Transaction();
+
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+
+                r.setTargetUserIds(rtargetuserid);
+                r.setCashValue(t.getCashValue());
+                r.setBarterValue(t.getBarterValue());
+                r.setBarterUnit(t.getBarterUnit());
+                r.setNotes(s.getNotes());
+                FirebaseUtilities.addTransaction(r);
+
+                float sNewCost = s.getCashValue() - t.getCashValue();
+                s.setCashValue(sNewCost);
+                //FirebaseUtilities.deleteTransaction(t);
+                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
+
+                //break nextTTransaction;
+                AsyncPrepData.setUserTransaction(null);
             }
-        }
+        } //endif both transactions uses money
+        //else if t transaction uses money
+        else if ((t.getBarterValue() == 0.0f)) {
+            if (t.getCashValue() == s.getCashValue()) {
+                Transaction r = new Transaction();
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+                r.setTargetUserIds(rtargetuserid);
+
+                r.setCashValue(t.getCashValue());
+                r.setBarterValue(s.getBarterValue());
+                r.setBarterUnit(s.getBarterUnit());
+                r.setNotes(s.getNotes());
+                FirebaseUtilities.addTransaction(r);
+                //FirebaseUtilities.deleteTransaction(s);
+                //FirebaseUtilities.deleteTransaction(t);
+                FirebaseUtilities.removeTransactionFromUserList(lender2, s.getTransactionId());
+                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
+                //break nextTTransaction;
+                AsyncPrepData.setUserTransaction(null);
+            } else if (t.getCashValue() > s.getCashValue()) {
+
+                Transaction r = new Transaction();
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+                r.setTargetUserIds(rtargetuserid);
+
+                r.setCashValue(s.getCashValue());
+                r.setBarterValue(s.getBarterValue());
+                r.setBarterUnit(s.getBarterUnit());
+                r.setNotes(s.getNotes());
+                FirebaseUtilities.addTransaction(r);
+
+
+                float tNewCost = t.getCashValue() - s.getCashValue();
+                t.setCashValue(tNewCost);
+
+                //FirebaseUtilities.deleteTransaction(s);
+                FirebaseUtilities.removeTransactionFromUserList(lender2, s.getTransactionId());
+
+                //break nextSTransaction;
+                AsyncPrepData.setSecondTransaction(null);
+            } else if (t.getCashValue() < s.getCashValue()) {
+
+                //Set up transaction
+                Transaction r = new Transaction();
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+                r.setTargetUserIds(rtargetuserid);
+                r.setCashValue(t.getCashValue());
+                r.setBarterUnit(s.getBarterUnit());
+                r.setNotes(s.getNotes());
+                float sUnitCost = s.getCashValue() / s.getBarterValue();
+                float rBarterValue = t.getCashValue() / sUnitCost;
+                r.setBarterValue(rBarterValue);
+                FirebaseUtilities.addTransaction(r);
+
+
+                float sNewCost = s.getCashValue() - t.getCashValue();
+                s.setCashValue(sNewCost);
+                float sBarterValue = s.getBarterValue() - rBarterValue;
+                s.setCashValue(sNewCost);
+
+                //FirebaseUtilities.deleteTransaction(t);
+                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
+
+                //break nextTTransaction;
+                AsyncPrepData.setUserTransaction(null);
+            }
+        } //endif t transaction uses money
+        //else if s transaction uses money
+        else if ((s.getBarterValue() == 0.0f)) {
+            if (t.getCashValue() == s.getCashValue()) {
+                Transaction r = new Transaction();
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+                r.setTargetUserIds(rtargetuserid);
+                r.setCashValue(t.getCashValue());
+                r.setBarterValue(s.getBarterValue());
+                r.setBarterUnit(s.getBarterUnit());
+                r.setNotes(s.getNotes());
+                FirebaseUtilities.addTransaction(r);
+                //FirebaseUtilities.deleteTransaction(s);
+                //FirebaseUtilities.deleteTransaction(t);
+                FirebaseUtilities.removeTransactionFromUserList(lender2, s.getTransactionId());
+                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
+
+                //break nextTTransaction;
+                AsyncPrepData.setUserTransaction(null);
+            } else if (t.getCashValue() > s.getCashValue()) {
+
+                Transaction r = new Transaction();
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+                r.setTargetUserIds(rtargetuserid);
+
+                r.setCashValue(s.getCashValue());
+                r.setBarterValue(s.getBarterValue());
+                r.setBarterUnit(s.getBarterUnit());
+                r.setNotes(s.getNotes());
+                FirebaseUtilities.addTransaction(r);
+
+                float tUnitValue = t.getCashValue() / t.getBarterValue();
+                float tNewCost = t.getCashValue() - s.getCashValue();
+                t.setCashValue(tNewCost);
+                float tNewBartValue = t.getCashValue() / tUnitValue;
+                t.setBarterValue(tNewBartValue);
+
+                //FirebaseUtilities.deleteTransaction(s);
+                FirebaseUtilities.removeTransactionFromUserList(lender2, s.getTransactionId());
+
+                //break nextSTransaction;
+                AsyncPrepData.setSecondTransaction(null);
+            } else if (t.getCashValue() < s.getCashValue()) {
+
+                Transaction r = new Transaction();
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+                r.setTargetUserIds(rtargetuserid);
+
+                r.setCashValue(t.getCashValue());
+                r.setBarterUnit(s.getBarterUnit());
+                r.setNotes(s.getNotes());
+                r.setBarterValue(s.getBarterValue());
+                FirebaseUtilities.addTransaction(r);
+
+                float sNewCost = s.getCashValue() - t.getCashValue();
+                s.setCashValue(sNewCost);
+
+                //FirebaseUtilities.deleteTransaction(t);
+                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
+                //break nextTTransaction;
+                AsyncPrepData.setUserTransaction(null);
+
+            }
+        } //endif s transaction uses money
+        //else neither use money
+        else {
+            if (t.getCashValue() == s.getCashValue()) {
+                Transaction r = new Transaction();
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+                r.setTargetUserIds(rtargetuserid);
+                r.setCashValue(t.getCashValue());
+                r.setBarterValue(s.getBarterValue());
+                r.setBarterUnit(s.getBarterUnit());
+                r.setNotes(s.getNotes());
+                FirebaseUtilities.addTransaction(r);
+                //FirebaseUtilities.deleteTransaction(s);
+                //FirebaseUtilities.deleteTransaction(t);
+                FirebaseUtilities.removeTransactionFromUserList(lender2, s.getTransactionId());
+                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
+                //break nextTTransaction;
+                AsyncPrepData.setUserTransaction(null);
+            } else if (t.getCashValue() > s.getCashValue()) {
+
+                Transaction r = new Transaction();
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+                r.setTargetUserIds(rtargetuserid);
+
+                r.setCashValue(s.getCashValue());
+                r.setBarterValue(s.getBarterValue());
+                r.setBarterUnit(s.getBarterUnit());
+                r.setNotes(s.getNotes());
+                FirebaseUtilities.addTransaction(r);
+
+                float tUnitValue = t.getCashValue() / t.getBarterValue();
+                float tNewCost = t.getCashValue() - s.getCashValue();
+                t.setCashValue(tNewCost);
+                float tNewBartValue = t.getCashValue() / tUnitValue;
+                t.setBarterValue(tNewBartValue);
+
+                //FirebaseUtilities.deleteTransaction(s);
+                FirebaseUtilities.removeTransactionFromUserList(lender2, s.getTransactionId());
+                //break nextSTransaction;
+                AsyncPrepData.setSecondTransaction(null);
+            } else if (t.getCashValue() < s.getCashValue()) {
+
+                Transaction r = new Transaction();
+                r.setName(s.getName());
+                r.setCreatorId(t.getCreatorId());
+                Map<String, Boolean> rtargetuserid = new HashMap<String, Boolean>();
+                rtargetuserid.put(lender2, true);
+                r.setTargetUserIds(rtargetuserid);
+                r.setCashValue(t.getCashValue());
+                r.setBarterUnit(s.getBarterUnit());
+                r.setNotes(s.getNotes());
+
+                float sUnitCost = s.getCashValue() / s.getBarterValue();
+                float rBarterValue = t.getCashValue() / sUnitCost;
+                r.setBarterValue(rBarterValue);
+                FirebaseUtilities.addTransaction(r);
+
+
+                float sNewCost = s.getCashValue() - t.getCashValue();
+                s.setCashValue(sNewCost);
+                float sNewBarterValue = s.getBarterValue() - rBarterValue;
+                s.setBarterValue(sNewBarterValue);
+                //FirebaseUtilities.deleteTransaction(t);
+                FirebaseUtilities.removeTransactionFromUserList(lender, t.getTransactionId());
+
+                //break nextTTransaction;
+                AsyncPrepData.setUserTransaction(null);
+
+            }
+        } //endelse neither use money
     }
+
 
 
 
@@ -486,6 +382,7 @@ public class DependencyCycleUtils {
                                 transactionIDs.put(transactionSnapshot.getKey(), true);
                             } // if
                         } // for
+                        selfuserStartUserTransactions();
                     } // for
 
                     FirebaseUtilities.getDatabaseReference().child("users").child(FirebaseUtilities.getUser().getUid()).child("transactions").setValue(transactionIDs);
@@ -529,7 +426,6 @@ public class DependencyCycleUtils {
                             if (dataSnapshot != null) {
                                 Transaction transaction = dataSnapshot.getValue(Transaction.class);
                                 selfuserTransactionMap.put(transactionID, transaction);
-
 
                                 //From dashboard presenter
                                 //List<Transaction> transactionsToAdd = new ArrayList<Transaction>(selfuserTransactionMap.values());
@@ -675,6 +571,7 @@ public class DependencyCycleUtils {
                                 transactionIDs.put(transactionSnapshot.getKey(), true);
                             } // if
                         } // for
+                        userStartUserTransactions(taggedUserID);
                     } // for
 
                     FirebaseUtilities.getDatabaseReference().child("users").child(taggedUserID).child("transactions").setValue(transactionIDs);
