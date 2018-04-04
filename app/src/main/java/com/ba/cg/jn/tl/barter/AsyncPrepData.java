@@ -134,7 +134,7 @@ public class AsyncPrepData {
 
 
 
-    //Initializing the observers
+    //Initializing the observer for Step 1 in getting Lender 1's transactions
     private void initInitalTransactionListObserver() {
         orUserGetInitialListOfTransaction = new Observer<String>() {
             @Override
@@ -145,6 +145,7 @@ public class AsyncPrepData {
             @Override
             public void onNext(String t) {
                 // Toast.makeText(SimpleRxAndroidActivity.this, "onNext called: " + integer, Toast.LENGTH_SHORT).show();
+                //Step 2 of getting lender 1's transactions
                 userStartUserTransactions();
             }
 
@@ -163,7 +164,7 @@ public class AsyncPrepData {
     }
 
 
-
+    //Observer  for tansaction list
     private void initStartTransactionListObserver() {
         orUserTransactionList = new Observer<String>() {
             @Override
@@ -208,7 +209,7 @@ public class AsyncPrepData {
     };
     }
 
-    //FOr the first lender
+    //Initizialing observer for Lender's 1 facebook id
     private void initLenderOneFBidObserver() {
         orLenderOneFBUserID = new Observer<String>() {
             @Override
@@ -230,9 +231,8 @@ public class AsyncPrepData {
             @Override
             public void onComplete() {
                 // Toast.makeText(SimpleRxAndroidActivity.this, "onComplete called", Toast.LENGTH_SHORT).show();
-                //userStartUserTransactions(m);
+                //Check if lender 1 is facebook friends with the user
                 checkIfFirstUsersFriends();
-
             }
         };
     }
@@ -285,6 +285,7 @@ public class AsyncPrepData {
 
     }
 
+    //Checks if Lender 1 is Facebook friends with the signed in user
     private static void checkIfFirstUsersFriends() {
         String fbid = getLenderOneFBuserID();
         if (fbid == null) {
@@ -293,6 +294,7 @@ public class AsyncPrepData {
         }
         //Check if the lender is friends
         else if (selfuserListOfFriends.get(fbid) != null) {
+            //Get lender 1's transactions
             userGetInitialListOfTransaction();
         }
     }
@@ -323,7 +325,8 @@ public class AsyncPrepData {
      * Start userQuery to add ChildEventListener to track whenever changes are made
      * to the currentUsers transactions and respond accordingly.
      */
-
+    //2 Step process to get all the transactions:
+    //Step 1
     private static void userGetInitialListOfTransaction() {
 
         final String taggedUserID = getLenderOneFirebaseuserID();
@@ -387,6 +390,7 @@ public class AsyncPrepData {
      * Start userQuery to add ChildEventListener to track whenever changes are made
      * to the currentUsers transactions and respond accordingly.
      */
+    //Step 2 of getting Lender 1's transactions
     private  void userStartUserTransactions() {
 
         final String taggedUserID = getLenderOneFirebaseuserID();
@@ -455,9 +459,6 @@ public class AsyncPrepData {
                                         if (userTransactionMap.containsKey(transactionID)) {
                                             userTransactionMap.put(transactionID, transaction);
 
-                                            //List<Transaction> transactionsToAdd = new ArrayList<Transaction>(userTransactionMap.values());
-                                            //calculateAmountsForTransaction();
-                                            //mView.showListOfTransactions(transactionsToAdd);
                                         } // if
                                     } // if
                                 } // onDataChange
@@ -530,7 +531,7 @@ public class AsyncPrepData {
 
 
 
-    //gets lender 1 facebookid
+    //gets lender 1's facebookid
     private void userLenderOneGetFaceBookID(final String lender) {
 
         oLenderOneFBUserID = Observable.create(new ObservableOnSubscribe<String>() {
@@ -668,7 +669,7 @@ public class AsyncPrepData {
                 final String lender = tuser.getKey();
                 if (lender != FirebaseUtilities.getUser().getUid()) {
                     setLenderOneFirebaseUserID(lender);
-                    //get the lender's id
+                    //get the lender's facebook id
                     userLenderOneGetFaceBookID(lender);
                 }
             }
