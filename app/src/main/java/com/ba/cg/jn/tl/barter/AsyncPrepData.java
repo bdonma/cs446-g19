@@ -40,8 +40,9 @@ public class AsyncPrepData {
     private List<Observable<String>> iterateTransactionList;
     //private List<Observer<String>> orIterateTransactionList;
 
-    private Observable<String> oInitUserTransactionList;
-    private Observer<String> orInitUserTransactionList;
+    //Function Observables
+    private static Observable<String> oUserGetInitialListOfTransaction;
+    private static Observer<String> orUserGetInitialListOfTransaction;
 
     private static Observable<String> oUserTransactionList;
     private static Observer<String> orUserTransactionList;
@@ -130,9 +131,7 @@ public class AsyncPrepData {
 
 
 
-    //Function Observables
-    private static Observable<String> oUserGetInitialListOfTransaction;
-    private static Observer<String> orUserGetInitialListOfTransaction;
+
 
 
     //Initializing the observers
@@ -198,6 +197,7 @@ public class AsyncPrepData {
                         //there is only one entry
                         for (Map.Entry<String, Boolean> tuser : newTargetUsers.entrySet()) {
                             final String lender2 = tuser.getKey();
+                            setSecondLenderFirebaseUserID(lender2);
                             userSecondLenderFaceBookID();
                         }
 
@@ -414,9 +414,7 @@ public class AsyncPrepData {
                                     if (dataSnapshot != null) {
                                         Transaction transaction = dataSnapshot.getValue(Transaction.class);
                                         userTransactionMap.put(transactionID, transaction);
-
-                                        //CG: NEED OBSERVER FOR EVERY OBSERVABLE IN ITERATETRANSACTIONSLIST
-                                        iterateTransactionList.add(Observable.just(transactionID));
+                                        //iterateTransactionList.add(Observable.just(transactionID));
 
 
                                         //From dashboard presenter
@@ -585,13 +583,6 @@ public class AsyncPrepData {
 
 
 
-
-
-
-
-
-
-
     private void userSecondLenderFaceBookID() {
 
         final String lender = getSecondLenderFirebaseuserID();
@@ -620,6 +611,8 @@ public class AsyncPrepData {
                                         e.onComplete();
                                     } else{
                                         Log.d("fbid", "FBID not found");
+                                        e.onNext(null);
+                                        e.onComplete();
                                         //setFBuserID(null);
                                         //lenderfacebookID = (String) userFBSnapshot.child("facebookUserId").getValue();
                                         //e.onNext(lenderfacebookID);
@@ -640,6 +633,7 @@ public class AsyncPrepData {
                 }); // addListenerForSingleValueEvent
             }
         });
+        oSecondLenderFBUserID.subscribe(orSecondLenderFBUserID);
 
     } //userGetFaceBookID
 
@@ -654,8 +648,6 @@ public class AsyncPrepData {
         initNextFBidObserver();
 
     }
-
-
 
 
     public void prepareAsyncData(Transaction t) {
@@ -674,11 +666,11 @@ public class AsyncPrepData {
             //there is only one entry
             for (Map.Entry<String, Boolean> tuser : newTargetUsers.entrySet()) {
                 final String lender = tuser.getKey();
-                setLenderOneFirebaseUserID(lender);
-
-                //get the lender's id
-                userLenderOneGetFaceBookID(lender);
-
+                if (lender != FirebaseUtilities.getUser().getUid()) {
+                    setLenderOneFirebaseUserID(lender);
+                    //get the lender's id
+                    userLenderOneGetFaceBookID(lender);
+                }
             }
         }
     }

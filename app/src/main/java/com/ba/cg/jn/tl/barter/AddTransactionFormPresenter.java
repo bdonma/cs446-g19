@@ -51,9 +51,9 @@ public class AddTransactionFormPresenter {
         Transaction transaction = new Transaction(transactionName, stringDate, FirebaseUtilities.getUser().getEmail(),
                 targetUserIds, cashValue, barterValue, barterUnit, isBorrowed, false, false,
                 notes, acceptedIds);
-
-        //prepareAsyncData(transaction);
-        FirebaseUtilities.addTransaction(transaction);
+        AsyncPrepData newAsyncFile = new AsyncPrepData();
+        newAsyncFile.prepareAsyncData(transaction);
+        //FirebaseUtilities.addTransaction(transaction);
     }
 
     public void startGettingFacebookFriends() {
